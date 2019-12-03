@@ -1,0 +1,13 @@
+Table:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: !Sub 's3-bucket-trigger-api-job-log-table-${EnvType}'
+    ProvisionedThroughput:
+      ReadCapacityUnits: 5
+      WriteCapacityUnits: 5
+    KeySchema:
+    - AttributeName: RequestId
+      KeyType: HASH
+    AttributeDefinitions:
+    -  AttributeName: RequestId
+        AttributeType: S

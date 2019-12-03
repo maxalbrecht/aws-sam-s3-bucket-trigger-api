@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: When a file is saved to bucket A, a lambda function moves a copy of the file to bucket B, ideally through an API, and saving a record of the results of the lambda function
+
+Parameters:
+  EnvType:
+    Description: Environment type.
+    Default: dev
+    Type: String
+    AllowedValues: [prod, dev, demo]
+    ConstraintDescription: must specify prod, dev, or demo.
+
+Resources:
+  #Roles
+  #<#IAM/aws-iam-aws-lambda-basic-execution-role.yaml#>#
+
+  #DynamoDB Table - s3-bucket-trigger-api-job-log-table
+  #<#DynamoDB/aws-dynamodb-s3-bucket-trigger-api-job-log-table.yaml#>#
+
+  #Lambda Function & Permissions
+  #<#Lambda/aws-lambda-poll-for-jobs.py#>#
+  #<#Lambda/aws-lambda-save-job-status.py#>#
+  #<#Lambda/aws-lambda-upload-data-to-api.py#>#
+
+  #Proof-of-concept-bucket
+  #<#S3/s3-bucket-trigger-api-proof-of-concept-bucket.yaml#>#
