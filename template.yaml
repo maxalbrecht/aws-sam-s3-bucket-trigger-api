@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   aws-sam-s3-bucket-trigger-api
@@ -21,7 +21,7 @@ Conditions:
   WorkflowBucketName:
     Type: String
     Default: !Sub "s3-bucket-trigger-api-workflow-bucket-${EnvType}"
-  
+
   TableName:
     Type: String
     Default: !Sub "s3-bucket-trigger-api-log-table-${EnvType}"
@@ -29,52 +29,52 @@ Conditions:
   SNSTopicName:
     Type: String
     Default: !Sub "s3-bucket-trigger-api-sns-topic-${EnvType}"
-    
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 60
 
 Resources:
   TestBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Ref TestBucketName
       NotificationConfiguration:
         LambdaConfigurations:
-        - Function:
-            Fn::GetAtt:
-            - WorkflowMainFunction
-            - Arn
-          Event: s3:ObjectCreated:*
+          - Function:
+              Fn::GetAtt:
+                - WorkflowMainFunction
+                - Arn
+            Event: s3:ObjectCreated:*
     DependsOn:
-    - WorkflowMainFunctionBucketEvent1Permission
+      - WorkflowMainFunctionBucketEvent1Permission
 
   WorkflowBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Ref WorkflowBucketName
-  
+
   #IMPLEMENT: CREATE .config file in workflow bucket
 
   WorkflowMainFunction:
-      Type: AWS::Serverless::Function
-      Properties:
-        CodeUri: AWS/Services/Lambda/workflow-main-function/
-        Handler: main.lambda_handler
-        Runtime: python3.7
-        Environment:
-          Variables:
-            EnvType: !Ref EnvType
-        Events:
-          BucketEvent1:
-            Type: S3
-            Properties:
-              Bucket:
-                Ref: TestBucket
-              Events:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: AWS/Services/Lambda/workflow-main-function/
+      Handler: workflow-main-function.lambda_handler
+      Runtime: python3.7
+      Environment:
+        Variables:
+          ENV_TYPE: !Ref EnvType
+      Events:
+        BucketEvent1:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: TestBucket
+            Events:
               - s3:ObjectCreated:*
-        Policies:
+      Policies:
         - S3CrudPolicy:
             BucketName: !Ref TestBucketName
         - S3CrudPolicy:
@@ -83,22 +83,22 @@ Resources:
             TableName: !Ref TableName
         - SNSPublishMessagePolicy:
             TopicName: !Ref SNSTopicName
-  
-  ActivateDeactivateWorkflowFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: AWS/Services/Lambda/activate-deactivate-workflow-function/
-      Handler: main.lambda_handler
-      Runtime: python3.7
-      Events:
-        ActivateDeactivate:
-          Type: Api
-          Properties:
-            Path: /activatedeactivate
-            Method: ANY
-      Policies:
-      - S3CrudPolicy:
-          BucketName: !Ref WorkflowBucketName
+
+  # ActivateDeactivateWorkflowFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: AWS/Services/Lambda/activate-deactivate-workflow-function/
+  #     Handler: activate-deactivate-workflow-function.lambda_handler
+  #     Runtime: python3.7
+  #     Events:
+  #       ActivateDeactivate:
+  #         Type: Api
+  #         Properties:
+  #           Path: /activatedeactivate
+  #           Method: ANY
+  #     Policies:
+  #     - S3CrudPolicy:
+  #         BucketName: !Ref WorkflowBucketName
 
   # HelloWorldFunction:
   #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -117,11 +117,9 @@ Outputs:
   ActivateDeactivateApi:
     Description: "Allows you to activate, deactivate, and check the current status of the workflow"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}/activatedeactivate/"
-
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-
   # HelloWorldApi:
   #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
   #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
