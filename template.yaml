@@ -63,6 +63,9 @@ Resources:
         CodeUri: AWS/Services/Lambda/workflow-main-function/
         Handler: main.lambda_handler
         Runtime: python3.7
+        Environment:
+          Variables:
+            EnvType: !Ref EnvType
         Events:
           BucketEvent1:
             Type: S3
