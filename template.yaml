@@ -60,12 +60,14 @@ Resources:
   WorkflowMainFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: AWS/Services/Lambda/workflow-main-function/
-      Handler: workflow-main-function.lambda_handler
+      FunctionName: !Sub "s3-bucket-trigger-api-workflow-main-function-${EnvType}"
+      CodeUri: AWS/Services/Lambda/workflow_main_function/
+      Handler: workflow_main_function.lambda_handler
       Runtime: python3.7
       Environment:
         Variables:
           ENV_TYPE: !Ref EnvType
+          TABLE_NAME: !Ref TableName
       Events:
         BucketEvent1:
           Type: S3
@@ -113,10 +115,10 @@ Resources:
   #           Path: /hello
   #           Method: ANY
 
-Outputs:
-  ActivateDeactivateApi:
-    Description: "Allows you to activate, deactivate, and check the current status of the workflow"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}/activatedeactivate/"
+# Outputs:
+#   ActivateDeactivateApi:
+#     Description: "Allows you to activate, deactivate, and check the current status of the workflow"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}/activatedeactivate/"
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
