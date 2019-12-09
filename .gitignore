@@ -130,6 +130,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+!/.venv/Lib/
 parts/
 sdist/
 var/
@@ -243,5 +244,7 @@ $RECYCLE.BIN/
 # Build folder
 
 */build/*
+
+
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode

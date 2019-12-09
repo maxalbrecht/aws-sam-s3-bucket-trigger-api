@@ -1,3 +1,8 @@
+"""
+workflow_main_funtion.py
+====================================
+The main module of the workflow
+"""
 import json
 import boto3
 import requests
@@ -31,8 +36,9 @@ def lambda_handler(event, context):
         https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
 
     Returns
-    ------
-    Success or failure of function
+    -------
+    int
+        Success or failure of function
 
     """
    
