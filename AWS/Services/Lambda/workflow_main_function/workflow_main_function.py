@@ -85,7 +85,7 @@ def lambda_handler(event, context):
     # region Make API call
     try:
         ''' Demonstrates a simple HTTP request from Lambda '''
-        response = requests.get('https://jsonplaceholder.typicode.com/posts')
+        response = requests.requests.get('https://jsonplaceholder.typicode.com/posts')
         # load data into a dict of objects, posts
         posts = json.loads(response.text)
         print('posts is a = {}'.format(type(posts)))
