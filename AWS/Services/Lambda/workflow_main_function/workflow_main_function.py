@@ -3,7 +3,7 @@ workflow_main_funtion.py
 ====================================
 The main module of the workflow
 """
-import requests
+from requests import requests
 import json
 import boto3
 import os
