@@ -6,5 +6,5 @@ setup(
     name='S3 Bucket to AOT',
     version='0.1dev',
     packages=['distutils', 'json', 'boto3', 'requests', 'os', 'uuid'],
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
 )
