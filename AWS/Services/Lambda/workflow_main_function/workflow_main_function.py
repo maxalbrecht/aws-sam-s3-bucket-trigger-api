@@ -3,7 +3,7 @@ workflow_main_funtion.py
 ====================================
 The main module of the workflow
 """
-from requests import requests
+#from requests import requests
 import json
 import boto3
 import os
@@ -83,22 +83,22 @@ def lambda_handler(event, context):
     # endregion Check if the config file
 
     # region Make API call
-    try:
-        ''' Demonstrates a simple HTTP request from Lambda '''
-        response = requests.get('https://jsonplaceholder.typicode.com/posts')
-        # load data into a dict of objects, posts
-        posts = json.loads(response.text)
-        print('posts is a = {}'.format(type(posts)))
-        # Let's get the unique userId, there should only be 1-10
-        unique_ids = set()
-        for post in posts:
-            unique_ids.add(post['userId'])
-        print('unique_ids = {}'.format(unique_ids))
-    except Exception as ex:
-        print("exception when making api call\n", ex)
-        raise
+    # try:
+    #     ''' Demonstrates a simple HTTP request from Lambda '''
+    #     response = requests.get('https://jsonplaceholder.typicode.com/posts')
+    #     # load data into a dict of objects, posts
+    #     posts = json.loads(response.text)
+    #     print('posts is a = {}'.format(type(posts)))
+    #     # Let's get the unique userId, there should only be 1-10
+    #     unique_ids = set()
+    #     for post in posts:
+    #         unique_ids.add(post['userId'])
+    #     print('unique_ids = {}'.format(unique_ids))
+    # except Exception as ex:
+    #     print("exception when making api call\n", ex)
+    #     raise
 
-    # endregion Make API call
+    # # endregion Make API call
 
     # region Log job information into the database
     try:

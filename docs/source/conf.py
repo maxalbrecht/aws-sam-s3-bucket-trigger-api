@@ -21,7 +21,6 @@ spec.loader.exec_module(foo)
 
 master_doc = 'index'
 
-autodoc_mock_imports = ['requests']
 #import recommonmark.Parser
 
  # Add a source file parser for markdown
