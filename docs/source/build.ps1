@@ -24,6 +24,8 @@ Write-Output "*** Changed location to: "
 Write-Output $(get-location).Path
 Write-Output "*** Making html output with Sphinx..."
 .\make.bat html
+Write-Output "*** Making pdf output with Sphinx..."
+.\make.bat latexpdf
 
 # Open in Chrome
 Set-Location .\source

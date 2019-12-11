@@ -45,7 +45,7 @@ as well as the CI/CD solution that has been implemented using AWS CodePipeline.
 Contents
 ========
 .. toctree::
-   :maxdepth: 10
+   :maxdepth: 4
    
    modules
 
