@@ -11,7 +11,7 @@ to this lambda function.
 
 #from requests import requests
 import json
-# import boto3
+import boto3
 # import os
 # from uuid import uuid4
 
