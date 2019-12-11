@@ -1,10 +1,23 @@
+"""
+activate_deactivate_workflow_function.py
+==========================================
+
+Module to allow administrators to turn the main workflow on or off
+
+The config file, which will live in a workflow S3 bucket, will determine if the workflow processes the jobs.
+This functon will edit the config file to set switch this to on or off, and an API gateway will give us access
+to this lambda function.
+"""
 import json
 
 # import requests
 
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
+    """Lambda function to turn workflow on or off.
+
+    This is the main function of this module
+
 
     Parameters
     ----------

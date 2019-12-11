@@ -1,6 +1,14 @@
-aws-sam-s3-bucket-trigger-api
-=============================
+============================================================
+Modules
+============================================================
+.. contents:: :local:
 
-.. toctree::
-   :maxdepth: 4
 
+.. automodule:: AWS.Services.Lambda.workflow_main_function.workflow_main_function
+    :members:
+
+.. automodule:: AWS.Services.Lambda.activate_deactivate_workflow_function.activate_deactivate_workflow_function
+    :members:
+
+:ref:`Modules (Tree Map View)<modindex>`
+==========================================

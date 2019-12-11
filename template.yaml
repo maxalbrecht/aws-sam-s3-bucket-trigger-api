@@ -37,7 +37,7 @@ Globals:
 
 Resources:
   TestBucket:
-    Type: "AWS::S3::Bucket"
+    Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref TestBucketName
       NotificationConfiguration:
@@ -51,11 +51,25 @@ Resources:
       - WorkflowMainFunctionBucketEvent1Permission
 
   WorkflowBucket:
-    Type: "AWS::S3::Bucket"
+    Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref WorkflowBucketName
 
   #IMPLEMENT: CREATE .config file in workflow bucket
+
+  S3Object:
+    Type: AWS::S3::Object
+    Properties:
+      Target:
+        Bucket: !Ref WorkflowBucket
+        Key: README.md
+        ContentType: text/markdown
+      Body: !Sub |
+        # =================================================================
+        # Main Workflow Enabled or disabled
+        # =================================================================
+        # Enabled: 0 for disabled, 1 for enabled
+        enabled: 1
 
   WorkflowMainFunction:
     Type: AWS::Serverless::Function
@@ -89,8 +103,8 @@ Resources:
   # ActivateDeactivateWorkflowFunction:
   #   Type: AWS::Serverless::Function
   #   Properties:
-  #     CodeUri: AWS/Services/Lambda/activate-deactivate-workflow-function/
-  #     Handler: activate-deactivate-workflow-function.lambda_handler
+  #     CodeUri: AWS/Services/Lambda/activate_deactivate_workflow_function/
+  #     Handler: activate_deactivate_workflow_function.lambda_handler
   #     Runtime: python3.7
   #     Events:
   #       ActivateDeactivate:

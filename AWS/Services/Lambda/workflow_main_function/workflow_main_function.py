@@ -9,8 +9,6 @@ import requests
 import os
 from uuid import uuid4
 
-dynamodb = boto3.resource('dynamodb')
-
 
 def lambda_handler(event, context):
     """Function to pass jobs to external api
@@ -41,7 +39,9 @@ def lambda_handler(event, context):
         Success or failure of function
 
     """
-   
+    
+    dynamodb = boto3.resource('dynamodb')
+
     # region Handle parameters and variables
     # Save environment variables
     ENV_TYPE = os.environ["ENV_TYPE"]
