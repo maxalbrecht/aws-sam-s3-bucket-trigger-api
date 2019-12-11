@@ -1,126 +1,55 @@
 """
-workflow_main_funtion.py
-====================================
-The main module of the workflow
+activate_deactivate_workflow_function.py
+==========================================
+
+Module to allow administrators to turn the main workflow on or off
+
+The config file, which will live in a workflow S3 bucket, will determine if the workflow processes the jobs.
+This functon will edit the config file to set switch this to on or off, and an API gateway will give us access
+to this lambda function.
 """
-#from requests import requests
 import json
-import boto3
-import os
-from uuid import uuid4
+
+# import requests
 
 
 def lambda_handler(event, context):
-    """Function to pass jobs to external api
+    """Lambda function to turn workflow on or off.
 
-    Steps:
-        1. Check if the config file to see if we call the api
-        2. Make api call, depending on the config file in the previous step
-        3. Save the job results to DynamoDB table
-        4. Send notifications on job results
+    This is the main function of this module
+
 
     Parameters
     ----------
     event: dict, required
-        file is deposited in S3 bucket
-
+        API Gateway Lambda Proxy Input Format
         Event doc:
         https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
 
     context: object, required
         Lambda Context runtime methods and attributes
-
         Context doc:
         https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
 
     Returns
-    -------
-    int
-        Success or failure of function
-
+    ------
+    API Gateway Lambda Proxy Output Format: dict
+        Return doc:
+        https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-    
-    dynamodb = boto3.resource('dynamodb')
 
-    # region Handle parameters and variables
-    # Save environment variables
-    ENV_TYPE = os.environ["ENV_TYPE"]
-    TABLE_NAME = os.environ["TABLE_NAME"]
-    request_id = str(uuid4())
-
-    # Save event information into local variables
-    try:
-        for record in event['Records']:
-            bucket_name = record['s3']['bucket']['name']
-            object_key = record['s3']['object']['key']
-            size = record['s3']['object'].get('size', -1)
-            event_name = record['eventName']
-            event_time = record['eventTime']
-    except Exception as ex:
-        print("exception when processing even values\n", ex)
-        raise
-
-    # Set default values for sam local testing
-    if ((ENV_TYPE == 'prod') == False) and ((ENV_TYPE == 'demo') == False):
-        ENV_TYPE = 'dev'
-        TABLE_NAME = 's3-bucket-trigger-api-log-table-dev'
-        bucket_name == 's3-bucket-trigger-api-test-bucket-dev'
-    
-    # print parameter values during development
-    if ENV_TYPE == 'dev':
-        print("ENV_TYPE: ", ENV_TYPE)
-        print("request_id: ", request_id)
-        print("bucket_name: ", bucket_name)
-        print("event_name: ", event_name)
-        print("event_time: ", event_time)
-        print("object_key: ", object_key)
-        print("size: ", size)
-    
-    # endregion handle parameters and variables
-    
-    # region Check the config file
-
-    # endregion Check if the config file
-
-    # region Make API call
     # try:
-    #     ''' Demonstrates a simple HTTP request from Lambda '''
-    #     response = requests.get('https://jsonplaceholder.typicode.com/posts')
-    #     # load data into a dict of objects, posts
-    #     posts = json.loads(response.text)
-    #     print('posts is a = {}'.format(type(posts)))
-    #     # Let's get the unique userId, there should only be 1-10
-    #     unique_ids = set()
-    #     for post in posts:
-    #         unique_ids.add(post['userId'])
-    #     print('unique_ids = {}'.format(unique_ids))
-    # except Exception as ex:
-    #     print("exception when making api call\n", ex)
-    #     raise
+    #     ip = requests.get("http://checkip.amazonaws.com/")
+    # except requests.RequestException as e:
+    #     # Send some context about this error to Lambda Logs
+    #     print(e)
 
-    # # endregion Make API call
+    #     raise e
 
-    # region Log job information into the database
-    try:
-        dynamodb.Table(TABLE_NAME).put_item(
-            Item={
-                'RequestId': request_id,
-                'Bucket': bucket_name,
-                'Object': object_key,
-                'Size': size, 
-                'Event': event_name, 
-                'EventTime': event_time
-            }
-        )
-    except Exception as ex:
-        print("exception when putting to the dynamodb table\n", ex)
-        raise
-
-    # endregion Log job information into the database
-
-    # region Send notifications
-
-    # endregion Send notifications
-    
-    return True
-
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": "hello world",
+            # "location": ip.text.replace("\n", "")
+        }),
+    }
