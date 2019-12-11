@@ -8,9 +8,12 @@ The config file, which will live in a workflow S3 bucket, will determine if the 
 This functon will edit the config file to set switch this to on or off, and an API gateway will give us access
 to this lambda function.
 """
-import json
 
-# import requests
+#from requests import requests
+import json
+import boto3
+import os
+from uuid import uuid4
 
 
 def lambda_handler(event, context):
