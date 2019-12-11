@@ -19,6 +19,8 @@ spec = importlib.util.spec_from_file_location("recommonmark.Parser", "./../../.v
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 
+
+autodoc_mock_imports = ['requests']
 #import recommonmark.Parser
 
  # Add a source file parser for markdown
