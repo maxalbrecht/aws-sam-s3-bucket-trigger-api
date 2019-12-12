@@ -103,17 +103,17 @@ Resources:
         - SNSPublishMessagePolicy:
             TopicName: !Ref SNSTopicName
 
-  # ActivateDeactivateWorkflowFunction:
+  # ToggleFunction:
   #   Type: AWS::Serverless::Function
   #   Properties:
-  #     CodeUri: AWS/Services/Lambda/activate_deactivate_workflow_function/
-  #     Handler: activate_deactivate_workflow_function.lambda_handler
+  #     CodeUri: AWS/Services/Lambda/toggle_function/
+  #     Handler: toggle_function.lambda_handler
   #     Runtime: python3.7
   #     Events:
   #       ActivateDeactivate:
   #         Type: Api
   #         Properties:
-  #           Path: /activatedeactivate
+  #           Path: /toggle
   #           Method: ANY
   #     Policies:
   #     - S3CrudPolicy:
