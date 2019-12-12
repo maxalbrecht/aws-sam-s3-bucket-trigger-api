@@ -47,6 +47,7 @@ Contents
 .. toctree::
    :maxdepth: 4
    
+   build_cloudformation
    modules
 
 Indices and tables

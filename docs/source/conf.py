@@ -21,8 +21,6 @@ spec.loader.exec_module(foo)
 
 master_doc = 'index'
 
-#import recommonmark.Parser
-
  # Add a source file parser for markdown
 source_parsers = {
     '.md': 'recommonmark.parser.CommonMarkParser'
@@ -47,6 +45,7 @@ release = '0.0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinxcontrib.autoyaml',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon'
 ]
@@ -74,3 +73,32 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.cs s".
 html_static_path = ['_static']
+
+# -- CUSTOM -------------------------------------------------------------------
+
+# Build SAM app so that we can get a fresh copy of the cloudformation template
+# that it generates after processing the SAM template
+os.chdir('./../..')
+try:
+    os.system('sam build')
+except Exception as ex:
+    raise ex
+finally:
+    os.chdir('./docs/source')
+
+# Generate fresh copy of templatedotyaml.rst
+header = """============================================================
+CloudFormation
+============================================================
+\nNote\n=============\n\n*This page is auto-generated from the latest CloudFormation template.*\n\nElements\n==================\n
+
+
+"""
+
+outputfile = open("./build_cloudformation.rst", "w+")
+templatefile = open("./../../.aws-sam/build/template.yaml", "r")
+templatefilecontents = templatefile.read()
+outputfile.write(header)
+outputfile.write(templatefilecontents)
+templatefile.close()
+outputfile.close()

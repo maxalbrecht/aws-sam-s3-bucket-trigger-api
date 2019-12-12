@@ -1,9 +1,11 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Transform: AWS::Serverless-2016-10-31
-Description: >
-  aws-sam-s3-bucket-trigger-api
+AWSTemplateFormatVersion: >
+  "2010-09-09"
 
-  When a file is saved to bucket A, a lambda function moves a copy of the file to bucket B, ideally through an API, and saving a record of the results of the lambda function
+Transform: >
+  AWS::Serverless-2016-10-31
+
+Description: >
+  When a file is saved to S3 Bucket, API is called
 
 Parameters:
   EnvType:
@@ -31,6 +33,7 @@ Conditions:
     Default: !Sub "s3-bucket-trigger-api-sns-topic-${EnvType}"
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
 Globals:
   Function:
     Timeout: 60
@@ -54,7 +57,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref WorkflowBucketName
-
+  
   #IMPLEMENT: CREATE .config file in workflow bucket
 
   S3Object:

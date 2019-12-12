@@ -4,13 +4,13 @@ Write-Output "*** Changed location to: "
 Write-Output $(get-location).Path
 Write-Output "*** Activating the virtual environment..."
 .venv\Scripts\Activate.ps1
-
-# Clean Sphinx Build
 Set-Location .\docs\source
 Write-Output "*** Changed location to: "
 Write-Output $(get-location).Path
-$CurrentDir = $(get-location).Path + "\"
-$parentDir = $CurrentDir + "..\..\AWS\Services\Lambda\"
+
+# Clean Sphinx Build
+# $CurrentDir = $(get-location).Path + "\"
+# $parentDir = $CurrentDir + "..\..\AWS\Services\Lambda\"
 Write-Output "*** Cleaning Sphinx's build..."
 .\..\make.bat clean
 
@@ -24,12 +24,10 @@ Write-Output "*** Changed location to: "
 Write-Output $(get-location).Path
 Write-Output "*** Making html output with Sphinx..."
 .\make.bat html
-Write-Output "*** Making pdf output with Sphinx..."
-.\make.bat latexpdf
-
-# Open in Chrome
 Set-Location .\source
 Write-Output "*** Changed location to: "
 Write-Output $(get-location).Path
+
+# Open in Chrome
 Write-Output "*** Opening in Chrome..."
 chrome .\..\build\html\index.html
