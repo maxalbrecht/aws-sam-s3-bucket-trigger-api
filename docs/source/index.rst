@@ -42,13 +42,23 @@ As of the time of writing, the components we have included in this application a
 The rest of this documentation gives a detailed description of the AWS SAM template and all the components created from it,
 as well as the CI/CD solution that has been implemented using AWS CodePipeline.
 
+---------
+ Diagram
+---------
+The following is a diagram of the application's workflow as well as administrator access to configurations.
+
+*Under Construction. Image to be added*
+
 Contents
 ========
 .. toctree::
    :maxdepth: 4
    
+   workflowconfiguration
    build_cloudformation
    modules
+   pipeline
+   contact
 
 Indices and tables
 ==================
