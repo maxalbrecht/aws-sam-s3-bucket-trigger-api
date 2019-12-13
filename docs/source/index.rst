@@ -47,7 +47,8 @@ as well as the CI/CD solution that has been implemented using AWS CodePipeline.
 ---------
 The following is a diagram of the application's workflow as well as administrator access to configurations.
 
-*Under Construction. Image to be added*
+.. image:: drawdotio/S3BucketToAPIWorkflow.png
+
 
 Contents
 ========

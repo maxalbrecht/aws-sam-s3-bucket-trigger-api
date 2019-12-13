@@ -13,7 +13,9 @@ Diagram
 ========
 The following is a diagram of the CodePipeline along with the services it employs.
 
-*Under Construction. Image to be added*
+
+.. image:: drawdotio/S3BucketToAPIWorkflowDeploymentPipeline.png
+
 
 Template
 ========
