@@ -177,7 +177,7 @@ Resources:
 #######################################################
 # Enable/Disable API
 #######################################################
-# *this API allows administrators to trigger the lambda function that enables or disables the processing of files by the applicaton*
+# *this API allows administrators to trigger the lambda function that enables or disables the processing of files by the application*
   #  ToggleApi:
 
 #     Description: "Allows you to activate, deactivate, and check the current status of the workflow"
