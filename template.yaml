@@ -142,9 +142,11 @@ Resources:
 
   #         Properties:
 
+  #          
   #           Path: /toggle
 
   #           Method: ANY
+  
   #     Policies:
 
   #     - S3CrudPolicy:
