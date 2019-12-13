@@ -48,6 +48,11 @@ Globals:
 
 Resources:
 ##########
+  
+#######################################################
+# Testing Bucket
+#######################################################
+# *This bucket is used in place of the bucket that files will be placed in in production*
   TestBucket:
     Type: AWS::S3::Bucket
     
@@ -64,6 +69,10 @@ Resources:
     DependsOn:
       - WorkflowMainFunctionBucketEvent1Permission
 
+#######################################################
+# Main Helper Bucket
+#######################################################
+# *This bucket is employed to store files used or created by the application, e.g. the configuration file*
   WorkflowBucket:
     Type: AWS::S3::Bucket
     
@@ -83,8 +92,13 @@ Resources:
       Body: !Sub |
         # *Main Workflow Enabled or disabled*
         # Enabled: 0 for disabled, 1 for enabled
+        
         enabled: 1
 
+#######################################################
+# Main Lambda Function
+#######################################################
+# *this Lambda function is the workhorse of the application, and triggers most other components*
   WorkflowMainFunction:
     Type: AWS::Serverless::Function
     
@@ -121,8 +135,12 @@ Resources:
             TableName: !Ref TableName
         - SNSPublishMessagePolicy:
             TopicName: !Ref SNSTopicName
-# **Code Snippets:**
+# **Code Snippets, retained as reference:**
 
+#######################################################
+# Enable/Disable Function
+#######################################################
+# *this Lambda function is used to enable or disable the processing of files in the application by editing the config file*
   # ToggleFunction:
 
   #   Type: AWS::Serverless::Function
@@ -153,33 +171,14 @@ Resources:
 
   #         BucketName: !Ref WorkflowBucketName
 
-  # HelloWorldFunction:
-
-  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  #   Properties:
-
-  #     CodeUri: AWS/Services/TestingFunctions/hello_world/
-
-  #     Handler: app.lambda_handler
-
-  #     Runtime: python3.7
-
-  #     Events:
-    
-  #       HelloWorld:
-
-  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-
-  #         Properties:
-
-  #           Path: /hello
-
-  #           Method: ANY
-
 # Outputs:
+###########
 
-#   ActivateDeactivateApi:
+#######################################################
+# Enable/Disable API
+#######################################################
+# *this API allows administrators to trigger the lambda function that enables or disables the processing of files by the applicaton*
+  #  ToggleApi:
 
 #     Description: "Allows you to activate, deactivate, and check the current status of the workflow"
 
@@ -191,6 +190,10 @@ Resources:
 
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
 
+#######################################################
+# Sample API and Function
+#######################################################
+# *these are retained for reference*
   # HelloWorldApi:
 
   #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"

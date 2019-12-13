@@ -53,7 +53,7 @@ The following is a diagram of the application's workflow as well as administrato
 Contents
 ========
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    
    workflowconfiguration
    build_cloudformation
