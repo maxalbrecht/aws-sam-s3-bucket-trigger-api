@@ -19,6 +19,12 @@ spec = importlib.util.spec_from_file_location("recommonmark.Parser", "./../../.v
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
 
+
+specsam = importlib.util.spec_from_file_location("command", "./../../.venv/Lib/site-packages/samcli/commands/build/command.py")
+foosam = importlib.util.module_from_spec(spec)
+print("*** Running spec.loader.exec_module(foosam)...")
+spec.loader.exec_module(foosam)
+
 master_doc = 'index'
 
  # Add a source file parser for markdown
@@ -80,6 +86,7 @@ html_static_path = ['_static']
 # that it generates after processing the SAM template
 os.chdir('./../..')
 try:
+    print("*** Running os.system('sam build')...")
     os.system('sam build')
 except Exception as ex:
     raise ex

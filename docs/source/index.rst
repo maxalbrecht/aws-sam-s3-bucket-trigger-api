@@ -24,7 +24,7 @@ also provide value to these users.
 -------
  Scope
 -------
-As of writing, the components we have included in this application are the following:
+As of the time of writing, the components we have included in this application are the following:
     * Lambda function which is triggered when a file meeting specified criteria is placed in the intended S3 bucket, and:
         - Checks a configuration file to determine if the data in the s3 file should be processed and passed to the API
         - Calls the API
