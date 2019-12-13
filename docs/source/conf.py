@@ -13,17 +13,12 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+
 # For conversion from markdown to html
 import importlib.util
 spec = importlib.util.spec_from_file_location("recommonmark.Parser", "./../../.venv/Lib/site-packages/recommonmark/parser.py")
 foo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(foo)
-
-
-specsam = importlib.util.spec_from_file_location("command", "./../../.venv/Lib/site-packages/samcli/commands/build/command.py")
-foosam = importlib.util.module_from_spec(spec)
-print("*** Running spec.loader.exec_module(foosam)...")
-spec.loader.exec_module(foosam)
 
 master_doc = 'index'
 
@@ -84,26 +79,26 @@ html_static_path = ['_static']
 
 # Build SAM app so that we can get a fresh copy of the cloudformation template
 # that it generates after processing the SAM template
-os.chdir('./../..')
-try:
-    print("*** Running os.system('sam build')...")
-    os.system('sam build')
-except Exception as ex:
-    raise ex
-finally:
-    os.chdir('./docs/source')
+# os.chdir('./../..')
+# try:
+#     print("*** Running os.system('sam build')...")
+#     os.system('sam build')
+# except Exception as ex:
+#     raise ex
+# finally:
+#     os.chdir('./docs/source')
 
 # Generate fresh copy of templatedotyaml.rst
 header = """============================================================
-CloudFormation
+AWS SAM / CloudFormation
 ============================================================
-\nNote\n=============\n\n*This page is auto-generated from the latest CloudFormation template.*\n\nElements\n==================\n
+\n*Note: This page is auto-generated from the latest SAM template.*\n\n\nSAM Template\n============================\n\nTemplate Description & Transformation Information:\n#####################################################################\n
 
 
 """
 
 outputfile = open("./build_cloudformation.rst", "w+")
-templatefile = open("./../../.aws-sam/build/template.yaml", "r")
+templatefile = open("./../../template.yaml", "r")
 templatefilecontents = templatefile.read()
 outputfile.write(header)
 outputfile.write(templatefilecontents)
