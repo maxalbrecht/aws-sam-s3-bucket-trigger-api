@@ -10,9 +10,11 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - aws cloudformation package --template-file template.yaml --output-template-file outputTemplate.yaml
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
     - template.yaml
+    - outputTemplate.yaml
