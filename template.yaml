@@ -17,37 +17,33 @@ Parameters:
 
     ConstraintDescription: must specify prod, dev, or demo.
 
-Conditions:
-###########
-  TestBucketName:
-    Type: String
-
-    Default: !Sub "s3-bucket-trigger-api-test-bucket-${EnvType}"
-
-  WorkflowBucketName:
-    Type: String
-
-    Default: !Sub "s3-bucket-trigger-api-workflow-bucket-${EnvType}"
-
-  TableName:
-    Type: String
-
-    Default: !Sub "s3-bucket-trigger-api-log-table-${EnvType}"
-
-  SNSTopicName:
-    Type: String
-
-    Default: !Sub "s3-bucket-trigger-api-sns-topic-${EnvType}"
-
-# *More info about Globals:* https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-
 Globals:
 #########
   Function:
     Timeout: 60
 
+# *More info about Globals:* https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
 Resources:
 ##########
+
+#######################################################
+# DynamoDB Table
+#######################################################
+# *This table is used to keep track of file processing*
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub 'bucket-to-api-table-${EnvType}'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+      - AttributeName: RequestId
+        KeyType: HASH
+      AttributeDefinitions:
+      -  AttributeName: RequestId
+         AttributeType: S
   
 #######################################################
 # Testing Bucket
@@ -57,7 +53,7 @@ Resources:
     Type: AWS::S3::Bucket
     
     Properties:
-      BucketName: !Ref TestBucketName
+      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
       
       NotificationConfiguration:
         LambdaConfigurations:
@@ -77,7 +73,7 @@ Resources:
     Type: AWS::S3::Bucket
     
     Properties:
-      BucketName: !Ref WorkflowBucketName
+      BucketName: "bucket-to-api-workflow-bucket-${EnvType}"
 
   S3Object:
     Type: AWS::S3::Object
@@ -103,7 +99,7 @@ Resources:
     Type: AWS::Serverless::Function
     
     Properties:
-      FunctionName: !Sub "s3-bucket-trigger-api-workflow-main-function-${EnvType}"
+      FunctionName: !Sub "bucket-to-api-workflow-main-function-${EnvType}"
       
       CodeUri: AWS/Services/Lambda/workflow_main_function/
       
@@ -116,7 +112,7 @@ Resources:
         Variables:
           ENV_TYPE: !Ref EnvType
           
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Sub 'bucket-to-api-table-${EnvType}'
       Events:
         BucketEvent1:
           Type: S3
@@ -128,13 +124,13 @@ Resources:
               - s3:ObjectCreated:*
       Policies:
         - S3CrudPolicy:
-            BucketName: !Ref TestBucketName
+            BucketName: !Ref TestBucket
         - S3CrudPolicy:
-            BucketName: !Ref WorkflowBucketName
+            BucketName: !Ref WorkflowBucket
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Sub 'bucket-to-api-table-${EnvType}'
         - SNSPublishMessagePolicy:
-            TopicName: !Ref SNSTopicName
+            TopicName: !Sub "bucket-to-api-sns-topic-${EnvType}"
 # **Code Snippets, retained as reference:**
 
 #######################################################
@@ -169,7 +165,7 @@ Resources:
 
   #     - S3CrudPolicy:
 
-  #         BucketName: !Ref WorkflowBucketName
+  #         BucketName: !Ref WorkflowBucket
 
 # Outputs:
 ###########
