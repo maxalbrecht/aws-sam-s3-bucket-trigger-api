@@ -109,7 +109,7 @@ Resources:
       
       Handler: workflow_main_function.lambda_handler
       
-      Runtime: python3.7
+      Runtime: python3.8
       
       Environment:
         
@@ -151,7 +151,7 @@ Resources:
 
   #     Handler: toggle_function.lambda_handler
 
-  #     Runtime: python3.7
+  #     Runtime: python3.8
 
   #     Events:
   #       ActivateDeactivate:
