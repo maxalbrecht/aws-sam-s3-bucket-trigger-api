@@ -32,7 +32,7 @@ Resources:
 #######################################################
 # *This table is used to keep track of file processing*
   Table:
-    Type: AWS::DynamoDB::Table
+    Type: AWS::DynamoDB::SimpleTable
     Properties:
       TableName: !Sub 'bucket-to-api-table-${EnvType}'
       ProvisionedThroughput:
@@ -41,29 +41,6 @@ Resources:
       KeySchema:
       - AttributeName: RequestId
         KeyType: HASH
-      AttributeDefinitions:
-      -  AttributeName: RequestId
-         AttributeType: S
-  
-#######################################################
-# Testing Bucket
-#######################################################
-# *This bucket is used in place of the bucket that files will be placed in in production*
-  TestBucket:
-    Type: AWS::S3::Bucket
-    
-    Properties:
-      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
-      
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Function:
-              Fn::GetAtt:
-                - WorkflowMainFunction
-                - Arn
-            Event: s3:ObjectCreated:*
-    DependsOn:
-      - WorkflowMainFunctionBucketEvent1Permission
 
 #######################################################
 # Main Helper Bucket
@@ -131,6 +108,27 @@ Resources:
             TableName: !Sub 'bucket-to-api-table-${EnvType}'
         - SNSPublishMessagePolicy:
             TopicName: !Sub "bucket-to-api-sns-topic-${EnvType}"
+  
+#######################################################
+# Testing Bucket
+#######################################################
+# *This bucket is used in place of the bucket that files will be placed in in production*
+  TestBucket:
+    Type: AWS::S3::Bucket
+    
+    Properties:
+      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
+      
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Function:
+              Fn::GetAtt:
+                - WorkflowMainFunction
+                - Arn
+            Event: s3:ObjectCreated:*
+    DependsOn:
+      - WorkflowMainFunctionBucketEvent1Permission
+
 # **Code Snippets, retained as reference:**
 
 #######################################################

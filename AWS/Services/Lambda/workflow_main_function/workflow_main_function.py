@@ -7,8 +7,10 @@ The main module of the workflow
 import json
 import os
 from uuid import uuid4
-if (os.environ.get('READTHEDOCS') == 'False'):
+try:
     import boto3
+except ImportError:
+    print("import of boto3 failed")
 
 def lambda_handler(event, context):
     """Function to pass jobs to external api
