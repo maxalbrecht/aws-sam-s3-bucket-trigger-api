@@ -1,6 +1,7 @@
 ## Custom by MA **
 **.log
 **/Compiled/
+build_**
 
 # Created by https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode
 
@@ -123,6 +124,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+!**/commands/build/
 develop-eggs/
 dist/
 downloads/
@@ -130,6 +132,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+!/.venv/Lib/
 parts/
 sdist/
 var/
@@ -191,7 +194,7 @@ celerybeat-schedule.*
 
 # Environments
 .env
-.venv
+# Changed so that .venv is included
 env/
 venv/
 ENV/
@@ -243,5 +246,7 @@ $RECYCLE.BIN/
 # Build folder
 
 */build/*
+
+
 
 # End of https://www.gitignore.io/api/osx,linux,python,windows,pycharm,visualstudiocode

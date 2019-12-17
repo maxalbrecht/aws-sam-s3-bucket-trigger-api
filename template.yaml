@@ -1,133 +1,189 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: >
-  aws-sam-s3-bucket-trigger-api
+AWSTemplateFormatVersion: "2010-09-09"
 
-  When a file is saved to bucket A, a lambda function moves a copy of the file to bucket B, ideally through an API, and saving a record of the results of the lambda function
+Transform: AWS::Serverless-2016-10-31
+
+Description: When a file is saved to S3 Bucket, API is called
 
 Parameters:
+############
   EnvType:
     Description: Environment type.
+
     Default: dev
+
     Type: String
+
     AllowedValues: [prod, dev, demo]
+
     ConstraintDescription: must specify prod, dev, or demo.
 
-Conditions:
-  TestBucketName:
-    Type: String
-    Default: !Sub "s3-bucket-trigger-api-test-bucket-${EnvType}"
-
-  WorkflowBucketName:
-    Type: String
-    Default: !Sub "s3-bucket-trigger-api-workflow-bucket-${EnvType}"
-  
-  TableName:
-    Type: String
-    Default: !Sub "s3-bucket-trigger-api-log-table-${EnvType}"
-
-  SNSTopicName:
-    Type: String
-    Default: !Sub "s3-bucket-trigger-api-sns-topic-${EnvType}"
-    
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
+#########
   Function:
-    Timeout: 3
+    Timeout: 60
+
+# *More info about Globals:* https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 
 Resources:
-  TestBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: !Ref TestBucketName
-      NotificationConfiguration:
-        LambdaConfigurations:
-        - Function:
-            Fn::GetAtt:
-            - WorkflowMainFunction
-            - Arn
-          Event: s3:ObjectCreated:*
-    DependsOn:
-    - WorkflowMainFunctionBucketEvent1Permission
+##########
 
+#######################################################
+# DynamoDB Table
+#######################################################
+# *This table is used to keep track of file processing*
+  Table:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub 'bucket-to-api-table-${EnvType}'
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+      - AttributeName: RequestId
+        KeyType: HASH
+      AttributeDefinitions:
+      -  AttributeName: RequestId
+         AttributeType: S
+
+#######################################################
+# Main Helper Bucket
+#######################################################
+# *This bucket is employed to store files used or created by the application, e.g. the configuration file*
   WorkflowBucket:
-    Type: 'AWS::S3::Bucket'
+    Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref WorkflowBucketName
-  
-  #IMPLEMENT: CREATE .config file in workflow bucket
+      BucketName: !Sub "bucket-to-api-workflow-bucket-${EnvType}"
 
+#######################################################
+# Config File
+#######################################################
+# *This config file will determine if the workflow processes files, as well as any other future configurations we may add*
+  # S3Object:
+  #   Type: AWS::S3::Object
+  #   Properties:
+  #     Target:
+  #       Bucket: !Ref WorkflowBucket
+  #       Key: README.md
+  #       ContentType: text/markdown
+  #     Body: !Sub |
+  #       # *Main Workflow Enabled or disabled*
+  #       # Enabled: 0 for disabled, 1 for enabled
+  #       enabled: 1
+
+#######################################################
+# Testing Bucket
+#######################################################
+# *This bucket is used in place of the bucket that files will be placed in in production*
+  TestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
+
+#######################################################
+# Main Lambda Function
+#######################################################
+# *this Lambda function is the workhorse of the application, and triggers most other components*
   WorkflowMainFunction:
-      Type: AWS::Serverless::Function
-      Properties:
-        CodeUri: AWS/Services/Lambda/workflow-main-function/
-        Handler: main.lambda_handler
-        Runtime: python3.7
-        Environment:
-          Variables:
-            EnvType: !Ref EnvType
-        Events:
-          BucketEvent1:
-            Type: S3
-            Properties:
-              Bucket:
-                Ref: TestBucket
-              Events:
-              - s3:ObjectCreated:*
-        Policies:
-        - S3CrudPolicy:
-            BucketName: !Ref TestBucketName
-        - S3CrudPolicy:
-            BucketName: !Ref WorkflowBucketName
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
-        - SNSPublishMessagePolicy:
-            TopicName: !Ref SNSTopicName
-  
-  ActivateDeactivateWorkflowFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: AWS/Services/Lambda/activate-deactivate-workflow-function/
-      Handler: main.lambda_handler
-      Runtime: python3.7
+      FunctionName: !Sub "bucket-to-api-workflow-main-function-${EnvType}"
+      CodeUri: AWS/Services/Lambda/workflow_main_function/
+      Handler: workflow_main_function.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          ENV_TYPE: !Ref EnvType
+          TABLE_NAME: !Sub 'bucket-to-api-table-${EnvType}'
       Events:
-        ActivateDeactivate:
-          Type: Api
+        BucketEvent1:
+          Type: S3
           Properties:
-            Path: /activatedeactivate
-            Method: ANY
+            Bucket: !Ref TestBucket
+            Events: s3:ObjectCreated:*
       Policies:
-      - S3CrudPolicy:
-          BucketName: !Ref WorkflowBucketName
+        #- S3ReadPolicy:
+        #    BucketName: !Ref TestBucket
+        - S3CrudPolicy:
+            BucketName: !Ref WorkflowBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Sub 'bucket-to-api-table-${EnvType}'
+        - SNSPublishMessagePolicy:
+            TopicName: !Sub "bucket-to-api-sns-topic-${EnvType}"
 
-  # HelloWorldFunction:
-  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+# **Code Snippets, retained as reference:**
+
+#######################################################
+# Enable/Disable Function
+#######################################################
+# *this Lambda function is used to enable or disable the processing of files in the application by editing the config file*
+  # ToggleFunction:
+
+  #   Type: AWS::Serverless::Function
+
   #   Properties:
-  #     CodeUri: AWS/Services/TestingFunctions/hello_world/
-  #     Handler: app.lambda_handler
-  #     Runtime: python3.7
-  #     Events:
-  #       HelloWorld:
-  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  #         Properties:
-  #           Path: /hello
-  #           Method: ANY
 
-Outputs:
-  ActivateDeactivateApi:
-    Description: "Allows you to activate, deactivate, and check the current status of the workflow"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}/activatedeactivate/"
+  #     CodeUri: AWS/Services/Lambda/toggle_function/
+
+  #     Handler: toggle_function.lambda_handler
+
+  #     Runtime: python3.8
+
+  #     Events:
+  #       ActivateDeactivate:
+
+  #         Type: Api
+
+  #         Properties:
+
+  #          
+  #           Path: /toggle
+
+  #           Method: ANY
+  
+  #     Policies:
+
+  #     - S3CrudPolicy:
+
+  #         BucketName: !Ref WorkflowBucket
+
+# Outputs:
+###########
+
+#######################################################
+# Enable/Disable API
+#######################################################
+# *this API allows administrators to trigger the lambda function that enables or disables the processing of files by the application*
+  #  ToggleApi:
+
+#     Description: "Allows you to activate, deactivate, and check the current status of the workflow"
+
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${EnvType}/activatedeactivate/"
 
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+
   # Find out more about other implicit resources you can reference within SAM
+
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
 
+#######################################################
+# Sample API and Function
+#######################################################
+# *these are retained for reference*
   # HelloWorldApi:
+
   #   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+
   #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+
   # HelloWorldFunction:
+
   #   Description: "Hello World Lambda Function ARN"
+
   #   Value: !GetAtt HelloWorldFunction.Arn
+
   # HelloWorldFunctionIamRole:
+    
   #   Description: "Implicit IAM Role created for Hello World function"
+
   #   Value: !GetAtt HelloWorldFunctionRole.Arn
