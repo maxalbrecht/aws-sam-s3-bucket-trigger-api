@@ -32,7 +32,7 @@ Resources:
 #######################################################
 # *This table is used to keep track of file processing*
   Table:
-    Type: AWS::DynamoDB::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub 'bucket-to-api-table-${EnvType}'
       ProvisionedThroughput:
@@ -41,6 +41,9 @@ Resources:
       KeySchema:
       - AttributeName: RequestId
         KeyType: HASH
+      AttributeDefinitions:
+      -  AttributeName: RequestId
+         AttributeType: S
 
 #######################################################
 # Main Helper Bucket
@@ -57,17 +60,17 @@ Resources:
 # Config File
 #######################################################
 # *This config file will determine if the workflow processes files, as well as any other future configurations we may add*
-  S3Object:
-    Type: AWS::S3::Object
-    Properties:
-      Target:
-        Bucket: !Ref WorkflowBucket
-        Key: README.md
-        ContentType: text/markdown
-      Body: !Sub |
-        # *Main Workflow Enabled or disabled*
-        # Enabled: 0 for disabled, 1 for enabled
-        enabled: 1
+  # S3Object:
+  #   Type: AWS::S3::Object
+  #   Properties:
+  #     Target:
+  #       Bucket: !Ref WorkflowBucket
+  #       Key: README.md
+  #       ContentType: text/markdown
+  #     Body: !Sub |
+  #       # *Main Workflow Enabled or disabled*
+  #       # Enabled: 0 for disabled, 1 for enabled
+  #       enabled: 1
 
 #######################################################
 # Testing Bucket
