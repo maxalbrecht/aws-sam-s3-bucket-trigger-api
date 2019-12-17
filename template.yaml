@@ -125,7 +125,7 @@ Resources:
               Fn::GetAtt:
                 - WorkflowMainFunction
                 - Arn
-            Event: s3:ObjectCreated:*
+          - Event: s3:ObjectCreated:*
     DependsOn:
       - WorkflowMainFunctionBucketEvent1Permission
 
