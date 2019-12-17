@@ -52,20 +52,21 @@ Resources:
     Properties:
       BucketName: "bucket-to-api-workflow-bucket-${EnvType}"
 
+
+#######################################################
+# Config File
+#######################################################
+# *This config file will determine if the workflow processes files, as well as any other future configurations we may add*
   S3Object:
     Type: AWS::S3::Object
-    
     Properties:
       Target:
         Bucket: !Ref WorkflowBucket
-        
         Key: README.md
-        
         ContentType: text/markdown
       Body: !Sub |
         # *Main Workflow Enabled or disabled*
         # Enabled: 0 for disabled, 1 for enabled
-        
         enabled: 1
 
 #######################################################
@@ -74,33 +75,23 @@ Resources:
 # *this Lambda function is the workhorse of the application, and triggers most other components*
   WorkflowMainFunction:
     Type: AWS::Serverless::Function
-    
     Properties:
       FunctionName: !Sub "bucket-to-api-workflow-main-function-${EnvType}"
-      
       CodeUri: AWS/Services/Lambda/workflow_main_function/
-      
       Handler: workflow_main_function.lambda_handler
-      
       Runtime: python3.8
-      
       Environment:
-        
         Variables:
           ENV_TYPE: !Ref EnvType
-          
           TABLE_NAME: !Sub 'bucket-to-api-table-${EnvType}'
       Events:
         BucketEvent1:
           Type: S3
-          
           Properties:
-            Bucket:
-              Ref: TestBucket
-            Events:
-              - s3:ObjectCreated:*
+            Bucket: !Ref: TestBucket
+            Events: s3:ObjectCreated:*
       Policies:
-        - S3CrudPolicy:
+        - S3ReadPolicy:
             BucketName: !Ref TestBucket
         - S3CrudPolicy:
             BucketName: !Ref WorkflowBucket
@@ -115,19 +106,8 @@ Resources:
 # *This bucket is used in place of the bucket that files will be placed in in production*
   TestBucket:
     Type: AWS::S3::Bucket
-    
     Properties:
       BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
-      
-      NotificationConfiguration:
-        LambdaConfigurations:
-          - Function:
-              Fn::GetAtt:
-                - WorkflowMainFunction
-                - Arn
-          - Event: s3:ObjectCreated:*
-    DependsOn:
-      - WorkflowMainFunctionBucketEvent1Permission
 
 # **Code Snippets, retained as reference:**
 
