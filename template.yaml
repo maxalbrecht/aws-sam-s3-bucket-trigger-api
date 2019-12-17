@@ -52,7 +52,7 @@ Resources:
   WorkflowBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "bucket-to-api-workflow-bucket-${EnvType}"
+      BucketName: !Sub "bucket-to-api-workflow-bucket-${EnvType}"
 
 #######################################################
 # Config File
