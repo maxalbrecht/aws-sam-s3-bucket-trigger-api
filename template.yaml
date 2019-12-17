@@ -100,8 +100,8 @@ Resources:
             Bucket: !Ref TestBucket
             Events: s3:ObjectCreated:*
       Policies:
-        - S3ReadPolicy:
-            BucketName: !Ref TestBucket
+        #- S3ReadPolicy:
+        #    BucketName: !Ref TestBucket
         - S3CrudPolicy:
             BucketName: !Ref WorkflowBucket
         - DynamoDBCrudPolicy:
