@@ -49,11 +49,10 @@ Resources:
 # Main Helper Bucket
 #######################################################
 # *This bucket is employed to store files used or created by the application, e.g. the configuration file*
-  WorkflowBucket:
-    Type: AWS::S3::Bucket
-    
-    Properties:
-      BucketName: "bucket-to-api-workflow-bucket-${EnvType}"
+  # WorkflowBucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: "bucket-to-api-workflow-bucket-${EnvType}"
 
 
 #######################################################
