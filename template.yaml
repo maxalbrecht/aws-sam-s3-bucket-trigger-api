@@ -68,7 +68,7 @@ Resources:
         # *Main Workflow Enabled or disabled*
         # Enabled: 0 for disabled, 1 for enabled
         enabled: 1
-        
+
 #######################################################
 # Testing Bucket
 #######################################################
@@ -97,7 +97,7 @@ Resources:
         BucketEvent1:
           Type: S3
           Properties:
-            Bucket: !Ref: TestBucket
+            Bucket: !Ref TestBucket
             Events: s3:ObjectCreated:*
       Policies:
         - S3ReadPolicy:
@@ -108,7 +108,6 @@ Resources:
             TableName: !Sub 'bucket-to-api-table-${EnvType}'
         - SNSPublishMessagePolicy:
             TopicName: !Sub "bucket-to-api-sns-topic-${EnvType}"
-  
 
 
 # **Code Snippets, retained as reference:**
