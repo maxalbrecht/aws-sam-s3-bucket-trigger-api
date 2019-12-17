@@ -68,6 +68,15 @@ Resources:
         # *Main Workflow Enabled or disabled*
         # Enabled: 0 for disabled, 1 for enabled
         enabled: 1
+        
+#######################################################
+# Testing Bucket
+#######################################################
+# *This bucket is used in place of the bucket that files will be placed in in production*
+  TestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
 
 #######################################################
 # Main Lambda Function
@@ -100,14 +109,7 @@ Resources:
         - SNSPublishMessagePolicy:
             TopicName: !Sub "bucket-to-api-sns-topic-${EnvType}"
   
-#######################################################
-# Testing Bucket
-#######################################################
-# *This bucket is used in place of the bucket that files will be placed in in production*
-  TestBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Sub "bucket-to-api-test-bucket-${EnvType}"
+
 
 # **Code Snippets, retained as reference:**
 
