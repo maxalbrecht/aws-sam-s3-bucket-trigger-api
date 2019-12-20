@@ -58,12 +58,6 @@ def lambda_handler(event, context):
         print("exception when processing event values\n", ex)
         raise
 
-    # Set default values for sam local testing
-    if ((ENV_TYPE == 'prod') == False) and ((ENV_TYPE == 'demo') == False):
-        ENV_TYPE = 'dev'
-        TABLE_NAME = 's3-bucket-trigger-api-log-table-dev'
-        bucket_name == 's3-bucket-trigger-api-test-bucket-dev'
-    
     # print parameter values during development
     if ENV_TYPE == 'dev':
         print("ENV_TYPE: ", ENV_TYPE)
