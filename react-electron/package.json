@@ -1,8 +1,8 @@
 {
   "name": "react-electron",
   "version": "0.1.0",
-  "description": "Simple boilerplate for developing an Electron app with React",
-  "author": "willjw3",
+  "description": "Companion desktop application for AWS workflow to call external API based on file placed in an S3 bucket",
+  "author": "Max Albrecht",
   "build": {
     "appId": "react.electron",
     "win": {
@@ -18,7 +18,8 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.3.0"
+    "react-scripts": "^3.3.0",
+    "stringify": "^5.2.0"
   },
   "scripts": {
     "start-react": "react-scripts start",
@@ -48,6 +49,7 @@
     "concurrently": "^5.0.0",
     "electron": "^7.1.7",
     "electron-builder": "^22.1.0",
+    "html-loader": "^0.5.5",
     "wait-on": "^3.3.0"
   }
 }

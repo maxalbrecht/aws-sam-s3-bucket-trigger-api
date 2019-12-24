@@ -103,3 +103,6 @@ outputfile.write(header)
 outputfile.write(templatefilecontents)
 templatefile.close()
 outputfile.close()
+
+# Disable source link
+html_show_sourcelink = False
