@@ -1,0 +1,10 @@
+#footer-bar {
+  height: 25px;
+  padding: none;
+  margin: 0px;
+  width: 100%;
+  font-size: calc(12px + 1vmin);
+  left: 6px;
+  bottom: 8px;
+  position: fixed;
+}

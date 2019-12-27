@@ -6,9 +6,14 @@ const isDev = require("electron-is-dev");
 let mainWindow;
 function createWindow() {
     mainWindow = new BrowserWindow({ 
-        width: 1200, 
-        height: 800,
-        icon: ""
+      width: 1024,
+      height: 728,
+      minWidth: 600, // set a min width!
+      minHeight: 300, // and a min height!
+      // Remove the window frame from windows applications
+      frame: false,
+      // Hide the titlebar from MacOS applications while keeping the stop lights
+      titleBarStyle: 'hidden', // or 'customButtonsOnHover',
     });
      
 
