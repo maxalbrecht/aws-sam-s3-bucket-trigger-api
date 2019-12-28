@@ -1,4 +1,4 @@
-#!c:\users\devops2\documents\github\aws-sam-s3-bucket-trigger-api\.venv\scripts\python.exe
+#!c:\users\max\appdata\local\programs\python\python38\python.exe
 
 # $Id: rst2xetex.py 7847 2015-03-17 17:30:47Z milde $
 # Author: Guenter Milde

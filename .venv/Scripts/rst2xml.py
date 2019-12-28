@@ -1,4 +1,4 @@
-#!c:\users\devops2\documents\github\aws-sam-s3-bucket-trigger-api\.venv\scripts\python.exe
+#!c:\users\max\appdata\local\programs\python\python38\python.exe
 
 # $Id: rst2xml.py 4564 2006-05-21 20:44:42Z wiemann $
 # Author: David Goodger <goodger@python.org>

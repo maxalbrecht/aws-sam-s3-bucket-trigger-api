@@ -1,4 +1,4 @@
-#!c:\users\devops2\documents\github\aws-sam-s3-bucket-trigger-api\.venv\scripts\python.exe
+#!c:\users\max\appdata\local\programs\python\python38\python.exe
 
 # Author: 
 # Contact: grubert@users.sf.net
