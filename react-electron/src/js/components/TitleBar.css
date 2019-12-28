@@ -1,0 +1,42 @@
+body {
+  padding: 0px;
+  margin: 0px; 
+ }
+ 
+ #title-bar {
+  -webkit-app-region: drag;
+  height: 30px;
+  padding: 0 0 0 6px;
+  margin: 0px;
+  width: 100%;
+  font-size: 15px;
+  left: 0px;
+  top: 0px;
+  position: fixed;
+  background-color: #1f2329;
+ }
+ 
+ #app-title {
+  position: fixed;
+  top: 5px;
+  left: 35px;
+  
+ }
+ 
+ #title-bar-btns {
+  -webkit-app-region: no-drag;
+  position: fixed;
+  top: 0px;
+  right: 6px;
+ }
+
+ #small-icon {
+  -webkit-app-region: drag;
+  height: 20px;
+  padding: 0 0 0 6px;
+  margin: 5px 0 0 0;
+  font-size: calc(10px + 1vmin);
+  left: 0px;
+  top: 0px;
+  position: fixed;
+ }

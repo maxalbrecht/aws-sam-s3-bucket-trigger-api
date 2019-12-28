@@ -3,20 +3,27 @@ import { Link } from "react-router-dom"
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  //window.open('file:///C:\\Users\\devops2\\Documents\\GitHub\\aws-sam-s3-bucket-trigger-api\\docs\\build\\html\\index.html')
+import List from "./js/components/List";
+import Form from "./js/components/Form";
+import TitleBar from './js/components/TitleBar';
+import FooterBar from "./js/components/FooterBar";
 
+function App() {
   return (
       <div className="App">
-        <header className="App-header">
-          <h2>The Syncer App</h2>
-          <p>Companion desktop App that creates and delivers API request files to AWS S3 bucket</p>
-          <img src={logo} className="App-logo" alt="logo" />
-
-          <Link className="App-link" to="/about">About</Link>
-          <Link className="App-link" to="/documentation">Documentation</Link>
-
-        </header>
+          <TitleBar />
+          <body className="App-body">
+            <div>
+              <h5>Submitted Jobs</h5>
+              <List />
+            </div>
+            <div>
+              <h4>Submit a New Job</h4>
+              <Form /> 
+            </div>
+            <br />
+          </body>
+          <FooterBar />
       </div>
   );
 }
