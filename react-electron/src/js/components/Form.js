@@ -2,6 +2,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addArticle } from "../actions/index";
+import Button from 'react-bootstrap/Button'
+
 function mapDispatchToProps(dispatch) {
   return {
     addArticle: article => dispatch(addArticle(article))
@@ -15,6 +17,7 @@ class ConnectedForm extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    
   }
   handleChange(event) {
     this.setState({ [event.target.id]: event.target.value });
@@ -27,6 +30,8 @@ class ConnectedForm extends Component {
   }
   render() {
     const { title } = this.state;
+    
+
     return (
       <form onSubmit={this.handleSubmit}>
         <div>
@@ -38,7 +43,8 @@ class ConnectedForm extends Component {
             onChange={this.handleChange}
           />
         </div>
-        <button type="submit">Submit Job</button>
+        {/* <button type="submit">Submit Job</button> */}
+        <Button variant="info" type="submit">Submit Jobs</Button>
       </form>
     );
   }
@@ -47,4 +53,5 @@ const Form = connect(
   null,
   mapDispatchToProps
 )(ConnectedForm);
+
 export default Form;

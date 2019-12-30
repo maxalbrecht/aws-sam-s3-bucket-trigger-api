@@ -9,6 +9,12 @@
   color: white;
 }
 
+.AppForm {
+  height: auto;
+  vertical-align: top;
+  margin-top: 10px;
+}
+
 .App-logo {
   height: 40vmin;
 }
@@ -27,12 +33,72 @@
   color: #09d3ac;
 }
 
-.about {
-  margin-top: 10%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.AppForm {
+  width: 100%;
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 0px;
 }
 
+.formSubmitButton {
+  width: 100%;
+}
+
+.formBrowseButtonCol {
+  align-items: right;
+  align-content: right;
+  text-align: right;
+}
+
+.formBrowseButton {
+  align-self: right;
+  align-items: right;
+  align-content: right;
+  text-align: right;
+  border: none;
+  font-size: 14px;
+  margin-bottom: 3px;
+  height: 90%;
+  width: 80px;
+}
+
+.sourceFilesField {
+  min-height: 100px;
+}
+
+.formNotes {
+  width: 100%;
+}
+
+.textFieldLabel {
+  font-size: initial;
+}
+
+.textField,
+.textField:focus,
+.textField:hover,
+.textField:active {
+  background: none;
+  font-size: initial;
+  border-color: darkgrey;
+  color: white
+}
+
+.textField::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: darkgrey;
+}
+.textField::-moz-placeholder { /* Firefox 19+ */
+  color:darkgrey;  
+}
+.textField:-ms-input-placeholder { /* IE 10+ */
+  color: darkgrey; 
+}
+.textField:-moz-placeholder { /* Firefox 18- */
+  color: darkgrey; 
+}
+
+.dropDown:focus:active {
+  color: black;
+  background-color: darkgrey;
+}

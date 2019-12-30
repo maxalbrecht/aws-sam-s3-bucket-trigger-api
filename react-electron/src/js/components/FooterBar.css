@@ -5,6 +5,8 @@
   width: 100%;
   font-size: calc(12px + 1vmin);
   left: 6px;
-  bottom: 8px;
+  bottom: 15px;
   position: fixed;
+  text-align: center;
+  color: white;
 }
