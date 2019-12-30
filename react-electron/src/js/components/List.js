@@ -21,7 +21,9 @@ const ConnectedList = ({ articles }) => (
     {
       articles.map(
         el => (
-          <li key={el.id}>{el.title}</li>
+          <li key={el.id}>
+            {el.jobNumber} {el.ordetType} {el.priority} {el.notes}
+          </li>
         )
       )
     }

@@ -102,3 +102,7 @@
   color: black;
   background-color: darkgrey;
 }
+
+.form-row>[class*=col-].submittedJobsCol {
+  padding-left: 30px;
+}
