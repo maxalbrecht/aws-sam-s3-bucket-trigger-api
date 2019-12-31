@@ -5,9 +5,28 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #282c34;
+  font-size: 12px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.titleBarRow {
+  min-height: 30px;
+}
+
+.windowContainer {
+  max-width: none;
+}
+
+.windowMainAreaRow {
+  width: 100%;
+  margin: 25px 0 0 0;
+}
+
+.footerBarRow {
+  min-height: 30px;
 }

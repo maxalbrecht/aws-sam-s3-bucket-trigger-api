@@ -15,12 +15,12 @@ class ConnectedApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "titleConstructor",
-      jobNumber: -1,
+      title: "",
+      jobNumber: "",
       sourceFiles: {},
-      orderType: "orderTypeConstructor",
-      priority: "priorityConstructor",
-      notes: "notesConstructor"
+      orderType: "",
+      priority: "",
+      notes: ""
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,13 +32,15 @@ class ConnectedApp extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-
+    const { jobNumber } = this.state.jobNumber;
     console.log("state:");
     console.log(this.state);
     console.log("title:");
     console.log(this.state.title);
     console.log("jobNumber:");
     console.log(this.state.jobNumber);
+    console.log("const { jobNumber }:");
+    console.log(jobNumber);
     console.log("notes:");
     console.log(this.state.notes);
     this.props.addArticle(
@@ -53,40 +55,37 @@ class ConnectedApp extends Component {
     );
     this.setState(
       { 
-        title: "titleSetState",
-        jobNumber: 0,
+        title: "",
+        jobNumber: "",
         sourceFiles: {},
-        orderType: "orderTypeSetState",
-        priority: "prioritySetState",
-        notes: "notesSetState"
+        orderType: "",
+        priority: "",
+        notes: ""
       }
     )
   }
 
   render() {
-    const { title } = this.state.title;
-    const { jobNumber } = this.state.jobNumber;
-    const { orderType } = this.state.orderType;
-
     return (
       <div className="App">
         <Form className="AppForm" xs={12} onSubmit={this.handleSubmit}>
           <Form.Row xs={12}>
             <Col xs={6}>
               <Form.Row>
-                <Form.Group as={Col} controlId="formGridJobNumber" className="textFieldLabel">
+                <Form.Group as={Col} className="textFieldLabel">
                   <Form.Label>Job Number</Form.Label>
                   <Form.Control 
                     placeholder="Enter Job Number" 
                     className="textField"
-                    value={jobNumber}
+                    id="jobNumber"
+                    value={this.state.jobNumber}
                     onChange={this.handleChange}
                   />
                 </Form.Group>
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="formFilesGroup" className="textFieldLabel">
+                <Form.Group as={Col} className="textFieldLabel">
                   <Form.Row>
                     <Col>
                       <Form.Label className="formNotes">Source Files</Form.Label>
@@ -102,11 +101,12 @@ class ConnectedApp extends Component {
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="formGridOrderType" className="textFieldLabel">
+                <Form.Group as={Col} className="textFieldLabel">
                   <Form.Label>Order Type</Form.Label>
                   <Form.Control as="select" 
                     className="textField dropDown"
-                    value={orderType}
+                    id="orderType"
+                    value={this.state.orderType}
                     onChange={this.handleChange}
                   >
                     <option></option>
@@ -114,9 +114,14 @@ class ConnectedApp extends Component {
                   </Form.Control>
                 </Form.Group>
 
-                <Form.Group as={Col} controlId="formPriority" className="textFieldLabel">
+                <Form.Group as={Col} className="textFieldLabel">
                   <Form.Label>Priority</Form.Label>
-                  <Form.Control as="select" className="textField dropDown">
+                  <Form.Control as="select" 
+                    className="textField dropDown"
+                    id="priority"
+                    value={this.state.priority}
+                    onChange={this.handleChange}
+                  >
                     <option className="textFieldDefault"></option>
                     <option>...</option>
                   </Form.Control>
@@ -124,9 +129,15 @@ class ConnectedApp extends Component {
               </Form.Row>
 
               <Form.Row>
-                <Form.Group as={Col} controlId="formNotesGroup" className="textFieldLabel">
+                <Form.Group as={Col} className="textFieldLabel">
                   <Form.Label className="formNotes">Notes</Form.Label>
-                  <Form.Control as="textarea" rows="3" className="textField" />
+                  <Form.Control as="textarea" 
+                    rows="3" 
+                    className="textField"
+                    id="notes"
+                    value={this.state.notes}
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
               </Form.Row>
 

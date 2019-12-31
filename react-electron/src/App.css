@@ -1,18 +1,20 @@
 .App {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  width: 100%;
 }
 
 .AppForm {
   height: auto;
   vertical-align: top;
   margin-top: 10px;
+  width: 100%;
+  text-align: left;
+  margin-top: 0px;
 }
 
 .App-logo {
@@ -20,7 +22,6 @@
 }
 
 .App-body {
-  background-color: #282c34;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,14 +32,6 @@
 
 .App-link {
   color: #09d3ac;
-}
-
-.AppForm {
-  width: 100%;
-  text-align: left;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 0px;
 }
 
 .formSubmitButton {
@@ -64,7 +57,8 @@
 }
 
 .sourceFilesField {
-  min-height: 100px;
+  min-height: 165px;
+  height: auto;
 }
 
 .formNotes {
@@ -98,11 +92,28 @@
   color: darkgrey; 
 }
 
-.dropDown:focus:active {
-  color: black;
-  background-color: darkgrey;
+.dropDown:focus {
+  color: white;
+  background-color: #282c34;
+}
+
+.dropDown:active {
+  color: white;
+  background-color: #282c34;
+}
+
+.dropDown:focus:active:hover {
+  color: white;
+  background-color: #282c34;
 }
 
 .form-row>[class*=col-].submittedJobsCol {
   padding-left: 30px;
+}
+
+.textField,
+.textField:focus,
+.textField:hover,
+.textField:active {
+  font-size: 14px;
 }
