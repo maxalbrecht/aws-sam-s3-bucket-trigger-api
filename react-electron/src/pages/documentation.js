@@ -11,7 +11,7 @@ class Documentation extends Component {
             <div className="header">
                 <h2>Documentation</h2>
                 <p>A new window will open</p>
-                <Link className ="App-link" to= "/">Link to Home</Link>
+                <Link className ="App-link" to= "/">Link to Main Application</Link>
                 <img className="about-img" width="275" src={Logo} alt=""/>
             </div>
         )
@@ -26,7 +26,7 @@ class Documentation extends Component {
 //         <div className="header">
 //             <h2>Documentation</h2>
 //             <p>A new window will open</p>
-//             <Link className ="App-link" to= "/">Link to Home</Link>
+//             <Link className ="App-link" to= "/">Link to Main Application</Link>
 //             <img className="about-img" width="275" src={Logo} alt=""/>
 //         </div>
 //     )
