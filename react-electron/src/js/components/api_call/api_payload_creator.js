@@ -67,7 +67,6 @@ class APIPayloadCreator {
     //      parameter values, as well as any necessary formatting such as quotation marks.
     let finishedTemplate = jsonTemplate;
     for (let arg of args) {
-      // eslint-disable-next-line no-loop-func
       for (let key in arg){
         if(arg.hasOwnProperty(key)){
           let argKey = key;
@@ -75,6 +74,7 @@ class APIPayloadCreator {
           finishedTemplate = 
             finishedTemplate
               .replace("\""+argKey+"_val\"", "\""+argValue+"\"" )
+              .replace("\""+argKey+"_val_date\"", "\""+argValue+"\"" )
               .replace("\""+argKey+"_val_array\"", argValue)
               .replace("\""+argKey+"_val_int\"", argValue)
         }
@@ -86,7 +86,6 @@ class APIPayloadCreator {
 
   getFileContent(filePath){
     let fileContent = "";
-
     let fs = window.require('fs');
     fileContent = fs.readFileSync(filePath, 'utf8')
 
@@ -105,7 +104,6 @@ class APIPayloadCreator {
       console.log("Error getting file size. Error: " + err);
       alert("Error getting file size. Please check that the file exists.");
     }
-    
   }
 
   formatFileList(fileList_raw, fileOrder) {
@@ -120,7 +118,6 @@ class APIPayloadCreator {
       console.log(fileList_raw.docs[file]);
       let value = fileList_raw.docs[file];
 
-
       let docValue = value.content;
       let docValueSplit = docValue.split('\\');
       let FileName = docValueSplit[docValueSplit.length - 1];
@@ -136,38 +133,8 @@ class APIPayloadCreator {
       let doc = this.ReplaceJSONPlaceHolders(file_list_item_template, params);
 
       fileList.push(doc);
-
-
-
-
-
-
-
-
-
     });
 
-
-
-/*
-    Object.values(fileList_raw.docs).forEach((value) => {
-      let docValue = value.content;
-      let docValueSplit = docValue.split('\\');
-      let FileName = docValueSplit[docValueSplit.length - 1];
-      let FileType = "Transcript";
-      let FileSize = this.getFileSize(docValue);
-      let FilePath = docValue;
-      let params = {
-        FileType: FileType,
-        FileName: FileName,
-        FileSize: FileSize,
-        FilePath: FilePath
-      }
-      let doc = this.ReplaceJSONPlaceHolders(file_list_item_template, params);
-
-      fileList.push(doc);
-    })
-*/
     return fileList;
   }
 }

@@ -4,9 +4,17 @@
   "description": "Companion desktop application for AWS workflow to call external API based on file placed in an S3 bucket",
   "author": "Max Albrecht",
   "build": {
-    "appId": "react.electron",
+    "appId": "com.albrechtsoft.thesyncer",
+    "directories": {
+      "buildResources": "."
+    },
+    "productName": "The Syncer",
     "win": {
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "certificateFile": "private/albrechtsoft.pfx",
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "albrechtsoft",
+      "publish": ["github"]
     }
   },
   "main": "public/electron.js",
@@ -37,7 +45,8 @@
     "eject-react": "react-scripts eject",
     "build-electron": "electron-builder",
     "build": "yarn build-react && yarn build-electron",
-    "start": "concurrently \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\""
+    "start": "concurrently \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
+    "make-cert": "electron-builder create-self-signed-cert -p albrechtsoft"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -64,5 +73,9 @@
     "redux-saga": "^1.1.3",
     "redux-thunk": "^2.3.0",
     "wait-on": "^3.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxalbrecht100/aws-sam-s3-bucket-trigger-api"
   }
 }

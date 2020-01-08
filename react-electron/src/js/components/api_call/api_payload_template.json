@@ -2,7 +2,7 @@
   "ExternalJobNumber": "ExternalJobNumber_val",
   "DeponentFirstName": "DeponentFirstName_val",
   "DeponentLastName": "DeponentLastName_val",
-  "DepositionDate": "DepositionDate_val",
+  "DepositionDate": "DepositionDate_val_date",
   "CaseName": "CaseName_val",
   "CaseNumber": "CaseNumber_val",
   "JobInputPath": "JobInputPath_val",
