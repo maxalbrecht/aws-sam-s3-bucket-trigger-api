@@ -14,19 +14,21 @@ code {
     monospace;
 }
 
-.titleBarRow {
-  min-height: 30px;
+#title-bar {
+  height: 40px;
+  background-color: #282c34;
+  z-index: 100;
 }
 
 .windowContainer {
   max-width: none;
-}
-
-.windowMainAreaRow {
   width: 100%;
-  margin: 25px 0 0 0;
+  margin: 40px 0 55px 0;
 }
 
-.footerBarRow {
-  min-height: 30px;
+#footer-bar {
+  min-height: 50px;
+  background-color: #282c34;
+  bottom: 0;
+  z-index: 100;
 }

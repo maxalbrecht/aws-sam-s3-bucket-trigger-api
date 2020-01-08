@@ -6,6 +6,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
   width: 100%;
+  margin-bottom: inherit inherit 10px inherit;
 }
 
 .AppForm {
@@ -56,8 +57,21 @@
   width: 80px;
 }
 
+.dragDropContextRow {
+  min-height: 40px;
+  width: 100%;
+}
+.sc-bwzfXH.cvTfvn {
+  min-height: 80px;
+  min-width: 100%;
+}
+
+.sourceFilesFormGroup {
+  margin-bottom: 5px;
+}
+
 .sourceFilesField {
-  min-height: 165px;
+  min-height: 40px;
   height: auto;
 }
 

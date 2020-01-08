@@ -16,13 +16,18 @@
     "bootstrap": "^4.4.1",
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.1.0",
+    "email-prop-type": "^3.0.0",
+    "file-sizeof": "^1.0.4",
     "jquery": "^3.4.1",
+    "prop-types": "^15.7.2",
     "react": "^16.11.0",
+    "react-beautiful-dnd": "^12.2.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "stringify": "^5.2.0",
+    "styled-components": "^4.4.1",
     "yarn": "^1.21.1"
   },
   "scripts": {

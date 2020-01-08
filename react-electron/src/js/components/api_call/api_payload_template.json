@@ -1,0 +1,20 @@
+{
+  "ExternalJobNumber": "ExternalJobNumber_val",
+  "DeponentFirstName": "DeponentFirstName_val",
+  "DeponentLastName": "DeponentLastName_val",
+  "DepositionDate": "DepositionDate_val",
+  "CaseName": "CaseName_val",
+  "CaseNumber": "CaseNumber_val",
+  "JobInputPath": "JobInputPath_val",
+  "JobOutputPath": "JobOutputPath_val",
+  "OrderType": "OrderType_val",
+  "FileList": ["FileList_val_array"],
+  "Priority": "Priority_val",
+  "AssignedUserEmail": "AssignedUserEmail_val",
+  "ImageType": "ImageType_val_int",
+  "CreateImage": "CreateImage_val_int",
+  "ContactName": "ContactName_val",
+  "ContactEmail": "ContactEmail_val",
+  "ContactPhone": "ContactPhone_val",
+  "AllowedConfidenceLevelPercent": "AllowedConfidenceLevelPercent_val_int"
+}

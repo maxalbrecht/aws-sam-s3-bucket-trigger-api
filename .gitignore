@@ -15,6 +15,9 @@ build_**
 /build
 /dist
 
+# ignore api payload files
+/react-electron/Output
+
 # misc
 .DS_Store
 .env.local

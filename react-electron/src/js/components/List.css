@@ -1,0 +1,15 @@
+ .submittedJobsListGroup {
+   background: none;
+   text-align: left;
+ }
+
+ .submittedJobsListGroupItem {
+   background: none;
+ }
+
+ .list-group-item {
+   border-color: darkgrey;
+   background: none;
+   margin: 0px 0 0px 0;
+   font-size: 14px;
+ }
