@@ -31,6 +31,7 @@ class APIPayloadCreator {
       CaseName: caseName,
       CaseNumber: caseNumber,
       JobInputPath: jobInputPath,
+      JobOutputPath: jobOutputPath,
       OrderType: orderType,
       FileList: this.formatFileList(fileList_raw, fileOrder),
       Priority: priority,
@@ -109,27 +110,33 @@ class APIPayloadCreator {
   formatFileList(fileList_raw, fileOrder) {
     let file_list_item_template = this.getFileContent("./src/js/components/api_call/file_list_item_template.json");
     let fileList = [];
-    console.log("files in order:")
+    let videoOrdinalPosition = 0;
     fileOrder.forEach((file) => {
-      console.log(file);
-      console.log("fileList_raw.docs");
-      console.log(fileList_raw.docs);
-      console.log("fileList_raw.docs[file]");
-      console.log(fileList_raw.docs[file]);
       let value = fileList_raw.docs[file];
 
       let docValue = value.content;
       let docValueSplit = docValue.split('\\');
       let FileName = docValueSplit[docValueSplit.length - 1];
       let FileType = "Transcript";
+      
       let FileSize = this.getFileSize(docValue);
-      let FilePath = docValue;
+      let FilePath = docValue.replace(/\\/g, "\\\\");
+     
       let params = {
         FileType: FileType,
         FileName: FileName,
         FileSize: FileSize,
-        FilePath: FilePath
+        FilePath: FilePath,
+        Position: null
       }
+
+      if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
+       FileType = "Video";
+       videoOrdinalPosition++;
+       params.FileType = FileType;
+       params.Position = videoOrdinalPosition;
+      }
+
       let doc = this.ReplaceJSONPlaceHolders(file_list_item_template, params);
 
       fileList.push(doc);

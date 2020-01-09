@@ -3,6 +3,8 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
+const updater = require("../src/js/components/updater/updater");
+
 let mainWindow;
 function createWindow() {
     mainWindow = new BrowserWindow({ 
@@ -19,7 +21,6 @@ function createWindow() {
       }
     });
      
-
     mainWindow.loadURL(
         isDev
         ? "http://localhost:3000"
@@ -28,7 +29,13 @@ function createWindow() {
     mainWindow.on("closed", () => (mainWindow = null));
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  // Create the main window
+  createWindow();
+
+  // Check for update after two seconds
+  //setTimeout(updater.check, 2000);
+});
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
     app.quit();

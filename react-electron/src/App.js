@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { addArticle } from "./js/actions/index"
-import APIPayloadCreator from "./js/components/api_call/api_payload_creator"
+import { addArticle } from "./js/actions/index";
+import APIPayloadCreator from "./js/components/api_call/api_payload_creator";
+import User from "./js/components/user/user";
+import Deposition from "./js/components/deposition/deposition";
+
 import './App.css';
 import List from "./js/components/List";
 import { Form, Col, Button } from 'react-bootstrap';
@@ -25,7 +28,6 @@ function mapDispatchToProps(dispatch) {
 class ConnectedApp extends Component {
   constructor(props) {
     super(props);
-    
     this.state = {
       id: "",
       title: "",
@@ -34,7 +36,9 @@ class ConnectedApp extends Component {
       orderType: "QuickSync",
       priorityOptions: ["1", "2"],
       priority: "1",
-      notes: ""
+      notes: "",
+      user: new User(),
+      deposition: new Deposition() 
     }
     
     this.handleChange = this.handleChange.bind(this);
@@ -121,26 +125,34 @@ class ConnectedApp extends Component {
     this.updatePriorityOptions(event);
   }
 
+  ReturnJobPath(inputOrOutput = "input") {
+    let mainFolder = "vxtest01";
+    let region = "region=us_east_1";
+    let path = `aws://${mainFolder}/${this.state.jobNumber}?region=${region}`;
+    
+    return path;
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     let payloadCreator = new APIPayloadCreator({
       externalJobNumber: this.state.jobNumber,
-      deponentFirstName: "deponentFirstName",
-      deponentLastName: "deponentLastName",
-      depositionDate: "",
-      caseName: "caseName",
-      caseNumber: "caseNumber",
-      jobInputPath: "jobInputPath",
-      jobOutputPath: "jobOutputPath",
+      deponentFirstName: this.state.deposition.deponentFirstName,
+      deponentLastName: this.state.deposition.deponentFirstName,
+      depositionDate: this.state.deposition.depositionDate,
+      caseName: this.state.deposition.caseName,
+      caseNumber: this.state.deposition.caseNumber,
+      jobInputPath: this.ReturnJobPath(),
+      jobOutputPath: this.ReturnJobPath("output"),
       orderType: this.state.orderType,
       fileList_raw: this.state.sourceFiles,
       priority: this.state.priority,
-      assignedUserEmail: "assignedUserEmail",
+      assignedUserEmail: this.state.user.assignedUserEmail,
       imageType: 1,
       createImage: 1,
-      contactName: "contactName",
-      contactEmail: "contactEmail",
-      contactPhone: "contactPhone",
+      contactName: this.state.user.contactName,
+      contactEmail: this.state.user.contactEmail,
+      contactPhone: this.state.user.contactPhone,
       allowedConfidenceLevelPercent: 70,
       fileOrder: this.state.sourceFiles.columns["column-1"].docIds
     });
@@ -165,7 +177,9 @@ class ConnectedApp extends Component {
         orderType: "QuickSync",
         priority: "1",
         priorityOptions: ["1", "2"],
-        notes: ""
+        notes: "",
+        user: this.state.user,
+        deposition: new Deposition() 
       }
     )
   }

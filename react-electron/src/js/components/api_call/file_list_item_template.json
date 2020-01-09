@@ -2,5 +2,6 @@
   "FileName": "FileName_val",
   "FileType": "FileType_val",
   "FileSize": "FileSize_val",
-  "FilePath": "FilePath_val"
+  "FilePath": "FilePath_val",
+  "Position": "Position_val_int"
 }

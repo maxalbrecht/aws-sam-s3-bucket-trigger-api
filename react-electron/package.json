@@ -14,7 +14,9 @@
       "certificateFile": "private/albrechtsoft.pfx",
       "verifyUpdateCodeSignature": false,
       "publisherName": "albrechtsoft",
-      "publish": ["github"]
+      "publish": [
+        "github"
+      ]
     }
   },
   "main": "public/electron.js",
@@ -24,6 +26,8 @@
     "bootstrap": "^4.4.1",
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.1.0",
+    "electron-log": "^4.0.2",
+    "electron-updater": "^4.2.0",
     "email-prop-type": "^3.0.0",
     "file-sizeof": "^1.0.4",
     "jquery": "^3.4.1",
