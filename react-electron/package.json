@@ -1,6 +1,6 @@
 {
   "name": "the-syncer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Companion desktop application for AWS workflow to call external API based on file placed in an S3 bucket",
   "author": "Max Albrecht",
   "build": {
@@ -23,6 +23,7 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.1",
     "bootstrap": "^4.4.1",
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.1.0",
