@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import emailPropType from 'email-prop-type';
+import { QuickSync, Manual } from '../../constants/order_types'
 
 class APIPayloadCreator {
   constructor({
@@ -46,12 +47,12 @@ class APIPayloadCreator {
       fileOrder: fileOrder
     }
     let api_payload_template = this.getFileContent("./src/js/components/api_call/api_payload_template.json");
-    let formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state)
+    this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state);
 
-    this.SaveToFile(formattedAPIPayload, "./Output/" + externalJobNumber + "_payload.json");
+    this.SaveToFile(this.formattedAPIPayload, "./Output/" + externalJobNumber + "_payload.json");
   }
 
-  SaveToFile(fileContent, filePath){
+  SaveToFile(fileContent, filePath) {
     var fs = window.require('fs');
     try { 
       fs.writeFileSync(filePath, fileContent, 'utf-8'); 
@@ -109,6 +110,7 @@ class APIPayloadCreator {
 
   formatFileList(fileList_raw, fileOrder) {
     let file_list_item_template = this.getFileContent("./src/js/components/api_call/file_list_item_template.json");
+    let file_list_item_template_no_position = this.getFileContent("./src/js/components/api_call/file_list_item_template_no_position.json");
     let fileList = [];
     let videoOrdinalPosition = 0;
     fileOrder.forEach((file) => {
@@ -126,18 +128,25 @@ class APIPayloadCreator {
         FileType: FileType,
         FileName: FileName,
         FileSize: FileSize,
-        FilePath: FilePath,
-        Position: null
+        //FilePath: FilePath
+        FilePath: null
       }
+      
+      let template = file_list_item_template_no_position;
 
       if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
-       FileType = "Video";
-       videoOrdinalPosition++;
-       params.FileType = FileType;
-       params.Position = videoOrdinalPosition;
+        template = file_list_item_template;
+        params = {
+          ...params, 
+          Position: null
+        }
+        FileType = "Video";
+        videoOrdinalPosition++;
+        params.FileType = FileType;
+        params.Position = videoOrdinalPosition;
       }
 
-      let doc = this.ReplaceJSONPlaceHolders(file_list_item_template, params);
+      let doc = this.ReplaceJSONPlaceHolders(template, params);
 
       fileList.push(doc);
     });
@@ -156,7 +165,7 @@ APIPayloadCreator.propTypes = {
   CaseNumber: PropTypes.string,
   JobInputPath: PropTypes.string.isRequired,
   JobOutputPath: PropTypes.string.isRequired,
-  OrderType: PropTypes.oneOf(["QuickSync", "Normal"]).isRequired,
+  OrderType: PropTypes.oneOf([QuickSync, Manual]).isRequired,
   FileList: PropTypes.object.isRequired,
   Priority: PropTypes.oneOf([1, 2, 3, 4]).isRequired,
   AssignedUserEmail: emailPropType.isRequired,
