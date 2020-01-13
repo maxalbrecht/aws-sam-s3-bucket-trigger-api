@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { addArticle } from "./js/actions/index";
 import APIPayloadCreator from "./js/components/api_call/api_payload_creator";
+import APICaller from "./js/components/api_call/api_caller";
 import User from "./js/components/user/user";
 import Deposition from "./js/components/deposition/deposition";
+import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS, THREE_DAYS, FOUR_DAYS } from "./js/constants/priority_options"
+import { QuickSync, Manual } from "./js/constants/order_types"
 
 import './App.css';
 import List from "./js/components/List";
@@ -33,9 +36,9 @@ class ConnectedApp extends Component {
       title: "",
       jobNumber: "",
       sourceFiles: initialData,
-      orderType: "QuickSync",
-      priorityOptions: ["1", "2"],
-      priority: "1",
+      orderType: QuickSync,
+      priorityOptions: [ONE_DAY, TWO_DAYS],
+      priority: ONE_DAY,
       notes: "",
       user: new User(),
       deposition: new Deposition() 
@@ -48,10 +51,65 @@ class ConnectedApp extends Component {
     this.onDragUpdate = this.onDragUpdate.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.updatePriorityOptions = this.updatePriorityOptions.bind(this);
+    this.setDefaultPath = this.setDefaultPath.bind(this);
+  }
+
+  checkIfDirectoryExists(directory) {
+    let fs = window.require("fs");
+    try {
+      fs.accessSync(directory);
+      //console.log(`The following directory exists: ${directory}`);
+      return true;
+    }
+    catch (e) {
+      //console.log(`The following directory does not exist: ${directory}`);
+      return false;
+    } 
+  }
+  
+  async setDefaultPath() {
+    let defaultPath = "";
+    let prodPath = "Y:";
+    let testPath = "E:";
+    let devPath = "C:";
+
+    try {
+      if (this.checkIfDirectoryExists(prodPath)) {
+        defaultPath = `${prodPath}\\vxttest01`;
+      }
+      else if (this.checkIfDirectoryExists(testPath)) {
+        defaultPath = testPath;
+      }
+      else if (this.checkIfDirectoryExists(devPath)) {
+        let devTempPath = `${devPath}\\Users\\devops2\\Documents\\GitHub\\aws-sam-s3-bucket-trigger-api\\react-electron\\private\\test_jobs`;
+        console.log(`dev temp path: ${devTempPath}`);
+        if (this.checkIfDirectoryExists(devTempPath)) {
+          defaultPath = devTempPath;
+        }
+      }
+
+      let tempPath = `${defaultPath}\\${this.state.jobNumber}`;
+      if ( this.checkIfDirectoryExists(tempPath)) {
+        defaultPath = tempPath;
+      }
+    }
+    catch (e) {
+      console.log(`Error setting browse window default window. Error: ${e}`);
+    }
+
+    return defaultPath;
   }
 
   async handleClickBrowse() {
-    var browseButtonResponse = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] });
+    let defaultPath = await this.setDefaultPath();
+
+    var browseButtonResponse = 
+      await dialog.showOpenDialog(
+        {
+          properties: ['openFile', 'multiSelections'],
+          defaultPath: defaultPath
+        }
+      );
     var selectedFiles = await browseButtonResponse.filePaths;
 
     // Get the maximum id of the files that are already on the list
@@ -97,15 +155,15 @@ class ConnectedApp extends Component {
 
   updatePriorityOptions(event) {
     if (event.target.id === "orderType") {
-      var options = ["1", "2"];
+      var options = [ONE_DAY, TWO_DAYS];
       var priority = this.state.priority;
 
-      if (event.target.value === "normal") {
-        options.push("3");
-        options.push("4");
+      if (event.target.value === Manual) {
+        options.push(THREE_DAYS);
+        options.push(FOUR_DAYS);
       }
-      else if (this.state.priority === "3" || this.state.priority === "4") {
-        priority = "1";
+      else if (this.state.priority === THREE_DAYS || this.state.priority === FOUR_DAYS) {
+        priority = ONE_DAY;
       }
 
       var newState = {
@@ -126,7 +184,7 @@ class ConnectedApp extends Component {
   }
 
   ReturnJobPath(inputOrOutput = "input") {
-    let mainFolder = "vxtest01";
+    let mainFolder = "vxttest01";
     let region = "region=us_east_1";
     let path = `aws://${mainFolder}/${this.state.jobNumber}?region=${region}`;
     
@@ -137,16 +195,16 @@ class ConnectedApp extends Component {
     event.preventDefault();
     let payloadCreator = new APIPayloadCreator({
       externalJobNumber: this.state.jobNumber,
-      deponentFirstName: this.state.deposition.deponentFirstName,
-      deponentLastName: this.state.deposition.deponentFirstName,
-      depositionDate: this.state.deposition.depositionDate,
-      caseName: this.state.deposition.caseName,
-      caseNumber: this.state.deposition.caseNumber,
+      //deponentFirstName: this.state.deposition.deponentFirstName,
+      //deponentLastName: this.state.deposition.deponentFirstName,
+      //depositionDate: this.state.deposition.depositionDate,
+      //caseName: this.state.deposition.caseName,
+      //caseNumber: this.state.deposition.caseNumber,
       jobInputPath: this.ReturnJobPath(),
       jobOutputPath: this.ReturnJobPath("output"),
       orderType: this.state.orderType,
       fileList_raw: this.state.sourceFiles,
-      priority: this.state.priority,
+      priority: ConvertPriorityStringToInt(this.state.priority),
       assignedUserEmail: this.state.user.assignedUserEmail,
       imageType: 1,
       createImage: 1,
@@ -156,6 +214,9 @@ class ConnectedApp extends Component {
       allowedConfidenceLevelPercent: 70,
       fileOrder: this.state.sourceFiles.columns["column-1"].docIds
     });
+
+    let apiCaller = new APICaller(payloadCreator.formattedAPIPayload);
+
     this.props.addArticle(
       {
         id: uuidv4(),
@@ -165,18 +226,20 @@ class ConnectedApp extends Component {
         orderType: this.state.orderType,
         priority: this.state.priority,
         notes: this.state.noter,
-        payloadCreator: payloadCreator
+        payloadCreator: payloadCreator,
+        apiCaller: apiCaller
       }
     );
+
     this.setState(
       { 
         id: "",
         title: "",
         jobNumber: "",
         sourceFiles: initialData,
-        orderType: "QuickSync",
-        priority: "1",
-        priorityOptions: ["1", "2"],
+        orderType: QuickSync,
+        priority: ONE_DAY,
+        priorityOptions: [ONE_DAY, TWO_DAYS],
         notes: "",
         user: this.state.user,
         deposition: new Deposition() 
@@ -307,7 +370,7 @@ class ConnectedApp extends Component {
                     onChange={this.handleChange}
                   >
                     <option>QuickSync</option>
-                    <option>normal</option>
+                    <option>Manual</option>
                   </Form.Control>
                 </Form.Group>
 
