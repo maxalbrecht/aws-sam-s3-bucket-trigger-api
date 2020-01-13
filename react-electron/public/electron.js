@@ -10,13 +10,14 @@ function createWindow() {
     mainWindow = new BrowserWindow({ 
       width: 1024,
       height: 800,
-      minWidth: 500, // set a min width!
-      minHeight: 660, // and a min height!
+      minWidth: 500, // set a min width
+      minHeight: 660, // and a min height
       // Remove the window frame from windows applications
       frame: false,
-      // Hide the titlebar from MacOS applications while keeping the stop lights
+      // Hide the title bar from MacOS applications while keeping the stop lights
       titleBarStyle: 'hidden', // or 'customButtonsOnHover',
       webPreferences: {
+        webSecurity: false,
         nodeIntegration: true,
       }
     });
@@ -34,7 +35,7 @@ app.on("ready", () => {
   createWindow();
 
   // Check for update after two seconds
-  //setTimeout(updater.check, 2000);
+  setTimeout(updater.check, 2000);
 });
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
