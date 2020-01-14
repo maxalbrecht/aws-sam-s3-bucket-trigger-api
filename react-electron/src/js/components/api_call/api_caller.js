@@ -31,7 +31,6 @@ class APICaller {
     console.log(`axios post payload:\n${payload}`);
     console.log("posting with axios...");
     try {
-      /*
       axios({
         method: 'post',
         url: apiUrl,
@@ -43,11 +42,11 @@ class APICaller {
         console.log(`api call response: ${result}`);
         console.log(`api call response data: ${resultData}`);
       });
-      */
+      /*
       axios.post(
         apiUrl,
         payload
-        //{ headers: { 'content-type': 'application/json' } }
+        { headers: { 'content-type': 'application/json' } }
 
       ).then(res => {
         result = JSON.stringify(res);
@@ -55,7 +54,7 @@ class APICaller {
         console.log(`api call response:\n${result}`);
         console.log(`api call response data:\n${resultData}`);
       });
-      
+      */
     }
     catch (e) {
       console.log(`Error calling api. Error:\n${e}`);
