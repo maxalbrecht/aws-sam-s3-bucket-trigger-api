@@ -79,6 +79,7 @@ class APIPayloadCreator {
               .replace("\""+argKey+"_val_date\"", "\""+argValue+"\"" )
               .replace("\""+argKey+"_val_array\"", argValue)
               .replace("\""+argKey+"_val_int\"", argValue)
+              .replace("\"null\"", "null")
         }
       }
     }
@@ -122,7 +123,7 @@ class APIPayloadCreator {
       let FileType = "Transcript";
       
       let FileSize = this.getFileSize(docValue);
-      let FilePath = docValue.replace(/\\/g, "\\\\");
+      //let FilePath = docValue.replace(/\\/g, "\\\\");
      
       let params = {
         FileType: FileType,

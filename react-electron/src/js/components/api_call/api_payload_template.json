@@ -4,7 +4,7 @@
   "JobOutputPath": "JobOutputPath_val",
   "OrderType": "OrderType_val",
   "FileList": ["FileList_val_array"],
-  "Priority": "Priority_val",
+  "Priority": "Priority_val_int",
   "AssignedUserEmail": "AssignedUserEmail_val",
   "ImageType": "ImageType_val_int",
   "CreateImage": "CreateImage_val_int",
