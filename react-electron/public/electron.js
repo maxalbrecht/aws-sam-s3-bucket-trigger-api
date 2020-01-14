@@ -134,7 +134,7 @@ app.on("ready", () => {
   createWindow();
   try {
     // Check for update after two seconds
-    setTimeout(CheckForUpdates(), 2000);
+    setTimeout(CheckForUpdates, 2000);
   }
   catch (e) {
     console.log(`Error at setTimeout(CheckForUpdates(). Error: ${e})`);
