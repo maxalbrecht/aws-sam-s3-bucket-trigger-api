@@ -39,6 +39,7 @@
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
+    "storybook": "^5.3.3",
     "stringify": "^5.2.0",
     "styled-components": "^4.4.1",
     "yarn": "^1.21.1"
@@ -51,7 +52,9 @@
     "build-electron": "electron-builder",
     "build": "yarn build-react && yarn build-electron",
     "start": "concurrently \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
-    "make-cert": "electron-builder create-self-signed-cert -p albrechtsoft"
+    "make-cert": "electron-builder create-self-signed-cert -p albrechtsoft",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -69,6 +72,11 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^5.3.3",
+    "@storybook/addon-links": "^5.3.3",
+    "@storybook/addons": "^5.3.3",
+    "@storybook/preset-create-react-app": "^1.5.1",
+    "@storybook/react": "^5.3.3",
     "concurrently": "^5.0.0",
     "electron": "^7.1.7",
     "electron-builder": "^22.1.0",
