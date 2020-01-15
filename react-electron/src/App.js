@@ -225,7 +225,7 @@ class ConnectedApp extends Component {
         sourceFiles: this.state.sourceFiles,
         orderType: this.state.orderType,
         priority: this.state.priority,
-        notes: this.state.noter,
+        notes: this.state.notes,
         payloadCreator: payloadCreator,
         apiCaller: apiCaller
       }
