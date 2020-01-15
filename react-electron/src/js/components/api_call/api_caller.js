@@ -2,6 +2,24 @@ import axios from 'axios';
 
 class APICaller {
   constructor(json) {
+    this.dateDisplay = "<<Date & Time>>";
+    this.status = "Starting job...";
+
+    try {
+      let date_ob = new Date();
+      let date = this.IntTwoChars(date_ob.getDate());
+      let month = this.IntTwoChars(date_ob.getMonth() + 1);
+      let year = date_ob.getFullYear();
+      let hours = this.IntTwoChars(date_ob.getHours());
+      let minutes = this.IntTwoChars(date_ob.getMinutes());
+      let seconds = this.IntTwoChars(date_ob.getSeconds());
+      let dateDisplay = `${hours}:${minutes}:${seconds} ${month}/${date}/${year}`;
+      console.log(`Job submission time: ${dateDisplay}`);
+      this.dateDisplay = dateDisplay;
+    } catch (error) {
+      console.log(`Error setting date display. Error: ${error}`);
+    }
+
     try{
       console.log(`apicaller json:${json}`);
       this.clientAccessKey = this.getFileContent("./private/CLIENT_ACCESS_KEY.txt")
@@ -13,6 +31,11 @@ class APICaller {
       throw e;
     }
   }
+
+  IntTwoChars(i) {
+    return (`0${i}`).slice(-2);
+  }
+  
   CallAPI(apiUrl, payload) { 
     let result = "";
     let resultData = "";

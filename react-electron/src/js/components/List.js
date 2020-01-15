@@ -11,7 +11,7 @@
 //     We do this with mapStateToProps
 import React from "react";
 import { connect } from "react-redux";
-import { ListGroup } from 'react-bootstrap'
+import { ListGroup, Row } from 'react-bootstrap'
 import "./List.css"
 
 const mapStateToProps = state => {
@@ -24,7 +24,10 @@ const ConnectedList = ({ articles }) => (
       articles.map(
         el => (
           <ListGroup.Item className="submittedJobsListGroupItem" key={el.id} >
-            {"Job #:"} {el.jobNumber}
+            <Row>{`Job #: ${el.jobNumber}`}</Row>
+            <Row>{`Submitted: ${el.apiCaller.dateDisplay}`}</Row>
+            <Row>{`Notes: ${el.notes}`}</Row>
+            <Row>{`Submission Response: ${el.apiCaller.status}`}</Row>
           </ListGroup.Item>
         )
       )
