@@ -41,7 +41,7 @@ class ConnectedList extends Component {
             el => ( <ListItem key={el.id} ListItemObject={el} /> )
           )
         }
-  </ListGroup>
+      </ListGroup>
     )
   }
 }
