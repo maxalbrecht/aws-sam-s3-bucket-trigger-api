@@ -58,11 +58,9 @@ class ConnectedApp extends Component {
     let fs = window.require("fs");
     try {
       fs.accessSync(directory);
-      //console.log(`The following directory exists: ${directory}`);
       return true;
     }
     catch (e) {
-      //console.log(`The following directory does not exist: ${directory}`);
       return false;
     } 
   }
@@ -196,6 +194,7 @@ class ConnectedApp extends Component {
     event.preventDefault();
     let payloadCreator = new APIPayloadCreator({
       externalJobNumber: this.state.jobNumber,
+      // DO NOT ERASE
       //deponentFirstName: this.state.deposition.deponentFirstName,
       //deponentLastName: this.state.deposition.deponentFirstName,
       //depositionDate: this.state.deposition.depositionDate,
