@@ -1,7 +1,18 @@
 // src/js/actions/index.js
 
-import { ADD_ARTICLE } from "../constants/action-types"
+import { ADD_ARTICLE, API_CALL_FINISHED } from "../constants/action-types";
 
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 export function addArticle(payload) {
   return { type: ADD_ARTICLE, payload };
+}
+
+export function apiCallFinished(payload) {
+  console.log("executing updateStatus(payload) in the actions definitions file...");
+  sleep(1000).then(() => {
+    return { type: API_CALL_FINISHED, payload };
+  })
+  
 }

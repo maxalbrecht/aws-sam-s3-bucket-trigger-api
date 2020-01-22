@@ -9,7 +9,7 @@ import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS, THREE_DAYS, FOUR_DAYS } 
 import { QuickSync, Manual } from "./js/constants/order_types"
 
 import './App.css';
-import List from "./js/components/List";
+import List from "./js/components/list/List";
 import { Form, Col, Button } from 'react-bootstrap';
 
 import initialData from './js/components/dnd_list/initial-data';
@@ -192,6 +192,7 @@ class ConnectedApp extends Component {
   }
 
   handleSubmit(event) {
+    let currentId = uuidv4();
     event.preventDefault();
     let payloadCreator = new APIPayloadCreator({
       externalJobNumber: this.state.jobNumber,
@@ -215,11 +216,11 @@ class ConnectedApp extends Component {
       fileOrder: this.state.sourceFiles.columns["column-1"].docIds
     });
 
-    let apiCaller = new APICaller(payloadCreator.formattedAPIPayload);
-
+    let apiCaller = new APICaller(payloadCreator.formattedAPIPayload, currentId);
+    
     this.props.addArticle(
       {
-        id: uuidv4(),
+        id: currentId,
         title: this.state.title,
         jobNumber: this.state.jobNumber,
         sourceFiles: this.state.sourceFiles,

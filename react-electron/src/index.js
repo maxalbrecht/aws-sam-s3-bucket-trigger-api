@@ -7,15 +7,15 @@ import { HashRouter as Router, Route } from 'react-router-dom'
 import { Container } from 'react-bootstrap';
 
 import { Provider } from "react-redux";
-import store from "./js/store/index";
+import theStore from "./js/store/index";
 import App from "./App"
 import About from "./pages/about"
 import Documentation from "./pages/documentation"
-import TitleBar from "./js/components/TitleBar"
-import FooterBar from "./js/components/FooterBar"
+import TitleBar from "./js/components/title_bar/TitleBar"
+import FooterBar from "./js/components/footer_bar/FooterBar"
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={theStore}>
     <Router>
       <Container xs={12} className="windowContainer">
         <TitleBar />
