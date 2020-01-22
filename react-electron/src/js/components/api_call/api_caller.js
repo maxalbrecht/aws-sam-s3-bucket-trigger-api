@@ -1,12 +1,7 @@
 import axios from 'axios';
-//import React, { Component } from 'react';
-//import { connect } from 'react-redux';
-//import { updateStatus } from '../../actions/index';
 import { API_CALL_FINISHED } from './../../constants/action-types.js';
-import { connect } from 'react';
 import { action } from './../../utils/action';
 let store = window.store;
-//const action = (type, payload) => ({ type, payload });
 
 class APICaller {
   constructor(json, articleId, ...props) {
@@ -15,6 +10,7 @@ class APICaller {
     this.json = json;
     this.dateDisplay = "<<Date & Time>>";
     this.APICallStatus = "Starting job...";
+    this.errorMsgList = [];
     try {
       let date_ob = new Date();
       let date = this.IntTwoChars(date_ob.getDate());
@@ -46,59 +42,59 @@ class APICaller {
   }
 
   CallAPI(apiUrl, payload) {
-
     // This is our redux action creator for the API_CALL_FINISHED action
-      // Add a request interceptor
-      axios.interceptors.request.use(function (config) {
-          // Do something before request is sent
-          console.log(`axios request interceptor config:\n${JSON.stringify(config)}`);
-          return config;
-        }, function (error) {
-          console.log(`axios request interceptor error:\n${error}`);
-          console.log(`axios request interceptor error, stringified:\n${JSON.stringify(error)}`);
-          // Do something with request error
-          return Promise.reject(error);
-        });
+    // Add a request interceptor
+    axios.interceptors.request.use(function (config) {
+      // Do something before request is sent
+      console.log(`axios request interceptor config:\n${JSON.stringify(config)}`);
+      return config;
+    }, function (error) {
+      console.log(`axios request interceptor error:\n${error}`);
+      console.log(`axios request interceptor error, stringified:\n${JSON.stringify(error)}`);
+      // Do something with request error
+      return Promise.reject(error);
+    });
+      
+    console.log(`axios API post payload:\n${payload}`);
+    console.log("posting with axios...");
+    try {
+      return axios({
+        method: 'post',
+        url: apiUrl,
+        headers: { 'content-type': 'application/json' },
+        data: payload
+      }).then(res => {
+        let errorMsgList = res.data.data.result.errorMsgList;
+        console.log("api call response errorMsgList:");
+        console.log(errorMsgList);
         
-      console.log(`axios API post payload:\n${payload}`);
-      console.log("posting with axios...");
-      try {
-        return axios({
-          method: 'post',
-          url: apiUrl,
-          headers: { 'content-type': 'application/json' },
-          data: payload
-        }).then(res => {
-          let errorMsgList = res.data.data.result.errorMsgList;
-          console.log("api call response errorMsgList:");
-          console.log(errorMsgList);
-          
-          let newAPICallStatus = ""
+        let newAPICallStatus = ""
 
-          if(errorMsgList === undefined || errorMsgList === null) {
-            newAPICallStatus = "Error: API call was not resolve correctly.";
-          }
-          else if (errorMsgList.length === 0) {
-            newAPICallStatus = "Success";
-          } else {
-            newAPICallStatus = "Error:";
-            errorMsgList.forEach(msg => {
-              newAPICallStatus += `\n${JSON.stringify(msg.errorMsg)}`;
-            });
-            newAPICallStatus += "\n";
-          }
+        if(errorMsgList === undefined || errorMsgList === null) {
+          newAPICallStatus = "Error: API call was not resolved correctly.";
+        }
+        else if (errorMsgList.length === 0) {
+          newAPICallStatus = "Success";
+        } else {
+          newAPICallStatus = "Error(s):";
+          /*
+          errorMsgList.forEach(msg => {
+            newAPICallStatus += `\n${JSON.stringify(msg.errorMsg)}`;
+          });
+          */
+          newAPICallStatus += "\n";
+        }
 
-          this.APICallStatus = newAPICallStatus;
-          console.log(`new APICallStatus: ${this.APICallStatus}`);
-          console.log("store:");
-          console.log(store);
-          store.dispatch(action(API_CALL_FINISHED, newAPICallStatus));
-        });
-      }
-      catch (e) {
-        console.log(`Error calling api. Error:\n${e}`);
-        alert("Error calling API. Please check that all fields have been filled in correctly. If the issue persists, please contact application support.")
-      }
+        this.APICallStatus = newAPICallStatus;
+        this.errorMsgList = errorMsgList; 
+
+        store.dispatch(action(API_CALL_FINISHED, newAPICallStatus));
+      });
+    }
+    catch (e) {
+      console.log(`Error calling api. Error:\n${e}`);
+      alert("Error calling API. Please check that all fields have been filled in correctly. If the issue persists, please contact application support.")
+    }
   }
 
   getFileContent(filePath){
