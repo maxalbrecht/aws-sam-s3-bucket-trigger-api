@@ -1,4 +1,5 @@
-
+import { checkIfDirectoryExists } from './js/utils/directoryFunctions'
+import { handleChange } from './js/utils/reactFormFunctions'
 import User from "./js/components/user/user";
 import Deposition from "./js/components/deposition/deposition";
 import { addArticle } from "./js/actions/index";
@@ -6,7 +7,6 @@ import APIPayloadCreator from "./js/components/api_call/api_payload_creator";
 import APICaller from "./js/components/api_call/api_caller";
 import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS, THREE_DAYS, FOUR_DAYS } from "./js/constants/priority_options"
 import { QuickSync, Manual } from "./js/constants/order_types"
-//import './App.css';
 import initialData from './js/components/dnd_list/initial-data';
 
 const uuidv4 = window.require("uuid/v4")
@@ -18,17 +18,6 @@ function mapDispatchToProps(dispatch) {
   return {
     addArticle: article => dispatch(addArticle(article))
   };
-}
-
-function checkIfDirectoryExists(directory) {
-  let fs = window.require("fs");
-  try {
-    fs.accessSync(directory);
-    return true;
-  }
-  catch (e) {
-    return false;
-  } 
 }
 
 async function setDefaultPath(jobNumber) {
@@ -139,12 +128,6 @@ function updatePriorityOptions(event) {
 
     this.setState(newState)
   }
-}
-
-function handleChange(event) {
-  this.setState({ [event.target.id]: event.target.value });
-
-  this.updatePriorityOptions(event);
 }
 
 function ReturnJobPath(jobNumber, inputOrOutput = "input") {
