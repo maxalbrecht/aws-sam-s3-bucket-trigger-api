@@ -1,15 +1,31 @@
- .submittedJobsListGroup {
-   background: none;
-   text-align: left;
- }
+.submittedJobsListGroup {
+  background: none;
+  text-align: left;
+}
 
- .submittedJobsListGroupItem {
-   background: none;
- }
+.submittedJobsListGroupItem {
+  background: none;
+}
 
- .list-group-item {
-   border-color: darkgrey;
-   background: none;
-   margin: 0px 0 0px 0;
-   font-size: 14px;
- }
+.list-group-item {
+  background: none;
+  font-size: 14px;
+}
+
+.textFieldLabel {
+  top: 0;
+  vertical-align: top;
+}
+
+.scrollBars {
+  width:'100%';
+  height:'110%';
+  top:0;
+  position:absolute;
+
+}
+
+.submittedJobsListGroup {
+  top: 0;
+  vertical-align: top;
+}

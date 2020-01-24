@@ -9,11 +9,13 @@
 //        with
 //            the component
 //     We do this with mapStateToProps
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Form } from 'react-bootstrap';
 import { connect } from "react-redux";
 import { ListGroup } from 'react-bootstrap'
 import "./List.css"
 import ListItem from  './ListItem';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const mapStateToProps = state => {
   return { articles: state.articles };
@@ -35,13 +37,18 @@ class ConnectedList extends Component {
     console.log("rendering list group...");
 
     return (
-      <ListGroup className="submittedJobsListGroup">
-        {
-          this.props.articles.map(
-            el => ( <ListItem key={el.id} ListItemObject={el} /> )
-          )
-        }
-      </ListGroup>
+      <Fragment>
+        <Form.Label className="textFieldLabel">Submitted Jobs</Form.Label>
+        <Scrollbars className="scrollBars" >
+          <ListGroup className="submittedJobsListGroup">
+            {
+              this.props.articles.map(
+                el => ( <ListItem key={el.id} ListItemObject={el} /> )
+              )
+            }
+          </ListGroup>
+        </Scrollbars>
+      </Fragment>
     )
   }
 }

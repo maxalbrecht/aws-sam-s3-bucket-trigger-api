@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { ListGroup, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../constants/list_item_statuses'
+import { COLOR_DEFAULT, COLOR_SUCCESS, COLOR_ERROR } from './../../constants/list_item_colors'
+import './ListItem.css';
+
 const uuidv4 = window.require("uuid/v4")
 
 function mapStateToProps(state, ownProps) {
@@ -33,19 +37,38 @@ class ConnectedListItem extends Component {
     this.ListItemObject = props.ListItemObject;
   }
 
+  selectStatusColor() {
+    let status = this.ListItemObject.apiCaller.APICallStatus;
+
+    switch (status) {
+      case SUCCESS:
+        return COLOR_SUCCESS;
+      case ERROR:
+      case ERROR_API_NOT_RESOLVED:
+        return COLOR_ERROR;
+      default:
+        return COLOR_DEFAULT;
+    }
+  }
+  selectBackgroundColor() {
+    let status = this.ListItemObject.apiCaller.APICallStatus
+
+    switch (status) {
+      case SUCCESS:
+        return COLOR_SUCCESS;
+      case ERROR:
+        return COLOR_ERROR;
+      default:
+        return 'none';
+    }
+  }
+
   render() {
-    console.log(`rendering list item with id = ${this.ListItemObject.id}`);
-    console.log("this List Item's ListItemObject:");
-    console.log(this.ListItemObject);
-    
-    console.log("this.ListItemObject.apiCaller:");
-    console.log(this.ListItemObject.apiCaller);
-    
-    console.log("this.ListItemObject.apiCaller.errorMsgList:");
-    console.log(this.ListItemObject.apiCaller.errorMsgList);
+    let borderColor = this.selectStatusColor();
+    let backgroundColor = this.selectBackgroundColor();
 
     return (
-      <ListGroup.Item className="listItemGroupItem" key={this.ListItemObject.ListItemId} >
+      <ListGroup.Item style={{borderTopWidth:'1px', borderColor:borderColor, backgroundColor:backgroundColor}} className="listItemGroupItem" key={this.ListItemObject.ListItemId} >
         <Row>
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Job Number:</u></Col>
           <Col style={{paddingLeft:'10px'}}>{this.ListItemObject.jobNumber}</Col>

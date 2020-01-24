@@ -109,7 +109,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({ 
       width: 1024,
       height: 800,
-      minWidth: 500, // set a min width
+      minWidth: 720, // set a min width
       minHeight: 660, // and a min height
       // Remove the window frame from windows applications
       frame: false,

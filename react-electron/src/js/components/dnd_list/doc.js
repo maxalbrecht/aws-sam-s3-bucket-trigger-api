@@ -21,6 +21,7 @@ export default class Doc extends React.Component {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
+            style={{fontSize:'12px'}}
           >
             {this.props.doc.content}
           </Container>

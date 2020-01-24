@@ -1,18 +1,23 @@
-import { checkIfDirectoryExists } from './js/utils/directoryFunctions'
-import { handleChange } from './js/utils/reactFormFunctions'
-import User from "./js/components/user/user";
-import Deposition from "./js/components/deposition/deposition";
-import { addArticle } from "./js/actions/index";
-import APIPayloadCreator from "./js/components/api_call/api_payload_creator";
-import APICaller from "./js/components/api_call/api_caller";
-import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS, THREE_DAYS, FOUR_DAYS } from "./js/constants/priority_options"
-import { QuickSync, Manual } from "./js/constants/order_types"
-import initialData from './js/components/dnd_list/initial-data';
+import { checkIfDirectoryExists } from '../../utils/directoryFunctions'
+//import { handleChange } from './js/utils/reactFormFunctions'
+import User from "../../classes/user/user";
+import Deposition from "../../classes/deposition/deposition";
+import { addArticle } from "../../actions/index";
+import APIPayloadCreator from "../../classes/api_call/api_payload_creator";
+import APICaller from "../../classes/api_call/api_caller";
+import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS, THREE_DAYS, FOUR_DAYS } from "../../constants/priority_options"
+import { QuickSync, Manual } from "../../constants/order_types"
+import initialData from './../dnd_list/initial-data'
 
 const uuidv4 = window.require("uuid/v4")
 var electron = window.require("electron");
 var remote = electron.remote;
 var dialog = remote.dialog;
+
+function handleChange(event) {
+  this.setState({ [event.target.id]: event.target.value });
+  this.updatePriorityOptions(event);
+}
 
 function mapDispatchToProps(dispatch) {
   return {

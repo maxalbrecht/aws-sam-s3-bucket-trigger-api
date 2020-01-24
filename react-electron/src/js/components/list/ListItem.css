@@ -1,10 +1,13 @@
- .listItemGroupItem {
-   background: none;
- }
+
 
  .list-group-item {
    border-color: darkgrey;
-   background: none;
-   margin: 0px 0 0px 0;
    font-size: 14px;
+   border-top-width: 5px;
+ }
+
+  .listItemGroupItem {
+   background: none;
+   margin: 0 0 8px 0;
+   border-top-width: 4px;
  }

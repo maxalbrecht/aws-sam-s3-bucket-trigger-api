@@ -8,7 +8,7 @@ import { Container } from 'react-bootstrap';
 
 import { Provider } from "react-redux";
 import theStore from "./js/store/index";
-import App from "./App"
+import App from "./js/components/app/App"
 import About from "./pages/about"
 import Documentation from "./pages/documentation"
 import TitleBar from "./js/components/title_bar/TitleBar"

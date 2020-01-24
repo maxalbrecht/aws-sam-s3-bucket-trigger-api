@@ -21,6 +21,7 @@ code {
 }
 
 .windowContainer {
+  height: 80%;
   max-width: none;
   width: 100%;
   margin: 40px 0 55px 0;

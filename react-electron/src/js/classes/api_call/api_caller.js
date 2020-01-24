@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { API_CALL_FINISHED } from './../../constants/action-types.js';
 import { action } from './../../utils/action';
+import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../constants/list_item_statuses'
 let store = window.store;
 
 class APICaller {
@@ -9,7 +10,7 @@ class APICaller {
     this.apiUrl = "";
     this.json = json;
     this.dateDisplay = "<<Date & Time>>";
-    this.APICallStatus = "Starting job...";
+    this.APICallStatus = STARTING_JOB;
     this.errorMsgList = [];
     try {
       let date_ob = new Date();
@@ -71,18 +72,12 @@ class APICaller {
         let newAPICallStatus = ""
 
         if(errorMsgList === undefined || errorMsgList === null) {
-          newAPICallStatus = "Error: API call was not resolved correctly.";
+          newAPICallStatus = ERROR_API_NOT_RESOLVED;
         }
         else if (errorMsgList.length === 0) {
-          newAPICallStatus = "Success";
+          newAPICallStatus = SUCCESS;
         } else {
-          newAPICallStatus = "Error(s):";
-          /*
-          errorMsgList.forEach(msg => {
-            newAPICallStatus += `\n${JSON.stringify(msg.errorMsg)}`;
-          });
-          */
-          newAPICallStatus += "\n";
+          newAPICallStatus = ERROR;
         }
 
         this.APICallStatus = newAPICallStatus;

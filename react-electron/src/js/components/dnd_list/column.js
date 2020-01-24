@@ -25,7 +25,9 @@ export default class Column extends React.Component {
   render() {
     return (
       <Container>
-        <Droppable droppableId={this.props.column.id}>
+        <Droppable
+        style={{fontSize:'200px'}}
+        droppableId={this.props.column.id}>
           {(provided, snapshot) => (
             <DocList
               ref={provided.innerRef}
