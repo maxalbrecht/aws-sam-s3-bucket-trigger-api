@@ -11,6 +11,7 @@ function JobNumber() {
           id="jobNumber"
           value={this.state.jobNumber}
           onChange={this.handleChange}
+          maxLength='8'
         />
       </Form.Group>
     )

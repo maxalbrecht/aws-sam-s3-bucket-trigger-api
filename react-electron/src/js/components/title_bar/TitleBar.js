@@ -27,7 +27,7 @@ class TitleBar extends Component {
     return (
       <div id="title-bar">
         <img  id="small-icon" src={process.env.PUBLIC_URL + '/favicon.ico'} alt="app icon"/>
-        <div id="app-title">The Syncer</div>
+        <div id="app-title">Verisync</div>
         <div id="title-bar-btns">
           <Button 
             variant="info" 

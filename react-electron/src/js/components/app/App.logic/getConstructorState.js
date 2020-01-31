@@ -9,8 +9,8 @@ import initialData from '../../dnd_list/initial-data'
 function getConstructorState() {
   let users = createUsers();
   
-  let user = users.JamesUser;
-  //let user = users.DaveUser;
+  //let user = users.JamesUser;
+  let user = users.DaveUser;
   console.log("user:");
   console.log(user);
 

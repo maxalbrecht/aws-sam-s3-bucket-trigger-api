@@ -1,5 +1,5 @@
 {
-  "name": "the-syncer",
+  "name": "Verisync",
   "version": "0.1.4",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
@@ -8,7 +8,7 @@
     "directories": {
       "buildResources": "."
     },
-    "productName": "The Syncer",
+    "productName": "Verisync",
     "win": {
       "icon": "build/icon.ico",
       "certificateFile": "private/albrechtsoft.pfx",

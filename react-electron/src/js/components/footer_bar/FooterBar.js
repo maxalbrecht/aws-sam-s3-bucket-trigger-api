@@ -11,7 +11,7 @@ class FooterBar extends Component {
         </Link> | <Link className="App-link" to="/about">
           About
         </Link> | <Link className="App-link"  to={{
-           pathname: 'documentation',
+            pathname: 'documentation',
             state: {
               docsLocation: process.env.PUBLIC_URL + '/docs/build/html/index.html'
             }
@@ -19,6 +19,16 @@ class FooterBar extends Component {
         >
           Documentation
         </Link>
+        <img 
+          style={{
+            position:'absolute',
+            right:'15px',
+            top:'-10px'
+          }}
+          id="bottom-right-logo"
+          src={process.env.PUBLIC_URL + '/SmallLogoNew.png'} 
+          alt="app icon"
+        />
       </div>
     )
   }
