@@ -1,9 +1,14 @@
 class User {
-  constructor(){
-    this.contactName = "james";
-    this.contactEmail ="jmaraska@veritext.com";
-    this.contactPhone = "9735494532";
-    this.assignedUserEmail = "YLAJ-AJ-QCuser@yeslaw.net";
+  constructor({
+    contactName,
+    contactEmail,
+    contactPhone,
+    assignedUserEmail
+  }={}){
+    this.contactName = contactName;
+    this.contactEmail = contactEmail;
+    this.contactPhone = contactPhone;
+    this.assignedUserEmail = assignedUserEmail;
   }
 }
 

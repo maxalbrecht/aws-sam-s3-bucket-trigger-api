@@ -2,13 +2,14 @@ import axios from 'axios';
 import { API_CALL_FINISHED } from './../../constants/action-types.js';
 import { action } from './../../utils/action';
 import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../constants/list_item_statuses'
-let store = window.store;
+var store = window.store;
 
 class APICaller {
-  constructor(json, articleId, ...props) {
+  constructor(apiPayloadCreator, articleId, ...props) {
     this.CallAPI = this.CallAPI.bind(this);
     this.apiUrl = "";
-    this.json = json;
+    this.APIPayloadCreator = apiPayloadCreator;
+    this.json = apiPayloadCreator.formattedAPIPayload;
     this.dateDisplay = "<<Date & Time>>";
     this.APICallStatus = STARTING_JOB;
     this.errorMsgList = [];

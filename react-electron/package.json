@@ -1,6 +1,6 @@
 {
   "name": "the-syncer",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -23,6 +23,7 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
+    "@kunukn/react-collapse": "^1.2.7",
     "axios": "^0.19.1",
     "bootstrap": "^4.4.1",
     "cross-env": "^6.0.3",
@@ -36,6 +37,7 @@
     "react": "^16.11.0",
     "react-beautiful-dnd": "^12.2.0",
     "react-bootstrap": "^1.0.0-beta.16",
+    "react-collapse": "^5.0.1",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",

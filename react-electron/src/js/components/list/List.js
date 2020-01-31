@@ -14,11 +14,14 @@ import { Form } from 'react-bootstrap';
 import { connect } from "react-redux";
 import { ListGroup } from 'react-bootstrap'
 import "./List.css"
-import ListItem from  './ListItem';
+import ListItem from  './ListItem/ListItem';
 import { Scrollbars } from 'react-custom-scrollbars';
 
-const mapStateToProps = state => {
-  return { articles: state.articles };
+function mapStateToProps(state){
+  return { 
+    ...state,
+    articles: state.articles
+  };
 };
 
 class ConnectedList extends Component {
@@ -29,7 +32,8 @@ class ConnectedList extends Component {
   constructor(props){
     super(props); 
     this.articles = props.articles;
-    console.log(`props.articles: ${props.articles}`);
+    console.log("props.articles:");
+    console.log(props.articles);
     this.render = this.render.bind(this);
   }
 

@@ -1,6 +1,6 @@
 //src/js/middleware/index.js
 
-import { ADD_ARTICLE, API_CALL_FINISHED } from '../constants/action-types';
+import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS } from '../constants/action-types';
 //const forbiddenWords = ["spam", "money"];
 const forbiddenWords = [];
 
@@ -15,6 +15,9 @@ export function rootMiddleware({ dispatch }) {
           break;
         case API_CALL_FINISHED:
           returnAction = UpdateStatusMiddleware(action);
+          break;
+        case TOGGLE_JOB_DETAILS:
+          returnAction = ToggleJobDetailsMiddleware(action);
           break;
         default:
           break;
@@ -51,4 +54,10 @@ function UpdateStatusMiddleware(actionParam) {
   console.log(actionParam);
   console.log("store.getState:");
   console.log(window.store.getState());
+}
+
+function ToggleJobDetailsMiddleware(actionParam) {
+  console.log("Toggling JobDetails... Currently in ToggleJobDetailsMiddleware()");
+  console.log("actionParam:");
+  console.log(actionParam);
 }
