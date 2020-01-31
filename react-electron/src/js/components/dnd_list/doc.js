@@ -7,25 +7,28 @@ const Container = styled.div`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-background-color: ${props => (props.isDragging ? '#383838' : 'inherit')};
+  background-color: ${props => (props.isDragging ? '#383838' : 'inherit')};
   font-size: 14px;
 `;
 
 export default class Doc extends React.Component {
   render() {
+    console.log("rendering a doc...");
     return (
-      <Draggable draggableId = {this.props.doc.id} index={this.props.index}>
-        {(provided, snapshot) => ( 
-          <Container
-            {...provided.draggableProps} 
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
-            style={{fontSize:'12px'}}
-          >
-            {this.props.doc.content}
-          </Container>
-        )}
+      <Draggable draggableId={this.props.doc.id} index={this.props.index}>
+        {provided => {
+          console.log("provided:");
+          console.log(provided);
+
+          return (
+            <Container
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              ref={provided.innerRef}
+            >
+              {this.props.doc.content}
+            </Container>
+        )}}
       </Draggable>
     );
   }

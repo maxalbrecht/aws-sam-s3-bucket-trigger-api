@@ -10,11 +10,11 @@ const Container = styled.div`
   background-color: inherit;
 `;
 
-/*
+
 const Title = styled.h3`
   padding: 8px;
 `;
-*/
+
 
 const DocList = styled.div`
   padding: 8px;
@@ -23,23 +23,29 @@ const DocList = styled.div`
 `;
 export default class Column extends React.Component {
   render() {
+    console.log("column.js this.props:");
+    console.log(this.props);
+
     return (
       <Container>
-        <Droppable
-        style={{fontSize:'200px'}}
-        droppableId={this.props.column.id}>
-          {(provided, snapshot) => (
+        <Droppable droppableId={this.props.column.id}>
+          {provided => { 
+            console.log("this.props.docs:");
+            console.log(this.props.docs);
+            return (
+            <div>
             <DocList
               ref={provided.innerRef}
               {...provided.droppableProps}
-              isDraggingOver={snapshot.isDraggingOver}
             >
               {this.props.docs.map((doc, index) => (
                 <Doc key={doc.id} doc={doc} index={index} />
               ))}
               {provided.placeholder}
             </DocList>
-          )}
+            </div>
+            )
+          }}
         </Droppable>
       </Container>
     );

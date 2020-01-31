@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import emailPropType from 'email-prop-type';
-import { QuickSync, Manual } from '../../constants/order_types'
+import { QuickSync, Manual } from './../../constants/order_types'
 
 class APIPayloadCreator {
   constructor({
@@ -22,7 +22,8 @@ class APIPayloadCreator {
     contactEmail,
     contactPhone,
     allowedConfidenceLevelPercent,
-    fileOrder
+    fileOrder,
+    notes
   }) {
     this.state = {
       ExternalJobNumber: externalJobNumber,
@@ -44,9 +45,10 @@ class APIPayloadCreator {
       ContactPhone: contactPhone,
       AllowedConfidenceLevelPercent: allowedConfidenceLevelPercent,
       jobStatus: "Starting",
-      fileOrder: fileOrder
+      fileOrder: fileOrder,
+      notes: notes
     }
-    let api_payload_template = this.getFileContent("./src/js/components/api_call/api_payload_template.json");
+    let api_payload_template = this.getFileContent("./src/js/classes/api_call/api_payload_template.json");
     this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state);
 
     this.SaveToFile(this.formattedAPIPayload, "./Output/" + externalJobNumber + "_payload.json");
@@ -110,47 +112,50 @@ class APIPayloadCreator {
   }
 
   formatFileList(fileList_raw, fileOrder) {
-    let file_list_item_template = this.getFileContent("./src/js/components/api_call/file_list_item_template.json");
-    let file_list_item_template_no_position = this.getFileContent("./src/js/components/api_call/file_list_item_template_no_position.json");
+    let file_list_item_template = this.getFileContent("./src/js/classes/api_call/file_list_item_template.json");
+    let file_list_item_template_no_position = this.getFileContent("./src/js/classes/api_call/file_list_item_template_no_position.json");
     let fileList = [];
     let videoOrdinalPosition = 0;
-    fileOrder.forEach((file) => {
-      let value = fileList_raw.docs[file];
 
-      let docValue = value.content;
-      let docValueSplit = docValue.split('\\');
-      let FileName = docValueSplit[docValueSplit.length - 1];
-      let FileType = "Transcript";
-      
-      let FileSize = this.getFileSize(docValue);
-      //let FilePath = docValue.replace(/\\/g, "\\\\");
-     
-      let params = {
-        FileType: FileType,
-        FileName: FileName,
-        FileSize: FileSize,
-        //FilePath: FilePath
-        FilePath: null
-      }
-      
-      let template = file_list_item_template_no_position;
+    if (fileOrder && fileOrder.length) {
+      fileOrder.forEach((file) => {
+        let value = fileList_raw.docs[file];
 
-      if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
-        template = file_list_item_template;
-        params = {
-          ...params, 
-          Position: null
+        let docValue = value.content;
+        let docValueSplit = docValue.split('\\');
+        let FileName = docValueSplit[docValueSplit.length - 1];
+        let FileType = "Transcript";
+        
+        let FileSize = this.getFileSize(docValue);
+        //let FilePath = docValue.replace(/\\/g, "\\\\");
+      
+        let params = {
+          FileType: FileType,
+          FileName: FileName,
+          FileSize: FileSize,
+          //FilePath: FilePath
+          FilePath: null
         }
-        FileType = "Video";
-        videoOrdinalPosition++;
-        params.FileType = FileType;
-        params.Position = videoOrdinalPosition;
-      }
+        
+        let template = file_list_item_template_no_position;
 
-      let doc = this.ReplaceJSONPlaceHolders(template, params);
+        if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
+          template = file_list_item_template;
+          params = {
+            ...params, 
+            Position: null
+          }
+          FileType = "Video";
+          videoOrdinalPosition++;
+          params.FileType = FileType;
+          params.Position = videoOrdinalPosition;
+        }
 
-      fileList.push(doc);
-    });
+        let doc = this.ReplaceJSONPlaceHolders(template, params);
+
+        fileList.push(doc);
+      });
+    }
 
     return fileList;
   }
