@@ -23,12 +23,29 @@ function SourceFiles() {
             onDragUpdate={this.onDragUpdate}
             onDragEnd={this.onDragEnd}
           >
-            {this.state.sourceFiles.columnOrder.map((columnId) => {
-              const column = this.state.sourceFiles.columns[columnId];
-              const docs = column.docIds.map(docId => this.state.sourceFiles.docs[docId]);
-              
-              return <Column key={column.id} column={column} docs={docs} />;
-            })}
+            {
+              this.state.sourceFiles.columnOrder.map(
+                (columnId) => {
+                  const column = this.state.sourceFiles.columns[columnId];
+                  let docs = [];
+                  console.log("sourceFiles.js column:");
+                  console.log(column);
+
+                  if (column.docIds && column.docIds.length) {   
+                    // not empty 
+                    docs = column.docIds.map(docId => this.state.sourceFiles.docs[docId]);
+                  } else {
+                    // empty
+                    console.log("sourcefiles.js column.docIds is currently empty.");
+                  }
+                  
+                  console.log("this.state.sourceFiles:");
+                  console.log(this.state.sourceFiles);
+                  
+                  return <Column key={column.id} column={column} docs={docs} />;
+                }
+              )
+            }
           </DragDropContext>
       </Form.Group>
     )
