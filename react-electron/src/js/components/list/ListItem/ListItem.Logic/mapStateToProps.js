@@ -1,5 +1,6 @@
 import UpdateComponent from './updateComponent'
 import defined from '../../../../utils/defined'
+import { API_CALL_FINISHED, TOGGLE_JOB_DETAILS } from './../../../../constants/action-types'
 const uuidv4 = window.require("uuid/v4")
 
 // This mapStateToProps method will be run for all list items whenever any of the list items is updated
@@ -17,7 +18,12 @@ const uuidv4 = window.require("uuid/v4")
 // within each UI component, and use the store only to save data that is used in the business logic (as opposed to
 // how the data is displayed to the user).
 function mapStateToProps(state, ownProps) {
+  console.log("Inside ListItemLogic mapStateToProps...");
+  console.log("state.articles:");
+  console.log(state.articles);
+
   let update = {};
+
 
   // Loop through all state.articles
   state.articles.forEach(article => {
@@ -25,7 +31,18 @@ function mapStateToProps(state, ownProps) {
     if (article.id === ownProps.ListItemObject.id ) {
       // Check that an action was passed along with the state, and that the current list item
       // is the list item that triggered the action.
-      if (defined(state.action) && (article.id === state.action.payload.ListItemObject.id)) {
+      if(defined(state.action) ){
+        console.log("state.action")
+        console.log(state.action)
+      }
+      
+      if (defined(state.action)
+        && (
+          state.action.type === API_CALL_FINISHED
+          || state.action.type === TOGGLE_JOB_DETAILS
+        )
+        && (article.id === state.action.payload.ListItemObject.id)
+      ) {
         UpdateComponent(state);
 
         update.TriggerRender = uuidv4();
