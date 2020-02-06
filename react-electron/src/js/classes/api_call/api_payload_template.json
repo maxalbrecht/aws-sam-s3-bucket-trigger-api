@@ -11,5 +11,6 @@
   "ContactName": "ContactName_val",
   "ContactEmail": "ContactEmail_val",
   "ContactPhone": "ContactPhone_val",
-  "AllowedConfidenceLevelPercent": "AllowedConfidenceLevelPercent_val_int"
+  "AllowedConfidenceLevelPercent": "AllowedConfidenceLevelPercent_val_int",
+  "Notes": "Notes_val"
 }

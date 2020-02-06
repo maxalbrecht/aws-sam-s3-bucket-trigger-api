@@ -46,7 +46,7 @@ class APIPayloadCreator {
       AllowedConfidenceLevelPercent: allowedConfidenceLevelPercent,
       jobStatus: "Starting",
       fileOrder: fileOrder,
-      notes: notes
+      Notes: notes
     }
     let api_payload_template = this.getFileContent("./src/js/classes/api_call/api_payload_template.json");
     this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state);
