@@ -35,6 +35,45 @@ class ConnectedList extends Component {
     console.log("props.articles:");
     console.log(props.articles);
     this.render = this.render.bind(this);
+    this.placeholder = this.placeholder.bind(this);
+  }
+
+  placeholder(articles) {
+    console.log("testing inside List.js...")
+
+    console.log("articles:");
+    console.log(articles);
+    
+    if(!Array.isArray(articles) || articles.length < 1) {
+      let paddingSides = '10px'
+      let paddingTop = paddingSides
+      
+      return (
+        <div
+          style={{
+            borderStyle:'dashed',
+            borderWidth:'1px',
+            borderColor:'darkgrey',
+            borderRadius:'.25rem',
+            backgroundColor:'none',
+            height:'110px',
+            paddingLeft:paddingSides,
+            paddingRight:paddingSides,
+            paddingTop:paddingTop,
+            width: `100%`,
+            color:'darkgrey',
+            fontSize:'14px',
+          }}
+          
+        >
+
+          Submit a New Job by Clicking the 'Submit Job' Button
+        </div>
+      )
+    }
+    else {
+      return null;
+    }
   }
 
   render() {
@@ -45,8 +84,9 @@ class ConnectedList extends Component {
         <Form.Label className="textFieldLabel">Submitted Jobs</Form.Label>
         <Scrollbars className="scrollBars" >
           <ListGroup className="submittedJobsListGroup">
+            { this.placeholder(this.props.articles) }
             {
-              this.props.articles.map(
+              this.props.articles.reverse().map(
                 el => ( <ListItem key={el.id} ListItemObject={el} /> )
               )
             }

@@ -17,53 +17,7 @@ class ConnectedListItem extends Component {
     super(props);
     logicConstructor.bind(this)(props);
     fieldBind.bind(this)();
-    /*
-    console.log("constructing ConnectedListItem...");
-    console.log("props:");
-    console.log(props);
-    this.JobDetailsIsOpen = false;
-    if (props.jobDetailsIsOpen) {
-      this.JobDetailsIsOpen = props.jobDetailsIsOpen
-    }
-
-    this.id = props.id;
-    this.ListItemObject = props.ListItemObject;
-    this.handleToggleCollapse = this.handleToggleCollapse.bind(this);
-    this.ToggleButtonLabel = this.ToggleButtonLabel.bind(this);
-  
-    console.log("ConnectedListItem props:");
-    console.log(props);   
-    */
   }
-
-/*
-  selectBackgroundColor() {
-    let status = this.ListItemObject.apiCaller.APICallStatus
-
-    switch (status) {
-      case SUCCESS:
-        return COLOR_SUCCESS;
-      case ERROR:
-        return COLOR_ERROR;
-      default:
-        return 'none';
-    }
-  }
-
-  handleToggleCollapse() {
-    //this.JobDetailsIsOpen = !(this.JobDetailsIsOpen);
-
-    store.dispatch(action(TOGGLE_JOB_DETAILS, this))
-  }
-
-  ToggleButtonLabel() {
-    if (this.JobDetailsIsOpen) {
-      return "-"
-    } else {
-      return "+"
-    }
-  }
-  */
 
   render() {
     let borderColor = this.selectStatusColor();
