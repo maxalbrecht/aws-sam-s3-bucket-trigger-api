@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 
+
 function JobNumber() {
     return (
       <Form.Group as={Col} className="textFieldLabel">
@@ -10,6 +11,9 @@ function JobNumber() {
           className="textField"
           id="jobNumber"
           value={this.state.jobNumber}
+          onKeyPress={
+            event => { this.handleJobNumberPressEnterKey(event) }
+          }
           onChange={this.handleChange}
           maxLength='8'
         />
