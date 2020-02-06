@@ -1,6 +1,10 @@
 ////////////////////////////////////////////////////////////////////
 // React-beautiful-dnd methods to handle user interactions
 // with the drag-and-drop list
+import { REMOVE_DOC } from './../../../constants/action-types'
+import { action } from './../../../utils/action'
+import defined from '../../../utils/defined';
+var store = window.store;
 
 function onDragStart() {
   //this.style.color = 'orange';
@@ -26,10 +30,13 @@ function onDragEnd(result) {
   const { destination, source, draggableId } = result;
 
   if (
-    destination &&
-    destination.droppabbleId &&
-    destination.droppableId === source.droppableId &&
-    destination.Index === source.index
+    !defined(destination)
+    || (
+      destination &&
+      destination.droppabbleId &&
+      destination.droppableId === source.droppableId &&
+      destination.Index === source.index
+    )
   ) {
     return;
   }
@@ -40,12 +47,25 @@ function onDragEnd(result) {
   newDocIds.splice(source.index, 1);
   if (destination) { //this if statement allows us to delete items if they
                      // are dropped outside of a droppable item
-    
     newDocIds.splice(destination.index, 0, draggableId);
   }
+  /*
   else {
+    console.log("onDragEnd draggableIdee:");
+    console.log(draggableId);
+    console.log("this:");
+    console.log(this);
+
+  let payload = { 
+    type: REMOVE_DOC,
+    draggableId: draggableId
+  };
+
+  store.dispatch(action(REMOVE_DOC, payload));
+
     delete newDocs[draggableId];
   }
+  */
 
   const newColumn = {
     ...column,

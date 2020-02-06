@@ -1,6 +1,6 @@
 //src/js/middleware/index.js
 
-import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS } from '../constants/action-types';
+import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS, REMOVE_DOC } from '../constants/action-types';
 //const forbiddenWords = ["spam", "money"];
 const forbiddenWords = [];
 
@@ -19,6 +19,9 @@ export function rootMiddleware({ dispatch }) {
         case TOGGLE_JOB_DETAILS:
           returnAction = ToggleJobDetailsMiddleware(action);
           break;
+        case REMOVE_DOC:
+          returnAction = RemoveDocMiddleware(action);
+          break;
         default:
           break;
       }
@@ -35,12 +38,12 @@ export function rootMiddleware({ dispatch }) {
   }
 }
 
-function AddArticleMiddleware(action) {
+function AddArticleMiddleware(actionParam) {
   console.log("Adding article... Currently in AddArticleMiddleware()");
-  console.log(`action.payload:\n${JSON.stringify(action.payload)}`)
+  console.log(`action.payload:\n${JSON.stringify(actionParam.payload)}`)
 
   const foundWord = forbiddenWords.filter(word =>
-    action.payload.jobNumber.includes(word)  
+    actionParam.payload.jobNumber.includes(word)  
   );
 
   if (foundWord.length) {
@@ -58,6 +61,12 @@ function UpdateStatusMiddleware(actionParam) {
 
 function ToggleJobDetailsMiddleware(actionParam) {
   console.log("Toggling JobDetails... Currently in ToggleJobDetailsMiddleware()");
+  console.log("actionParam:");
+  console.log(actionParam);
+}
+
+function RemoveDocMiddleware(actionParam) {
+  console.log("Inside RemoveDocMiddleware");
   console.log("actionParam:");
   console.log(actionParam);
 }
