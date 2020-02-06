@@ -1,11 +1,13 @@
 // src/js/reducers/index.js
 import {
+  ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
   API_CALL_FINISHED,
   TOGGLE_JOB_DETAILS,
   CLEAR_STATE_ACTION,
   ALLOW_OPEN_DIALOG,
-  DISALLOW_OPEN_DIALOG
+  DISALLOW_OPEN_DIALOG,
+  REMOVE_DOC
 } from "../constants/action-types";
 
 const getInitialState = () => ({
@@ -15,6 +17,8 @@ const getInitialState = () => ({
 
 function rootReducer(state = getInitialState(), action) {
   switch(action.type) {
+    case ADD_SYNC_APP_TO_STORE:
+      return AddSyncAppToStoreReducer(state, action)
     case ADD_ARTICLE:
       return AddArticleReducer(state, action);
     case API_CALL_FINISHED:
@@ -27,10 +31,26 @@ function rootReducer(state = getInitialState(), action) {
       return DisallowOpenDialogReducer(state, action);
     case ALLOW_OPEN_DIALOG:
       return AllowOpenDialogReducer(state, action);
+    case REMOVE_DOC:
+      return RemoveDocReducer(state, action);
     default:
       return state;
   }
 };
+
+function AddSyncAppToStoreReducer(state, action) {
+  console.log("AddSyncAppToStoreReducer action:");
+  console.log(action);
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      syncApp: action.payload.syncApp
+    }
+  )
+}
 
 function AddArticleReducer(state, action) {
   return Object.assign(
@@ -104,6 +124,44 @@ function AllowOpenDialogReducer(state, action) {
       allowOpenDialog: true
     }
   );
+}
+
+  function RemoveDocReducer(state, action) {
+  console.log("Inside RemoveDocReducer");
+  console.log("state");
+  console.log(state);
+
+  let syncApp = state.syncApp;
+  
+  let draggableId = action.payload.draggableId;
+  console.log("state.syncApp.state.sourceFiles:");
+  console.log(state.syncApp.state.sourceFiles)
+
+  console.log("action:");
+  console.log(action);
+
+  console.log("draggableId:");
+  console.log(draggableId);
+
+  syncApp.RemoveDoc(draggableId);
+
+  //const column = state.sourceFiles.columns[act]
+
+  let newDocs = syncApp.state.sourceFiles.docs;
+  delete newDocs[action.payload.draggableId];
+
+  const newColumn = {
+  // ...co
+  }
+  
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      action: action
+    }
+);
 }
 
 export default rootReducer;
