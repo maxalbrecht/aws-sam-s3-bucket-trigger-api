@@ -65,7 +65,7 @@ function JobDetails() {
           <Row className="Notes">
             <Col style={{maxWidth:'140px', padding:'0px'}}><u>Notes:</u></Col>
             <Col style={{paddingLeft:'10px'}}>
-              <Row style={{margin:'0 0'}}>{this.ListItemObject.apiCaller.APIPayloadCreator.state.notes}</Row>
+              <Row style={{margin:'0 0'}}>{this.ListItemObject.apiCaller.APIPayloadCreator.state.Notes}</Row>
             </Col>
           </Row>
 
