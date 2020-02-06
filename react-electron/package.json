@@ -1,6 +1,6 @@
 {
-  "name": "Verisync",
-  "version": "0.1.4",
+  "name": "VeriSync",
+  "version": "0.1.9",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -8,7 +8,7 @@
     "directories": {
       "buildResources": "."
     },
-    "productName": "Verisync",
+    "productName": "VeriSync",
     "win": {
       "icon": "build/icon.ico",
       "certificateFile": "private/albrechtsoft.pfx",
@@ -19,6 +19,7 @@
       ]
     }
   },
+  "type": "module",
   "main": "public/electron.js",
   "homepage": "./",
   "private": true,
@@ -29,6 +30,7 @@
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.1.0",
     "electron-log": "^4.0.2",
+    "electron-splashscreen": "^1.0.0",
     "electron-updater": "^4.2.0",
     "email-prop-type": "^3.0.0",
     "file-sizeof": "^1.0.4",
@@ -40,6 +42,7 @@
     "react-collapse": "^5.0.1",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.11.0",
+    "react-dropzone": "^10.2.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",
     "storybook": "^5.3.3",
