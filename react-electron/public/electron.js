@@ -1,4 +1,6 @@
-import CheckForUpdates from './checkForUpdates'
+const CheckForUpdates = require('./checkForUpdates');
+const { dialog, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 
 const { initSplashScreen, OfficeTemplate } = require('electron-splashscreen');
 const electron = require("electron");
@@ -8,51 +10,61 @@ const path = require("path");
 const isDev = require("electron-is-dev");
 let mainWindow;
 
+let allowDevTools = false;
+if(isDev) {
+  allowDevTools = true;
+}
+
 async function createWindow() {
-    mainWindow = new BrowserWindow({ 
-      width: 1024,
-      height: 900,
-      minWidth: 720, // set a min width
-      minHeight: 900, // and a min height
-      // Remove the window frame from windows applications
-      frame: false,
-      show:false,
-      backgroundColor: '#282c34',
-      // Hide the title bar from MacOS applications while keeping the stop lights
-      titleBarStyle: 'hidden', // or 'customButtonsOnHover',
-      webPreferences: {
-        webSecurity: false,
-        nodeIntegration: true,
-      }
-    });
+  mainWindow = new BrowserWindow({ 
+    width: 1024,
+    height: 900,
+    minWidth: 720, // set a min width
+    minHeight: 900, // and a min height
+    // Remove the window frame from windows applications
+    frame: false,
+    show:false,
+    backgroundColor: '#282c34',
+    // Hide the title bar from MacOS applications while keeping the stop lights
+    titleBarStyle: 'hidden', // or 'customButtonsOnHover',
+    webPreferences: {
+      webSecurity: false,
+      nodeIntegration: true,
+      devTools: allowDevTools
+    }
+  });
 
-    const hideSplashscreen = initSplashScreen({
-      mainWindow,
-      icon: `file://${path.join(__dirname, "../public/icon.ico")}`,
-      url: OfficeTemplate,
-      color: '#1f2329',
-      width: 460,
-      height: 600,
-      brand: 'AlbrechtSoft',
-      productName: 'VeriSync',
-      logo: `file://${path.join(__dirname, "../build/index.html")}`,
-      text: 'VeriSync is initializing...',
-      website: 'www.veritext.com'
-    });
+  if(!allowDevTools) {
+    mainWindow.webContents.on("devtools-opened", () => { mainWindow.webContents.closeDevTools(); });
+  }
 
-    await mainWindow.loadURL(
-        isDev
-        ? "http://localhost:3000"
-        : `file://${path.join(__dirname, "../build/index.html")}`
-    );
+  const hideSplashscreen = initSplashScreen({
+    mainWindow,
+    icon: `file://${path.join(__dirname, "../public/icon.ico")}`,
+    url: OfficeTemplate,
+    color: '#1f2329',
+    width: 460,
+    height: 600,
+    brand: 'AlbrechtSoft',
+    productName: 'VeriSync',
+    logo: `file://${path.join(__dirname, "../build/index.html")}`,
+    text: 'VeriSync is initializing...',
+    website: 'www.veritext.com'
+  });
 
-    mainWindow.once('ready-to-show', () => {
-      mainWindow.show()
-    })
+  await mainWindow.loadURL(
+      isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
 
-    hideSplashscreen();
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 
-    mainWindow.on("closed", () => (mainWindow = null));
+  hideSplashscreen();
+
+  mainWindow.on("closed", () => (mainWindow = null));
 }
 
 app.on("ready", () => {
@@ -60,7 +72,8 @@ app.on("ready", () => {
   createWindow();
   try {
     // Check for update after two seconds
-    setTimeout(CheckForUpdates, 2000);
+    //setTimeout(CheckForUpdates, 2000);
+    CheckForUpdates();
   }
   catch (e) {
     console.log(`Error at setTimeout(CheckForUpdates(). Error: ${e})`);

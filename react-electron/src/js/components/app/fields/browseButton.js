@@ -6,7 +6,7 @@ function BrowseButton() {
       <Button 
         type="button"
         variant="secondary"
-        className="formBrowseButton"
+        className="browseButton"
         onClick={this.handleClickBrowse}
       >
         Browse...

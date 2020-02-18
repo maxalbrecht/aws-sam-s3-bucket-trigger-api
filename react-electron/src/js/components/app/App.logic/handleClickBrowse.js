@@ -74,6 +74,8 @@ return allow;
 
 // Open a window when the user clicks the Browse button for selecting source files
 async function handleClickBrowse() {
+  console.log("window.store.getState():")
+  console.log(window.store.getState())
   let defaultPath = await setDefaultPath(this.state.jobNumber);
   
 

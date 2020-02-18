@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import emailPropType from 'email-prop-type';
 import { QuickSync, Manual } from './../../constants/order_types'
+import api_payload_template from './api_payload_template'
+import file_list_item_template from './file_list_item_template' 
+import file_list_item_template_no_position from './file_list_item_template_no_position'
 
 class APIPayloadCreator {
   constructor({
@@ -48,10 +51,16 @@ class APIPayloadCreator {
       fileOrder: fileOrder,
       Notes: notes
     }
-    let api_payload_template = this.getFileContent("./src/js/classes/api_call/api_payload_template.json");
     this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state);
 
-    this.SaveToFile(this.formattedAPIPayload, "./Output/" + externalJobNumber + "_payload.json");
+    var fs = window.require('fs');
+    const OUTPUT = 'Output'
+    const OUTPUT_FOLDER = `./${OUTPUT}/`
+    if (!fs.existsSync(OUTPUT_FOLDER)){
+      fs.mkdirSync(OUTPUT_FOLDER);
+    }
+    
+    this.SaveToFile(this.formattedAPIPayload, OUTPUT_FOLDER + externalJobNumber + "_payload.json");
   }
 
   SaveToFile(fileContent, filePath) {
@@ -69,7 +78,7 @@ class APIPayloadCreator {
     //      For each of the parameters, it should scan the json template and replace
     //      and any instances of the the parameter's placeholder with the
     //      parameter values, as well as any necessary formatting such as quotation marks.
-    let finishedTemplate = jsonTemplate;
+    let finishedTemplate = JSON.stringify(jsonTemplate);
     for (let arg of args) {
       for (let key in arg){
         if(arg.hasOwnProperty(key)){
@@ -112,8 +121,6 @@ class APIPayloadCreator {
   }
 
   formatFileList(fileList_raw, fileOrder) {
-    let file_list_item_template = this.getFileContent("./src/js/classes/api_call/file_list_item_template.json");
-    let file_list_item_template_no_position = this.getFileContent("./src/js/classes/api_call/file_list_item_template_no_position.json");
     let fileList = [];
     let videoOrdinalPosition = 0;
 

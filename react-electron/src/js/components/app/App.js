@@ -1,10 +1,10 @@
 import { mapDispatchToProps, logicConstructor } from './App.logic/App.logic'
 import React, { Component } from 'react';
-import { Form, Col} from 'react-bootstrap';
+import { Form, Col } from 'react-bootstrap';
 import { connect } from "react-redux";
-import './App.css';
 import SubmittedJobsList from "../list/List";
 import fieldBind from './fields';
+import SectionTitle from '../../utils/sectionTitle';
 
 class ConnectedApp extends Component {
   constructor(props) {
@@ -15,8 +15,8 @@ class ConnectedApp extends Component {
 
   render() {
     return (
-      <div style={{height:'100%'}} className="App">
-        <Form style={{height:'100%'}} className="AppForm" onSubmit={this.handleSubmit}>
+      <div style={{height:'100%'}} className="main">
+        <Form style={{height:'100%'}} className="form" onSubmit={this.handleSubmit}>
           <Form.Row style={{height:'100%'}}>
             <Col xs={6}>
               <Form.Row>{ this.JobNumber() }</Form.Row>

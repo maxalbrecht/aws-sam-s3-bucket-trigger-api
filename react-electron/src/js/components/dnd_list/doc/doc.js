@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import { connect } from 'react-redux'
-import { mapStateToProps, logicConstructor } from './doc.logic'
+import { logicConstructor } from './doc.logic'
 
 var Container = styled.div`
   border: 1px solid lightgrey;

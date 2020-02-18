@@ -5,14 +5,14 @@ import { QuickSync } from "../../../constants/order_types"
 import initialData from '../../dnd_list/initial-data'
 
 //////////////////////////////////////////////////////////////////////////
-// Boilerplate code to connect this logic files to the React Component
+// Boilerplate code to connect these logic files to the React Component
 function getConstructorState() {
-  let users = createUsers();
+  //let users = createUsers();
   
   //let user = users.JamesUser;
-  let user = users.DaveUser;
-  console.log("user:");
-  console.log(user);
+  //let user = users.DaveUser;
+  //console.log("user:");
+  //console.log(user);
 
   return {
     id: "",
@@ -23,11 +23,11 @@ function getConstructorState() {
     priorityOptions: [ONE_DAY, TWO_DAYS],
     priority: ONE_DAY,
     notes: "",
-    user: user,
     deposition: new Deposition() 
   }
 }
 
+/*
 function createUsers() {
   let users = {};
   
@@ -49,5 +49,6 @@ function createUsers() {
 
   return users;
 }
+*/
 
 export default getConstructorState

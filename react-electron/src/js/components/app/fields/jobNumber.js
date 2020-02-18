@@ -1,7 +1,6 @@
 import React from 'react';
 import { Form, Col } from 'react-bootstrap';
 
-
 function JobNumber() {
     return (
       <Form.Group as={Col} className="textFieldLabel">

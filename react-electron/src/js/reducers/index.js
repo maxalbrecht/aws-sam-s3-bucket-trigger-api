@@ -1,4 +1,6 @@
 // src/js/reducers/index.js
+import { Auth } from 'aws-amplify'
+import defined from './../utils/defined'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
@@ -7,12 +9,15 @@ import {
   CLEAR_STATE_ACTION,
   ALLOW_OPEN_DIALOG,
   DISALLOW_OPEN_DIALOG,
-  REMOVE_DOC
+  REMOVE_DOC,
+  USER_LOGGED_IN,
+  LOG_OUT
 } from "../constants/action-types";
 
 const getInitialState = () => ({
   allowOpenDialog: true,
-  articles: []
+  articles: [],
+  user: null
 });
 
 function rootReducer(state = getInitialState(), action) {
@@ -33,6 +38,10 @@ function rootReducer(state = getInitialState(), action) {
       return AllowOpenDialogReducer(state, action);
     case REMOVE_DOC:
       return RemoveDocReducer(state, action);
+    case USER_LOGGED_IN:
+      return UserLoggedInReducer(state, action)
+    case LOG_OUT:
+      return LogOutReducer(state, action);
     default:
       return state;
   }
@@ -161,7 +170,56 @@ function AllowOpenDialogReducer(state, action) {
       ...state,
       action: action
     }
-);
+  );
+}
+
+function UserLoggedInReducer(state, action) {
+  console.log("Inside UserLoggedInReducer");
+
+  console.log("UserLoggedInReducer action:");
+  console.log(action);
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      user: action.payload.user
+    }
+  )
+}
+
+function LogOutReducer(state, action) {
+  console.log("Inside LogOutReducer");
+
+  console.log("LogOutReducer state:");
+  console.log(state)
+
+  console.log("LogOutReducer action:");
+  console.log(action);
+  let that = action.payload.that;
+
+  try {
+    Auth.signOut({ global: true });
+  }
+  catch(error) {
+    let e = null;
+    !error.message ? e = { "message" : error } : e = error;
+
+    console.log("Error signing out. error:");
+    console.log(e)
+  }
+
+  that.props.history.push("/login");
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      user: null
+    }
+  )
 }
 
 export default rootReducer;

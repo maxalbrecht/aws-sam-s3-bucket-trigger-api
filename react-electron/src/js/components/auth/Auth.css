@@ -1,0 +1,18 @@
+.authMain {
+  padding-top: 80px;
+}
+
+.authMain .form {
+  width: 250px;
+}
+
+.App-link-row {
+  padding-top: 20px;
+  padding-left: 10px;
+}
+
+.linkSeparator {
+  padding: 0 10px;
+  color: lightgrey;
+  font-size: 16px;
+}

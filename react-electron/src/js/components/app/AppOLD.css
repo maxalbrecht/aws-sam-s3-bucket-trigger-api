@@ -1,4 +1,4 @@
-.App {
+.main {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,7 +12,7 @@
   vertical-align: top;
 }
 
-.AppForm {
+.form {
   height: 100%;
   vertical-align: top;
   margin-top: 10px;
@@ -21,34 +21,21 @@
   margin-top: 0px;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
-.App-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
   color: #09d3ac;
 }
 
-.formSubmitButton {
+.jobSubmitButton {
   width: 100%;
 }
 
-.formBrowseButtonCol {
+.browseButtonCol {
   align-items: right;
   align-content: right;
   text-align: right;
 }
 
-.formBrowseButton {
+.browseButton {
   align-self: right;
   align-items: right;
   align-content: right;
@@ -76,10 +63,6 @@
 .sourceFilesField {
   min-height: 40px;
   height: auto;
-}
-
-.formNotes {
-  width: 100%;
 }
 
 .textFieldLabel {

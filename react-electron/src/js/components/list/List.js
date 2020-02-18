@@ -16,6 +16,7 @@ import { ListGroup } from 'react-bootstrap'
 import "./List.css"
 import ListItem from  './ListItem/ListItem';
 import { Scrollbars } from 'react-custom-scrollbars';
+import defined from '../../utils/defined';
 
 function mapStateToProps(state){
   return { 
@@ -78,7 +79,7 @@ class ConnectedList extends Component {
 
   render() {
     console.log("rendering list group...");
-
+    
     return (
       <Fragment>
         <Form.Label className="textFieldLabel">Submitted Jobs</Form.Label>

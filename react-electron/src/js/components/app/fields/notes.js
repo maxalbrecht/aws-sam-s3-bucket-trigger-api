@@ -4,7 +4,7 @@ import { Form, Col } from 'react-bootstrap';
 function Notes() {
   return (
     <Form.Group as={Col} className="textFieldLabel">
-      <Form.Label className="formNotes">Notes</Form.Label>
+      <Form.Label>Notes</Form.Label>
       <Form.Control as="textarea" 
         rows="3" 
         className="textField"

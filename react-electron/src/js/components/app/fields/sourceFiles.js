@@ -16,9 +16,9 @@ function SourceFiles() {
       >
         <Form.Row>
           <Col>
-            <Form.Label className="formNotes">Source Files</Form.Label>
+            <Form.Label>Source Files</Form.Label>
           </Col>
-          <Col className="formBrowseButtonCol">
+          <Col className="browseButtonCol">
             { this.BrowseButton() }
           </Col>     
         </Form.Row>
