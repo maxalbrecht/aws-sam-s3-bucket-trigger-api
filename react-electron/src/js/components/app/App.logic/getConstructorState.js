@@ -1,6 +1,6 @@
 import User from "../../../classes/user/user"
 import Deposition from "../../../classes/deposition/deposition"
-import { ONE_DAY, TWO_DAYS } from "../../../constants/priority_options"
+import { NORMAL, HIGH } from "../../../constants/priority_options"
 import { QuickSync } from "../../../constants/order_types"
 import initialData from '../../dnd_list/initial-data'
 
@@ -20,8 +20,8 @@ function getConstructorState() {
     jobNumber: "",
     sourceFiles: initialData,
     orderType: QuickSync,
-    priorityOptions: [ONE_DAY, TWO_DAYS],
-    priority: ONE_DAY,
+    priorityOptions: [NORMAL, HIGH],
+    priority: NORMAL,
     notes: "",
     deposition: new Deposition() 
   }

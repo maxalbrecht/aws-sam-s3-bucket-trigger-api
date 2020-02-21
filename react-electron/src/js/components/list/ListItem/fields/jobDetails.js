@@ -57,7 +57,11 @@ function JobDetails() {
             <Col style={{maxWidth:'140px', padding:'0px'}}><u>Priority:</u></Col>
             <Col style={{paddingLeft:'10px'}}>
               <Row style={{margin:'0 0'}}>
-                { ConvertPriorityIntToString(this.ListItemObject.apiCaller.APIPayloadCreator.state.Priority) }
+                { ConvertPriorityIntToString(
+                    this.ListItemObject.apiCaller.APIPayloadCreator.state.Priority,
+                    this.ListItemObject.apiCaller.APIPayloadCreator.state.OrderType
+                  )
+                }
               </Row>
             </Col>
           </Row>

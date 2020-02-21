@@ -5,7 +5,7 @@ import { Auth } from 'aws-amplify'
 import Deposition from "../../../classes/deposition/deposition";
 import APIPayloadCreator from "../../../classes/api_call/api_payload_creator";
 import APICaller from "../../../classes/api_call/api_caller";
-import { ConvertPriorityStringToInt, ONE_DAY, TWO_DAYS } from "../../../constants/priority_options"
+import { ConvertPriorityStringToInt, NORMAL, HIGH } from "../../../constants/priority_options"
 import { QuickSync } from "../../../constants/order_types"
 import initialData from '../../dnd_list/initial-data'
 import defined from './../../../utils/defined'
@@ -81,8 +81,8 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
         jobNumber: "",
         sourceFiles: initialData,
         orderType: QuickSync,
-        priority: ONE_DAY,
-        priorityOptions: [ONE_DAY, TWO_DAYS],
+        priority: NORMAL,
+        priorityOptions: [NORMAL, HIGH],
         notes: "",
         user: this.state.user,
         deposition: new Deposition() 
