@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import emailPropType from 'email-prop-type';
-import { QuickSync, Manual } from './../../constants/order_types'
+import { QuickSync, ManualSync } from './../../constants/order_types'
 import api_payload_template from './api_payload_template'
 import file_list_item_template from './file_list_item_template' 
 import file_list_item_template_no_position from './file_list_item_template_no_position'
@@ -178,7 +178,7 @@ APIPayloadCreator.propTypes = {
   CaseNumber: PropTypes.string,
   JobInputPath: PropTypes.string.isRequired,
   JobOutputPath: PropTypes.string.isRequired,
-  OrderType: PropTypes.oneOf([QuickSync, Manual]).isRequired,
+  OrderType: PropTypes.oneOf([QuickSync, ManualSync]).isRequired,
   FileList: PropTypes.object.isRequired,
   Priority: PropTypes.oneOf([1, 2, 3, 4]).isRequired,
   AssignedUserEmail: emailPropType.isRequired,

@@ -1,2 +1,2 @@
 export const QuickSync = "QuickSync";
-export const Manual = "Manual";
+export const ManualSync = "ManualSync";

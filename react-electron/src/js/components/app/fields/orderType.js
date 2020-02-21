@@ -12,7 +12,7 @@ function OrderType() {
         onChange={this.handleChange}
       >
         <option>QuickSync</option>
-        <option>Manual</option>
+        <option>ManualSync</option>
       </Form.Control>
     </Form.Group>
   )
