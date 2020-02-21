@@ -21,10 +21,6 @@ class Doc extends React.Component {
     logicConstructor.bind(this)(props);
   }
   render() {
-    console.log("rendering a doc...+++++++++++++++++++++++++++++++++++++++++++++");
-    console.log("this");
-    console.log(this);
-
     var content = this.props.doc.content
 
     return (
@@ -33,9 +29,6 @@ class Doc extends React.Component {
         index={this.props.index}
       >
         {(provided, snapshot) => {
-          console.log("provided:");
-          console.log(provided);
-
           return (
             <Container
               {...provided.draggableProps}
