@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import './TitleBar.css';
-import { Button } from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
 var electron = window.require("electron");
 var remote = electron.remote;
 
@@ -25,9 +25,14 @@ class TitleBar extends Component {
 
   render(){
     return (
-      <div id="title-bar">
+      <Row id="title-bar">
         <img  id="small-icon" src={process.env.PUBLIC_URL + '/favicon.ico'} alt="app icon"/>
-        <div id="app-title">VeriSync</div>
+        <Col style={{width:'20px', maxWidth:'100px'}}>
+          <div id="app-title">VeriSync</div>
+        </Col>
+        <Col >
+          <div style={{paddingTop:'5px'}}>v {process.env.REACT_APP_VERSION}</div>
+        </Col>
         <div id="title-bar-btns">
           <Button 
             variant="info" 
@@ -54,7 +59,7 @@ class TitleBar extends Component {
             <span className="button-text">x</span>
           </Button>
         </div>
-      </div>
+      </Row>
     )
   }
 }
