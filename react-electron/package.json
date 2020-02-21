@@ -1,6 +1,6 @@
 {
   "name": "VeriSync",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
