@@ -54,9 +54,6 @@ body {
   }
   box-shadow: none;
 }
-.title-bar-button-close:hover {
-  background-color: red;
-}
 
 .title-bar-button:focus {
   @include themify($themes) {
@@ -68,6 +65,11 @@ body {
   box-shadow: none;
 }
 
+.title-bar-button-close:hover {
+  @include themify($themes) {
+    background-color: red;
+  }
+}
 
 #app-title {
   position: fixed;
