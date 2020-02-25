@@ -11,7 +11,7 @@ function LogOutButton() {
       <Button
             type="button"
             variant="secondary"
-            onClick={()=>(LogOut(this))}
+            onClick={ ()=>(LogOut(this)) }
             style={{
               fontSize: '14px',
               textAlign:'center',

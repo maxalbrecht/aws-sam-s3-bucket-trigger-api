@@ -4,7 +4,7 @@ import { Form, Col } from 'react-bootstrap';
 import fieldBind from './Register.fields';
 import { logicConstructor } from './Register.logic/Register.logic'
 import SectionTitle from './../../../utils/sectionTitle'
-import './../Auth.css'
+import './../Auth.scss'
 
 class Register extends Component {
   constructor(props) {

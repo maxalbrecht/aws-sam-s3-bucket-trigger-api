@@ -1,3 +1,5 @@
+@import "./../../../styles/themes";
+
 body {
   padding: 0px;
   margin: 0px; 
@@ -13,8 +15,10 @@ body {
   left: 0px;
   top: 0px;
   position: fixed;
-  background-color: #1f2329;
-  color: white;
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    color: themed('title-bar-color');
+  }
 }
 
 .title-bar-button {
@@ -23,10 +27,12 @@ body {
   text-align: center;
   align-content: center;
   vertical-align: top;
-  background-color: #1f2329;
-  border-color: #1f2329;
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    border-color: themed('title-bar-background-color');
+    color: themed('title-bar-button-color');
+  }
   border-radius: 0px;
-  color: #9E9E9E;
   font-size: 20px;
   box-shadow: none;
   position:relative;
@@ -41,9 +47,11 @@ body {
 }
 
 .title-bar-button:hover {
-  background-color: #404040;
-  border-color: #404040;
-  color: white;
+  @include themify($themes) {
+    background-color: themed('title-bar-button-highlight-color');
+    border-color: themed('title-bar-button-highlight-color');
+    color: themed('title-bar-color');
+  }
   box-shadow: none;
 }
 .title-bar-button-close:hover {
@@ -51,10 +59,12 @@ body {
 }
 
 .title-bar-button:focus {
-  background-color: #1f2329;
-  border-color: #404040;
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    border-color: themed('title-bar-button-highlight-color');
+    color: themed('title-bar-button-color');
+  }
   border: none;
-  color: #9E9E9E;
   box-shadow: none;
 }
 

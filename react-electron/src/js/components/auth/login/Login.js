@@ -8,7 +8,7 @@ import fieldBind from './login.fields';
 import { logicConstructor } from './login.logic/Login.logic'
 import SectionTitle from './../../../utils/sectionTitle'
 import defined from './../../../utils/defined'
-import './../Auth.css'
+import './../Auth.scss'
 var store = window.store;
 
 class Login extends Component {

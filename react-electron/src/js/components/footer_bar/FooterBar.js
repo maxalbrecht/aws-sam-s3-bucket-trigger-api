@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link, withRouter } from "react-router-dom"
-import { Form, Col, Row, Button } from 'react-bootstrap'
+import { withRouter } from "react-router-dom"
+import { Col, Row } from 'react-bootstrap'
 import LogOutButton from './logOutButton'
-import './FooterBar.css'
+import ToggleDarkThemeSlider from './toggleDarkThemeSlider'
 import defined from '../../utils/defined'
 import SectionTitle from './../../utils/sectionTitle'
-import LogOut from './../../utils/logout'
-var store = window.store;
+import { THEME_LIGHT } from './../../constants/themes'
 
 function mapStateToProps(state, ownProps) {
   let update = {}
@@ -18,7 +17,11 @@ function mapStateToProps(state, ownProps) {
     && defined(state.user.cognitoUser.username) 
     && state.user.cognitoUser.username !== ''
   ) {
-    update.username = state.user.cognitoUser.username;
+    update.username = state.user.cognitoUser.username
+  }
+
+  if(defined(state.theme)) {
+    update.theme = state.theme
   }
 
   return update
@@ -26,29 +29,21 @@ function mapStateToProps(state, ownProps) {
 
 class ConnectedFooterBar extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.LogOutButton = LogOutButton.bind(this)
+    this.ToggleDarkThemeSlider = ToggleDarkThemeSlider.bind(this)
 
-    this.username = ''
+    if(!defined(this.username)) {
+      this.username = ''
+    }
+
+    if(!defined(this.theme)) {
+      this.theme = ''
+    }
   }
   
   render(){
-    /*
-    <Link className="App-link" to="/">
-      Main
-    </Link> | <Link className="App-link" to="/about">
-      About
-    </Link> | <Link className="App-link"  to={{
-        pathname: 'documentation',
-        state: {
-          docsLocation: process.env.PUBLIC_URL + '/docs/build/html/index.html'
-        }
-      }}
-    >
-      Documentation
-    </Link>
-    */
     console.log("FooterBar this.props:")
     console.log(this.props)
     
@@ -59,15 +54,32 @@ class ConnectedFooterBar extends Component {
       console.log(usernameLabel)
     }
 
+    let logo = '/SmallLogoNew.png'
+
+    if(defined(this.props.theme) && this.props.theme === THEME_LIGHT) {
+      logo = '/SmallLogoNewLight.png'
+    }
+
     return (
-      <Row id="footer-bar" style={{minHeight:'60px'}}>
-        <Col style={{ color:'lightgrey', maxWidth:'190px', paddingTop:'20px' }}>
+      <Row id="footer-bar" style={{minHeight:'60px', transition:'all 0.25s ease'}}>
+        <Col
+          className="footerUsernameLabel"
+          style={{ width:'190px', maxWidth:'190px', paddingTop:'20px' }}
+        >
           {SectionTitle(usernameLabel, '14px')}
         </Col>
-        <Col style={{ width:'200px' }}>
+        <Col 
+          className="footerLogoutButton"
+          style={{ width:'200px', maxWidth:'200px' }}
+        >
           { this.LogOutButton() }
         </Col>
-        <Col>
+        <Col 
+          style={{ paddingTop:'20px', paddingRight:'50px', width:'auto'}}
+        >
+          { this.ToggleDarkThemeSlider() }
+        </Col>
+        <Col style= {{ width:'200px', maxWidth:'200px' }}>
           <img 
             style={{
               position:'absolute',
@@ -75,7 +87,7 @@ class ConnectedFooterBar extends Component {
               top:'-0px'
             }}
             id="bottom-right-logo"
-            src={process.env.PUBLIC_URL + '/SmallLogoNew.png'} 
+            src={process.env.PUBLIC_URL + logo} 
             alt="app icon"
           />
         </Col>

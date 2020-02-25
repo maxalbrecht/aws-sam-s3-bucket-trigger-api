@@ -3,7 +3,7 @@ import { Form, Col } from 'react-bootstrap';
 import fieldBind from './changePassword.fields/';
 import { logicConstructor } from './changePassword.logic/ChangePassword.logic'
 import SectionTitle from './../../../utils/sectionTitle'
-import './../Auth.css'
+import './../Auth.scss'
 
 class ChangePassword extends Component {
   constructor(props) {

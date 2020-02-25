@@ -1,3 +1,10 @@
+@import './styles/themes';
+$footerBarHeight: 50px;
+
+html {
+  height:100%;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -5,8 +12,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34;
   font-size: 12px;
+}
+
+$windowContainerPaddingSide:15px;
+.windowContainer {
+  padding-top:40px;
+  padding-left: $windowContainerPaddingSide;
+  padding-right: $windowContainerPaddingSide;
+  min-height: 100%;
+  max-height:none;
+  max-width: none;
+  margin:none;
+  @include themify($themes) {
+    background-color: themed('main-background-color');
+  }
+  transition: background-color 0.25s ease;
 }
 
 code {
@@ -16,22 +37,31 @@ code {
 
 #title-bar {
   height: 40px;
-  background-color: #282c34;
+  @include themify($themes) {
+    background-color: themed('main-background-color');
+  }
   z-index: 100;
 }
-
-.windowContainer {
-  height: 80%;
-  max-width: none;
-  width: 100%;
-  margin: 40px 0 55px 0;
+.footerUsernameLabel, .footerLogoutButton {
+  @include themify($themes) {
+    color: themed('footer-bar-color');
+  }
 }
 
 #footer-bar {
-  min-height: 50px;
-  background-color: #282c34;
+  @include themify($themes) {
+    background-color: themed('main-background-color');
+    color: themed('main-color');
+  }
+  position: absolute;
   bottom: 0;
+  width: calc(100% - 30px);
+  height: 60px;
+  padding: none;
+  margin: 0px;
   z-index: 100;
+  font-size: calc(12px + 1vmin);
+  text-align: center;
 }
 
 .main {
@@ -40,7 +70,9 @@ code {
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  @include themify($themes) {
+    color: themed('main-color');
+  }
   width: 100%;
   margin-bottom: inherit inherit 10px inherit;
   height: auto;
@@ -58,7 +90,9 @@ code {
 }
 
 .App-link {
-  color: 'darkgrey';
+  @include themify($themes) {
+    color: themed('text-field-unhighlighted-color');
+  }
   font-size: 16px;
 }
 
@@ -112,36 +146,52 @@ code {
 .textField:active {
   background: none;
   font-size: initial;
-  border-color: darkgrey;
-  color: white
+  @include themify($themes) {
+    border-color: themed('text-field-unhighlighted-color');
+    color: themed('main-color');
+  }
 }
 
 .textField::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: darkgrey;
+  @include themify($themes) {
+    color: themed('text-field-unhighlighted-color');
+  }
 }
 .textField::-moz-placeholder { /* Firefox 19+ */
-  color:darkgrey;  
+  @include themify($themes) {
+    color: themed('text-field-unhighlighted-color');  
+  }
 }
 .textField:-ms-input-placeholder { /* IE 10+ */
-  color: darkgrey; 
+  @include themify($themes) {
+    color: themed('text-field-unhighlighted-color'); 
+  }
 }
 .textField:-moz-placeholder { /* Firefox 18- */
-  color: darkgrey; 
+  @include themify($themes) {
+    color: themed('text-field-unhighlighted-color'); 
+  }
 }
 
 .dropDown:focus {
-  color: white;
-  background-color: #282c34;
+  @include themify($themes) {
+    color: themed('main-color');
+    background-color: themed('main-background-color');
+  }
 }
 
 .dropDown:active {
-  color: white;
-  background-color: #282c34;
+  @include themify($themes) {
+    color: themed('main-color');
+    background-color: themed('main-background-color');
+  }
 }
 
 .dropDown:focus:active:hover {
-  color: white;
-  background-color: #282c34;
+  @include themify($themes) {
+    color: themed('main-color');
+    background-color: themed('main-background-color');
+  }
 }
 
 .form-row>[class*=col-].submittedJobsCol {

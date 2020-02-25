@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import './TitleBar.css';
+import './TitleBar.scss';
 import { Button, Row, Col } from 'react-bootstrap';
 var electron = window.require("electron");
 var remote = electron.remote;
@@ -25,7 +25,7 @@ class TitleBar extends Component {
 
   render(){
     return (
-      <Row id="title-bar">
+      <Row id="title-bar" >
         <img  id="small-icon" src={process.env.PUBLIC_URL + '/favicon.ico'} alt="app icon"/>
         <Col style={{width:'20px', maxWidth:'100px'}}>
           <div id="app-title">VeriSync</div>
@@ -33,12 +33,13 @@ class TitleBar extends Component {
         <Col >
           <div style={{paddingTop:'5px'}}>v {process.env.REACT_APP_VERSION}</div>
         </Col>
-        <div id="title-bar-btns">
+        <div id="title-bar-btns" style={{transition:'background-color 0.25s ease'}}>
           <Button 
             variant="info" 
             id="min-btn" 
             className="title-bar-button" 
             onClick={this.onMinimizeClicked}
+            style={{transition:'background-color 0.25s ease'}}
           >
             <span className="button-text">-</span>
           </Button>
@@ -47,6 +48,7 @@ class TitleBar extends Component {
             id="max-btn"
             className="title-bar-button"
             onClick={this.onMaximizeClicked}
+            style={{transition:'background-color 0.25s ease'}}
           >
             <span className="button-text">+</span>
           </Button>
@@ -55,6 +57,7 @@ class TitleBar extends Component {
             id="close-btn"
             className="title-bar-button title-bar-button-close"
             onClick={this.onCloseClicked}
+            style={{transition:'all 0.25s ease'}}
           >
             <span className="button-text">x</span>
           </Button>

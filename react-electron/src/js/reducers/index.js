@@ -1,6 +1,8 @@
 // src/js/reducers/index.js
 import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
+import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
+import { THEME } from './../constants/localStorageVariables'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
@@ -11,14 +13,27 @@ import {
   DISALLOW_OPEN_DIALOG,
   REMOVE_DOC,
   USER_LOGGED_IN,
-  LOG_OUT
+  LOG_OUT,
+  TOGGLE_DARK_THEME
 } from "../constants/action-types";
 
 const getInitialState = () => ({
   allowOpenDialog: true,
   articles: [],
-  user: null
+  user: null,
+  theme: getPreferredTheme()
 });
+
+function getPreferredTheme() {
+  let theme = localStorage.getItem(THEME)
+
+  if(defined(theme) && theme === THEME_LIGHT) {
+    return THEME_LIGHT
+  }
+  else {
+    return THEME_DARK
+  }
+}
 
 function rootReducer(state = getInitialState(), action) {
   switch(action.type) {
@@ -42,6 +57,8 @@ function rootReducer(state = getInitialState(), action) {
       return UserLoggedInReducer(state, action)
     case LOG_OUT:
       return LogOutReducer(state, action);
+    case TOGGLE_DARK_THEME:
+      return ToggleDarkThemeReducer(state, action);
     default:
       return state;
   }
@@ -221,6 +238,31 @@ function LogOutReducer(state, action) {
     }
   )
 }
+
+function ToggleDarkThemeReducer(state, action) {
+  console.log("Inside ToggleDarkThemeReducer");
+  
+  let theme = state.theme;
+  if(theme === THEME_DARK) {
+    theme = THEME_LIGHT
+  }
+  else {
+    theme = THEME_DARK
+  }
+  
+  localStorage.setItem(THEME, theme)
+  
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      action: action,
+      theme: theme
+    }
+  )
+}
+
 
 export default rootReducer;
 

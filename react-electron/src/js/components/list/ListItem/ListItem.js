@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { ListGroup, Row, Col, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux'
 
-import './ListItem.css';
+import './ListItem.scss';
 import Collapse from '@kunukn/react-collapse'
 import fieldBind from './fields'
 
