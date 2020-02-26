@@ -79,12 +79,25 @@ function AddSyncAppToStoreReducer(state, action) {
 }
 
 function AddArticleReducer(state, action) {
+  let articles = state.articles.concat(action.payload)
+  articles.sort(function(a, b) {
+    if(a.date.getTime() < b.date.getTime()) {
+      // a happened before b, therefore a will be placed
+      // second in the list, since we want to display them in
+      // reverse chronological order
+      return 1;
+    }
+    else {
+      return -1;
+    }
+  })
+
   return Object.assign(
     {},
     state,
     { 
       ...state,
-      articles: state.articles.concat(action.payload)
+      articles: articles
     }
   );
 }

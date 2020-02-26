@@ -20,7 +20,7 @@ async function createWindow() {
     width: 1024,
     height: 900,
     minWidth: 720, // set a min width
-    minHeight: 900, // and a min height
+    minHeight: 920, // and a min height
     // Remove the window frame from windows applications
     frame: false,
     show:false,

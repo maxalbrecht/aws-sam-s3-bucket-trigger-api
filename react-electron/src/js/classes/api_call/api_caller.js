@@ -15,6 +15,7 @@ class APICaller {
     this.errorMsgList = [];
     try {
       let date_ob = new Date();
+      this.milliseconds = date_ob.getTime();
       let date = this.IntTwoChars(date_ob.getDate());
       let month = this.IntTwoChars(date_ob.getMonth() + 1);
       let year = date_ob.getFullYear();

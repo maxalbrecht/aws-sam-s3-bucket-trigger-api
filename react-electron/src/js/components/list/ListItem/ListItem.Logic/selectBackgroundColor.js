@@ -6,9 +6,19 @@ function selectBackgroundColor() {
 
   switch (status) {
     case SUCCESS:
-      return COLOR_SUCCESS;
+      if(this.props.jobOrdinalNumber%2 === 1){
+        return COLOR_SUCCESS;
+      }
+      else {
+        return '#002f4b';
+      }
     case ERROR:
-      return COLOR_ERROR;
+      if(this.props.jobOrdinalNumber%2 === 1){
+        return COLOR_ERROR;
+      }
+      else {
+        return '#800000';
+      }
     default:
       return 'none';
   }

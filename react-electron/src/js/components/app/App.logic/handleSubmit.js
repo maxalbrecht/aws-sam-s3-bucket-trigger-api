@@ -27,7 +27,9 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
 // Once this is done, it adds the submitted job so that it can be
 // displayed in the UI
  function handleSubmit(event) {
+  let date = new Date();
   let storeState = window.store.getState()
+  
 
   if(defined(storeState.user)) {
     let currentId = uuidv4();
@@ -69,7 +71,8 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
         priority: this.state.priority,
         notes: this.state.notes,
         payloadCreator: APIPayloadCreator,
-        apiCaller: apiCaller
+        apiCaller: apiCaller,
+        date: date
       }
     );
     

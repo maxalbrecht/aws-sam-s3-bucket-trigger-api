@@ -79,6 +79,8 @@ class ConnectedList extends Component {
 
   render() {
     console.log("rendering list group...");
+
+    let jobOrdinalNumber = 0;
     
     return (
       <Fragment>
@@ -87,8 +89,11 @@ class ConnectedList extends Component {
           <ListGroup className="submittedJobsListGroup">
             { this.placeholder(this.props.articles) }
             {
-              this.props.articles.reverse().map(
-                el => ( <ListItem key={el.id} ListItemObject={el} /> )
+              this.props.articles.map(
+                el => {
+                  jobOrdinalNumber++;
+                  return ( <ListItem key={el.id} ListItemObject={el} jobOrdinalNumber={jobOrdinalNumber} /> )
+                }
               )
             }
           </ListGroup>
