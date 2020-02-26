@@ -59,7 +59,7 @@ class ConnectedThemeWrapper extends Component {
     console.log(className)
     return (
       <div id = "themeWrapper" 
-        className = {className} 
+        className = { className + ' ' + className } 
         style={{height:'100%'}}
       >
       <Container xs={12} className="windowContainer" >

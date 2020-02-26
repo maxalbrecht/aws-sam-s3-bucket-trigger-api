@@ -112,6 +112,7 @@ function APICallFinishedReducer(state, action) {
     }
   );
 }
+
 function ToggleJobDetailsReducer(state, action) {
   console.log("Inside ToggleJobDetailsReducer");
 

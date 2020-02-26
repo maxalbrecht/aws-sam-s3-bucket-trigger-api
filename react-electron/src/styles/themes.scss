@@ -1,16 +1,7 @@
 @import './colors';
 
 $themes: (
-  light: (
-    main-background-color: $light-main-background-color,
-    main-color: $light-main-color,
-    text-field-unhighlighted-color: $light-text-field-unhighlighted-color,
-    title-bar-background-color: $light-title-bar-background-color,
-    title-bar-color: $light-title-bar-color,
-    title-bar-button-color: $light-title-bar-button-color,
-    title-bar-button-highlight-color: $light-title-bar-button-highlight-color,
-    footer-bar-color: black
-  ),
+
   dark: (
     main-background-color: $dark-main-background-color,
     main-color: $dark-main-color,
@@ -19,7 +10,26 @@ $themes: (
     title-bar-color: $dark-title-bar-color,
     title-bar-button-color: $dark-title-bar-button-color,
     title-bar-button-highlight-color: $dark-title-bar-button-highlight-color,
-    footer-bar-color: lightgrey
+    footer-bar-color: lightgrey,
+    submitted-jobs-color-success-odd: $dark-submitted-jobs-color-success-odd,
+    submitted-jobs-color-success-even: $dark-submitted-jobs-color-success-even,
+    submitted-jobs-color-error-odd: $dark-submitted-jobs-color-error-odd,
+    submitted-jobs-color-error-even: $dark-submitted-jobs-color-error-even,
+  ),
+  light: (
+    main-background-color: $light-main-background-color,
+    main-color: $light-main-color,
+    text-field-unhighlighted-color: $light-text-field-unhighlighted-color,
+    title-bar-background-color: $light-title-bar-background-color,
+    title-bar-color: $light-title-bar-color,
+    title-bar-button-color: $light-title-bar-button-color,
+    title-bar-button-highlight-color: $light-title-bar-button-highlight-color,
+    footer-bar-color: black,
+    submitted-jobs-color-success-odd: $light-submitted-jobs-color-success-odd,
+    submitted-jobs-color-success-even: $light-submitted-jobs-color-success-even,
+    submitted-jobs-color-error-odd: $light-submitted-jobs-color-error-odd,
+    submitted-jobs-color-error-even: $light-submitted-jobs-color-error-even,
+
   )
 );
 

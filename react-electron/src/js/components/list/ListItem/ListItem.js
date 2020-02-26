@@ -8,6 +8,10 @@ import './ListItem.scss';
 import Collapse from '@kunukn/react-collapse'
 import fieldBind from './fields'
 
+import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
+import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../../constants/list_item_statuses'
+import defined from '../../../utils/defined';
+
 //var store = window.store;
 const uuidv4 = window.require("uuid/v4")
 
@@ -19,11 +23,42 @@ class ConnectedListItem extends Component {
   }
 
   render() {
-    let borderColor = this.selectStatusColor();
-    let backgroundColor = this.selectBackgroundColor();
+    let oddOrEven = ODD
+    if(this.props.jobOrdinalNumber%2 === 0){
+      oddOrEven = EVEN
+    }
+
+    let successOrFailure = ''
+
+    if(this.ListItemObject.apiCaller.APICallStatus === STARTING_JOB) {
+      successOrFailure = ''
+    }
+    else if(this.ListItemObject.apiCaller.APICallStatus === SUCCESS) {
+      successOrFailure = SUCCESS
+    }
+    else if(
+      this.ListItemObject.apiCaller.APICallStatus === ERROR
+      || this.ListItemObject.apiCaller.APICallStatus === ERROR_API_NOT_RESOLVED
+      
+    ) {
+      successOrFailure = FAILURE
+    }
+
+    let jobClasses = ''
+    if(successOrFailure !== ''){
+      jobClasses = successOrFailure + '_' + oddOrEven
+    }
 
     return (
-      <ListGroup.Item style={{borderTopWidth:'1px', borderColor:borderColor, backgroundColor:backgroundColor}} className="listItemGroupItem" key={this.ListItemObject.ListItemId} >
+      <ListGroup.Item 
+        style={{borderTopWidth:'1px'}} 
+        className={
+          'listItemGroupItem' 
+          + ' ' + jobClasses
+        } 
+
+        key={this.ListItemObject.ListItemId} 
+      >
         
         <Row className="JobNumber">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Job Number:</u></Col>

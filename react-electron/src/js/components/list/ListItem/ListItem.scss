@@ -1,11 +1,44 @@
- .list-group-item {
-   border-color: darkgrey;
-   font-size: 14px;
-   border-top-width: 5px;
- }
+@import './../../../../styles/themes';
 
-  .listItemGroupItem {
-   background: none;
-   margin: 0 0 8px 0;
-   border-top-width: 4px;
- }
+.list-group-item {
+  border-color: darkgrey;
+  font-size: 14px;
+  border-top-width: 5px;
+}
+
+.listItemGroupItem {
+  @include themify($themes) {
+    background: none;
+    background-color:none;
+    margin: 0 0 8px 0;
+    border-top-width: 4px;
+  }
+}
+
+.Success_ODD {
+  @include themify($themes) {
+    background-color: themed('submitted-jobs-color-success-odd');
+    border-color: themed('submitted-jobs-color-success-odd');
+  }
+}
+
+.Success_EVEN {
+  @include themify($themes) {
+    background-color: themed('submitted-jobs-color-success-even');
+    border-color: themed('submitted-jobs-color-success-even');
+  }
+}
+
+.FAILURE_ODD {
+  @include themify($themes) {
+    background-color: themed('submitted-jobs-color-error-odd');
+    border-color: themed('submitted-jobs-color-error-odd');
+  }
+}
+
+.FAILURE_EVEN {
+  @include themify($themes) {
+    background-color: themed('submitted-jobs-color-error-even');
+    border-color: themed('submitted-jobs-color-error-even');
+  }
+}
