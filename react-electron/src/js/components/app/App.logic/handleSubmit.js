@@ -32,6 +32,7 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
   
 
   if(defined(storeState.user)) {
+    storeState.user.resetLastTimeOfActivity();
     let currentId = uuidv4();
     event.preventDefault();
 

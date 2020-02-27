@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from "react-router-dom"
 import { Route } from 'react-router-dom'
 import { TOGGLE_DARK_THEME } from './../../constants/action-types'
 import { THEME_DARK, THEME_LIGHT } from './../../constants/themes'
@@ -13,6 +14,7 @@ import App from './../app/App'
 import About from './../../../pages/about'
 import Documentation from './../../../pages/documentation'
 import ClearStateAction from './../../utils/clearStateAction'
+import CheckUserActivity from './../../utils/checkUserActivity'
 const uuidv4 = window.require("uuid/v4")
 
 function mapStateToProps(state, ownProps) {
@@ -38,8 +40,9 @@ function mapStateToProps(state, ownProps) {
 class ConnectedThemeWrapper extends Component {
   constructor(props) {
     super(props);
-    let { theStore } = props;
-    this.theStore = theStore;
+    let { theStore } = props
+    this.theStore = theStore
+    CheckUserActivity(this);
   }
   getTheme() {
     let theme = THEME_DARK;
@@ -78,6 +81,6 @@ class ConnectedThemeWrapper extends Component {
   }
 }
 
-const ThemeWrapper = connect(mapStateToProps)(ConnectedThemeWrapper);
+const ThemeWrapper = connect(mapStateToProps)(withRouter(ConnectedThemeWrapper));
 
 export default ThemeWrapper;

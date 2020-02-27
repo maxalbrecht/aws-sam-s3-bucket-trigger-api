@@ -3,6 +3,7 @@ import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
 import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
 import { THEME } from './../constants/localStorageVariables'
+import LogOut from './../utils/logout'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
@@ -14,14 +15,16 @@ import {
   REMOVE_DOC,
   USER_LOGGED_IN,
   LOG_OUT,
-  TOGGLE_DARK_THEME
+  TOGGLE_DARK_THEME,
+  CHECK_USER_ACTIVITY
 } from "../constants/action-types";
 
 const getInitialState = () => ({
   allowOpenDialog: true,
   articles: [],
   user: null,
-  theme: getPreferredTheme()
+  theme: getPreferredTheme(),
+  lastTimeOfActivity: new Date()
 });
 
 function getPreferredTheme() {
@@ -59,6 +62,8 @@ function rootReducer(state = getInitialState(), action) {
       return LogOutReducer(state, action);
     case TOGGLE_DARK_THEME:
       return ToggleDarkThemeReducer(state, action);
+    case CHECK_USER_ACTIVITY:
+      return CheckUserActivityReducer(state, action);
     default:
       return state;
   }
@@ -220,15 +225,8 @@ function UserLoggedInReducer(state, action) {
   )
 }
 
-function LogOutReducer(state, action) {
-  console.log("Inside LogOutReducer");
-
-  console.log("LogOutReducer state:");
-  console.log(state)
-
-  console.log("LogOutReducer action:");
-  console.log(action);
-  let that = action.payload.that;
+function LogOutReducerCommonCode(state, action) {
+  console.log("Inside LogOutReducerCommonCode");
 
   try {
     Auth.signOut({ global: true });
@@ -241,8 +239,6 @@ function LogOutReducer(state, action) {
     console.log(e)
   }
 
-  that.props.history.push("/login");
-
   return Object.assign(
     {},
     state,
@@ -251,6 +247,20 @@ function LogOutReducer(state, action) {
       user: null
     }
   )
+}
+
+function LogOutReducer(state, action) {
+  console.log("Inside LogOutReducer");
+
+  console.log("LogOutReducer state:");
+  console.log(state)
+
+  console.log("LogOutReducer action:");
+  console.log(action);
+  
+  action.payload.that.props.history.push("/login")
+
+  return LogOutReducerCommonCode(state, action);
 }
 
 function ToggleDarkThemeReducer(state, action) {
@@ -277,6 +287,31 @@ function ToggleDarkThemeReducer(state, action) {
   )
 }
 
+function CheckUserActivityReducer(state, action) {
+  console.log("Inside CheckUserActivityReducer")
+  let timeoutGracePeriodInHours = 2
+  let timeoutGracePeriodInMilliseconds = timeoutGracePeriodInHours * 60 * 60 * 1000
+
+  if(
+    defined(state.user)
+    && (
+      !defined(state.lastTimeOfActivity)
+      || (state.lastTimeOfActivity.getTime() + timeoutGracePeriodInMilliseconds) < (new Date()).getTime()
+    )
+  ) {
+    console.log("CheckUserActivity() sending to LogOutReducerCommonCode...")
+    return LogOutReducerCommonCode(state, action)
+  }
+  else {
+    return Object.assign(
+      {},
+      state,
+      {
+        ...state,
+      }
+    )
+  }
+}
 
 export default rootReducer;
 

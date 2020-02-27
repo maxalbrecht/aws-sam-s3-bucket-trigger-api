@@ -9,6 +9,7 @@ class User {
     this.contactEmail = null;
     this.contactName = null;
     this.contactPhone = null;
+    this.lastTimeOfActivity = new Date();
 
     if (defined(cognitoUser)) {
       let environment = this.chooseEnvironment();
@@ -73,6 +74,10 @@ class User {
     else {
       return PROD
     }
+  }
+
+  resetLastTimeOfActivity() {
+    this.lastTimeOfActivity = new Date()
   }
 }
 

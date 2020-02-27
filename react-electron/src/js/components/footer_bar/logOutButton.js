@@ -3,6 +3,7 @@ import { Form, Button } from 'react-bootstrap'
 import SectionTitle from './../../utils/sectionTitle'
 import LogOut from './../../utils/logout'
 import defined from './../../utils/defined'
+import './logOutButton.scss'
 var store = window.store
 
 function LogOutButton() {
@@ -11,6 +12,7 @@ function LogOutButton() {
       <Button
             type="button"
             variant="secondary"
+            className="logOutButton"
             onClick={ ()=>(LogOut(this)) }
             style={{
               fontSize: '14px',
@@ -23,8 +25,7 @@ function LogOutButton() {
               paddingTop:'0px',
               paddingBottom:'0px',
               background:'none',
-              color:'lightgrey',
-              borderColor:'lightgrey',
+              
               width:'80px',
               zIndex:'100'
             }}

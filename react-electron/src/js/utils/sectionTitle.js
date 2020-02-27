@@ -12,7 +12,12 @@ function SectionTitle(title, fontSizeParam) {
   return (
     <Fragment>
       <Form.Row>
-        <Form.Label style={{ marginBottom:'0px', fontSize:fontSize }}>{title}</Form.Label>
+        <Form.Label
+          className='logOutSectionTitle'
+          style={{ marginBottom:'0px', fontSize:fontSize }}
+        >
+          {title}
+        </Form.Label>
       </Form.Row>
     </Fragment>
   )
