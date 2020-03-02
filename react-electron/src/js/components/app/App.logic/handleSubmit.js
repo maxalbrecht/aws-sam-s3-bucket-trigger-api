@@ -51,6 +51,7 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
       priority: ConvertPriorityStringToInt(this.state.priority),
       assignedUserEmail: storeState.user.assignedUserEmail,
       imageType: 2,
+      imageBranding: "Veritext", 
       createImage: 1,
       contactName: storeState.user.contactName,
       contactEmail: storeState.user.contactEmail,
