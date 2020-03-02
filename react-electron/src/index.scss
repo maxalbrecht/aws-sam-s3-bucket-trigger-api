@@ -17,9 +17,12 @@ body {
 
 $windowContainerPaddingSide:15px;
 .windowContainer {
+  display:flex;
+  flex-direction: column;
   padding-top:40px;
   padding-left: $windowContainerPaddingSide;
   padding-right: $windowContainerPaddingSide;
+  padding-bottom:60px;
   min-height: 100%;
   max-height:none;
   max-width: none;
@@ -28,6 +31,14 @@ $windowContainerPaddingSide:15px;
     background-color: themed('main-background-color');
   }
   transition: background-color 0.25s ease;
+}
+
+.windowContainer > div {
+  flex: 1;
+}
+
+.main > form {
+  flex:1;
 }
 
 code {
@@ -196,6 +207,14 @@ code {
 
 .form-row>[class*=col-].submittedJobsCol {
   padding-left: 30px;
+}
+
+.form-row {
+  flex:1;
+}
+
+.submittedJobsCol {
+  padding-bottom:80px;
 }
 
 .textField,

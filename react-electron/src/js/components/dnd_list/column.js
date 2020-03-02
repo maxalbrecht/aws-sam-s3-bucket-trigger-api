@@ -20,16 +20,14 @@ export default class Column extends React.Component {
     console.log(this.props);
 
     return (
-      <div style={{width:'auto', height:'auto', marginLeft:'0', marginRight:'0'}}>
+      <div style={{width:'auto', height:'100%', marginLeft:'0', marginRight:'0'}}>
       <Scrollbars 
         className="scrollBars" 
-        autoHeight
         autoHeightMin={400}
-        autoHeightMax={400}
         style={{
           top:40,
           position:'absolute',
-          height:'fit-content',
+          height:'calc(100% - 40px)',
           margin:'inherit',
           border:'1px solid darkgrey',
           borderColor:'darkgrey',

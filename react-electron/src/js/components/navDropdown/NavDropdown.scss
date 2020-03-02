@@ -1,0 +1,40 @@
+@import "./../../../styles/themes";
+
+.theme-dark .navDropdownLabel {
+    color:white;
+}
+
+.theme-dark .dropdown-menu {
+  border-color:white;
+}
+
+.dropdown-menu {
+  @include themify($themes) {
+    background-color: themed('main-background-color');
+  }
+}
+
+.theme-dark .dropdown-item {
+  color: white;
+}
+
+.theme-dark .dropdown-item:hover {
+  color: black;
+}
+
+.theme-dark ::after {
+  color: lightgrey;
+}
+
+.nav-link {
+  padding-top:4px;
+  padding-bottom:0;
+  padding-left:0;
+  padding-right:0;
+  font-size: 14px;
+}
+
+.navDropdownWrapper {
+  -webkit-app-region: no-drag;
+  transform: translate(-160px, 0);
+}

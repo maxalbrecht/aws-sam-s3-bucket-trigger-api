@@ -238,14 +238,11 @@ function LogOutReducerCommonCode(state, action) {
     console.log("Error signing out. error:");
     console.log(e)
   }
-
+  let newState = getInitialState();
   return Object.assign(
     {},
     state,
-    {
-      ...state,
-      user: null
-    }
+    newState
   )
 }
 

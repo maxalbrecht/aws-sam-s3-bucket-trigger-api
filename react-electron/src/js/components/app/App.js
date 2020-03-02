@@ -16,14 +16,20 @@ class ConnectedApp extends Component {
   render() {
     return (
       <div style={{height:'100%'}} className="main">
-        <Form style={{height:'100%'}} className="form" onSubmit={this.handleSubmit}>
+        <Form
+          style={{
+            height:'100%',
+            display:'flex',
+            flexDirection:'column',
+          }} 
+          className="form" onSubmit={this.handleSubmit}>
           <Form.Row style={{height:'100%'}}>
-            <Col xs={6}>
-              <Form.Row>{ this.JobNumber() }</Form.Row>
+            <Col xs={6} style={{paddingBottom:'20px', display:'flex', flexDirection:'column'}}>
+              <Form.Row style={{maxHeight:'80px'}}>{ this.JobNumber() }</Form.Row>
               <Form.Row>{ this.SourceFiles() }</Form.Row>
-              <Form.Row>{ this.OrderType() }{ this.Priority() }</Form.Row>
-              <Form.Row>{ this.Notes() }</Form.Row>
-              { this.SubmitJobButton() }
+              <Form.Row style={{maxHeight:'80px'}}>{ this.OrderType() }{ this.Priority() }</Form.Row>
+              <Form.Row style={{maxHeight:'130px'}}>{ this.Notes() }</Form.Row>
+              <Form.Row style={{maxHeight:'40px'}}>{ this.SubmitJobButton() }</Form.Row>
             </Col>
 
             <Col xs={6} className="submittedJobsCol">

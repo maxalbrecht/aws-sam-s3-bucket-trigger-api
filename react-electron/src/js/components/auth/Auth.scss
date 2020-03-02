@@ -1,7 +1,7 @@
 @import "./../../../styles/themes";
 
 .authMain {
-  padding-top: 80px;
+  padding-top: 0px;
 }
 
 .authMain .form {
@@ -19,4 +19,8 @@
     color: themed('text-field-unhighlighted-color');
   }
   font-size: 16px;
+}
+
+.authMain > Form {
+  padding-top:120px;
 }
