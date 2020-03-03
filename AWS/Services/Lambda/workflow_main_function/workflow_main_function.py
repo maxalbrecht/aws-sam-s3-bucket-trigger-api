@@ -7,10 +7,40 @@ The main module of the workflow
 import json
 import os
 from uuid import uuid4
+from ..common import common
 try:
     import boto3
 except ImportError:
     print("import of boto3 failed")
+
+def CheckIfEnabled(ENV_TYPE):
+    """Function to check config to see if files should be processed
+
+    Parameters
+    ----------
+    ENV_TYPE: string, required
+        dev, demo or prod
+
+    Returns
+    -------
+    bool
+        True if files should be proccessed, false otherwise
+
+    """
+    try:
+        ssm = boto3.client('ssm')
+        parameter = ssm.get_parameter(Name=('bucket-to-api-' + ENV_TYPE), WithDecryption=True)
+        print(parameter['Parameter']['Value']) 
+
+        if parameter['Parameter']['Value'] == 'True':
+            return True
+        elif parameter['Parameter']['Value']== 'False':
+            return False
+        else:
+            raise ValueError("Cannot covert {} to a bool".format(s))
+    except Exception as ex:
+        print("exception when checking if file data should be sent to api\n", ex)
+        raise
 
 def lambda_handler(event, context):
     """Function to pass jobs to external api
@@ -43,6 +73,7 @@ def lambda_handler(event, context):
     """
     
     dynamodb = boto3.resource('dynamodb')
+    enabled = False
 
     # region Handle parameters and variables
     # Save environment variables
@@ -59,14 +90,14 @@ def lambda_handler(event, context):
             event_name = record['eventName']
             event_time = record['eventTime']
     except Exception as ex:
-        print("exception when processing even values\n", ex)
+        print("exception when processing event values\n", ex)
         raise
 
     # Set default values for sam local testing
     if ((ENV_TYPE == 'prod') == False) and ((ENV_TYPE == 'demo') == False):
         ENV_TYPE = 'dev'
-        TABLE_NAME = 's3-bucket-trigger-api-log-table-dev'
-        bucket_name == 's3-bucket-trigger-api-test-bucket-dev'
+        TABLE_NAME = 'bucket-to-api-table-dev'
+        bucket_name == 'bucket-to-api-test-bucket-dev'
     
     # print parameter values during development
     if ENV_TYPE == 'dev':
@@ -81,7 +112,7 @@ def lambda_handler(event, context):
     # endregion handle parameters and variables
     
     # region Check the config file
-
+    enabled = common.CheckIfEnabled(ENV_TYPE)
     # endregion Check if the config file
 
     # region Make API call

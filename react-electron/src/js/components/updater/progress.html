@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Downloading Update</title>
+  </head>
+  <body>
+
+    <progress style="width:100%;" value="0" max="100"></progress>
+  </body>
+
+  <script>
+    // jQuery
+    $ = require('jquery');
+    // Require IPC renderer module from electron
+    const { ipcRenderer } = require('electron');
+
+    // Request progress every second
+    setInterval(() => {
+      // Request a sync response
+      let progress = ipcRenderer.sendSync('download-progress-request');
+
+      // Update progress element
+      $('progress').val(progress) 
+
+    }, 100)
+  </script>
+
+</html>

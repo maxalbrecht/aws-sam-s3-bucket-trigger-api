@@ -1,0 +1,96 @@
+@import "./../../../styles/themes";
+
+body {
+  padding: 0px;
+  margin: 0px; 
+ }
+ 
+#title-bar {
+  -webkit-app-region: drag;
+  height: 30px;
+  padding: 0 0 0 6px;
+  margin: 0px;
+  width: 100%;
+  font-size: 15px;
+  left: 0px;
+  top: 0px;
+  position: fixed;
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    color: themed('title-bar-color');
+  }
+}
+
+.title-bar-button {
+  height: 30px;
+  width: 45px;
+  text-align: center;
+  align-content: center;
+  vertical-align: top;
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    border-color: themed('title-bar-background-color');
+    color: themed('title-bar-button-color');
+  }
+  border-radius: 0px;
+  font-size: 20px;
+  box-shadow: none;
+  position:relative;
+}
+
+.button-text {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+
+.title-bar-button:hover {
+  @include themify($themes) {
+    background-color: themed('title-bar-button-highlight-color');
+    border-color: themed('title-bar-button-highlight-color');
+    color: themed('title-bar-color');
+  }
+  box-shadow: none;
+}
+
+.title-bar-button:focus {
+  @include themify($themes) {
+    background-color: themed('title-bar-background-color');
+    border-color: themed('title-bar-button-highlight-color');
+    color: themed('title-bar-button-color');
+  }
+  border: none;
+  box-shadow: none;
+}
+
+.title-bar-button-close:hover {
+  @include themify($themes) {
+    background-color: red;
+  }
+}
+
+#app-title {
+  position: fixed;
+  top: 5px;
+  left: 35px;
+}
+
+#title-bar-btns {
+  -webkit-app-region: no-drag;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+#small-icon {
+  -webkit-app-region: drag;
+  height: 20px;
+  padding: 0 0 0 6px;
+  margin: 5px 0 0 0;
+  font-size: calc(10px + 1vmin);
+  left: 0px;
+  top: 0px;
+  position: fixed;
+}

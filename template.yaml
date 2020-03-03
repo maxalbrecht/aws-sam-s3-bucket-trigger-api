@@ -55,21 +55,19 @@ Resources:
       BucketName: !Sub "bucket-to-api-workflow-bucket-${EnvType}"
 
 #######################################################
-# Config File
+# Enabled Parameter
 #######################################################
-# *This config file will determine if the workflow processes files, as well as any other future configurations we may add*
-  # S3Object:
-  #   Type: AWS::S3::Object
-  #   Properties:
-  #     Target:
-  #       Bucket: !Ref WorkflowBucket
-  #       Key: README.md
-  #       ContentType: text/markdown
-  #     Body: !Sub |
-  #       # *Main Workflow Enabled or disabled*
-  #       # Enabled: 0 for disabled, 1 for enabled
-  #       enabled: 1
+# *This parameter will determine if the workflow processes files (which is stored in the AWS Parameter Store), as well as any other future configurations we may add*
 
+  Type: AWS::SSM::Parameter
+  Properties: 
+    AllowedPattern: String
+    Description: Whether file data should be sent to api by bucket-to-api app
+    Name: !Sub "bucket-to-api-enabled-${EnvType}"
+    Policies: String
+    Type: String
+    Value: False
+    
 #######################################################
 # Testing Bucket
 #######################################################

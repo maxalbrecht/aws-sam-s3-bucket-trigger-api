@@ -1,4 +1,4 @@
-#!c:\users\devops2\documents\github\aws-sam-s3-bucket-trigger-api\.venv\scripts\python.exe
+#!c:\users\max\appdata\local\programs\python\python38\python.exe
 
 # $Id: rst2odt.py 5839 2009-01-07 19:09:28Z dkuhlman $
 # Author: Dave Kuhlman <dkuhlman@rexx.com>

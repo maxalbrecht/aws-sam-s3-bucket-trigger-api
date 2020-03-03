@@ -1,0 +1,15 @@
+@import './../../../styles/themes.scss';
+
+.logOutButton {
+  @include themify($themes) {
+    color: themed('log-out-button-color');
+    border-color: themed('log-out-button-color');
+  }
+}
+
+.logOutButton.btn-secondary {
+  @include themify($themes) {
+    color: themed('log-out-button-color');
+    border-color: themed('log-out-button-color');
+  }
+}

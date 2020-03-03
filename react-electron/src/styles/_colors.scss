@@ -1,0 +1,35 @@
+// DARK-THEME COLORS
+$dark-main-background-color: #282c34;
+$dark-main-color: white;
+$dark-text-field-unhighlighted-color: darkgrey;
+
+$dark-title-bar-background-color: #1f2329;
+$dark-title-bar-color: white;
+$dark-title-bar-button-color:#9E9E9E;
+$dark-title-bar-button-highlight-color: #404040;
+
+$dark-log-out-button-color: lightgrey;
+
+$dark-submitted-jobs-color-default: $dark-main-background-color;
+$dark-submitted-jobs-color-success-odd:#001632; 
+$dark-submitted-jobs-color-success-even:#00224B;
+$dark-submitted-jobs-color-error-odd:#3E0000;
+$dark-submitted-jobs-color-error-even:#800000;
+
+// LIGHT-THEME COLORS
+$light-main-background-color: white;
+$light-main-color: black;
+$light-text-field-unhighlighted-color: darkgrey;
+
+$light-title-bar-background-color: lightgrey;
+$light-title-bar-color: black;
+$light-title-bar-button-color:#282c34;
+$light-title-bar-button-highlight-color: darkgrey;
+
+$light-log-out-button-color: black;
+
+$light-submitted-jobs-color-default: $light-main-background-color;
+$light-submitted-jobs-color-success-odd:#accbff; 
+$light-submitted-jobs-color-success-even:#92bbff;
+$light-submitted-jobs-color-error-odd: #fa8072;
+$light-submitted-jobs-color-error-even: #fdc3bc;
