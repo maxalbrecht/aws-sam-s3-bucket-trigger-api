@@ -4,7 +4,6 @@ import { Form, Col } from 'react-bootstrap';
 import { connect } from "react-redux";
 import SubmittedJobsList from "../list/List";
 import fieldBind from './fields';
-import SectionTitle from '../../utils/sectionTitle';
 
 class ConnectedApp extends Component {
   constructor(props) {

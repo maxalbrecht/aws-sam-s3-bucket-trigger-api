@@ -1,0 +1,39 @@
+@import "./../../../../styles/themes";
+
+.Job-Container {
+  border: 1px solid lightgrey;
+  border-radius: 2px;
+  margin-bottom:8px;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  transition: border-color 0s ease;
+  padding:0;
+}
+
+.Job-Title {
+  @include themify($themes) {
+    background-color: themed('job-header-background-color');
+    //background-color: red;
+    margin-bottom:0
+  }
+  width:100%;
+  padding-left:8px;
+  padding-top:5px;
+  height:30px;
+  font-size: 16px;
+  transition: background-color 0.25s ease;
+}
+
+.TaskList {
+  padding-top:5px;
+  padding-left:5px;
+  padding-right:5px;
+  height:calc(100%-30px);
+}
+
+.DRAGGING {
+  @include themify($themes) {
+    background-color: themed('list-item-dragging-background-color')
+  }
+  transition: background-color 0.25s ease;
+}

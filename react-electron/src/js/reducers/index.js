@@ -3,7 +3,6 @@ import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
 import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
 import { THEME } from './../constants/localStorageVariables'
-import LogOut from './../utils/logout'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
@@ -195,10 +194,6 @@ function AllowOpenDialogReducer(state, action) {
   let newDocs = syncApp.state.sourceFiles.docs;
   delete newDocs[action.payload.draggableId];
 
-  const newColumn = {
-  // ...co
-  }
-  
   return Object.assign(
     {},
     state,

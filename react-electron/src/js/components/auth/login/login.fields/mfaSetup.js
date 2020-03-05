@@ -5,11 +5,11 @@ import defined from './../../../../utils/defined'
 import QRCode from 'qrcode.react';
 
 function MFASetup () {
-  const { username, cognitoUser, cognitoTOTPCode } = this.state;
+  const { username, cognitoTOTPCode } = this.state;
 
 
   if(defined(cognitoTOTPCode)) {
-  const str = "otpauth://totp/AWSCognito:"+ username + "?secret=" + cognitoTOTPCode + "&issuer=" + "VeriSync";
+  const str = "otpauth://totp/AWSCognito:"+ username + "?secret=" + cognitoTOTPCode + "&issuer=VeriSync";
     return (
       <Form className="form"
         onSubmit={this.handleMFASetup}

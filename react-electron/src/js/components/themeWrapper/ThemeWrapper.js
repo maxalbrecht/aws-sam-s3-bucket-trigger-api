@@ -57,10 +57,8 @@ class ConnectedThemeWrapper extends Component {
   }
 
   render(){
-    console.log('rendering ThemeWrapper...')
     let className = this.getTheme();
-    console.log('themeWrapper.render.className:')
-    console.log(className)
+    
     return (
       <div id = "themeWrapper" 
         className = { className + ' ' + className } 

@@ -1,16 +1,14 @@
 import { mapStateToProps, logicConstructor } from './ListItem.Logic/ListItem.Logic'
 
 import React, { Component } from 'react';
-import { ListGroup, Row, Col, Button, Form } from 'react-bootstrap';
+import { ListGroup, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux'
 
 import './ListItem.scss';
-import Collapse from '@kunukn/react-collapse'
 import fieldBind from './fields'
 
 import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
 import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../../constants/list_item_statuses'
-import defined from '../../../utils/defined';
 
 //var store = window.store;
 const uuidv4 = window.require("uuid/v4")

@@ -1,0 +1,25 @@
+@import './../../../../styles/themes.scss';
+
+.Task-Div {
+  border-style: dashed;
+  border-width: 1px;
+  border-color: darkgrey;
+  margin-bottom:10px;
+  padding-top:1px;
+  padding-bottom:1px;
+  padding-left:0;
+  padding-right:0;
+}
+
+.Task-Title {
+  @include themify($themes) {
+    background-color: themed('task-header-background-color');
+    margin-bottom:0
+  }
+  width:100%;
+  padding-left:8px;
+  padding-top:5px;
+  height:30px;
+  font-size: 15px;
+  transition: background-color 0.25s ease;
+}

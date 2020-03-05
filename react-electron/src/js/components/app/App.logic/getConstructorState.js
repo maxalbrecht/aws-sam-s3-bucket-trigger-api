@@ -1,4 +1,3 @@
-import User from "../../../classes/user/user"
 import Deposition from "../../../classes/deposition/deposition"
 import { NORMAL, HIGH } from "../../../constants/priority_options"
 import { QuickSync } from "../../../constants/order_types"

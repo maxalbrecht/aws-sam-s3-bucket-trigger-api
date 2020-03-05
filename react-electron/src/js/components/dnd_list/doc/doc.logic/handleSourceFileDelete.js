@@ -1,6 +1,5 @@
 import { action } from './../../../../utils/action'
 import { REMOVE_DOC } from "../../../../constants/action-types";
-var store = window.store
 
 const BACKSPACE = 'Backspace'
 const DELETE_BACKSPACE = 'delete'

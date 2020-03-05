@@ -1,15 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
 import { Form, Col } from 'react-bootstrap';
-import { connect } from 'react-redux'
-import { action } from '../../../utils/action'; 
-import { SET_AUTH_STATE } from '../../../constants/action-types'
 import fieldBind from './login.fields';
 import { logicConstructor } from './login.logic/Login.logic'
 import SectionTitle from './../../../utils/sectionTitle'
 import defined from './../../../utils/defined'
 import './../Auth.scss'
-var store = window.store;
 
 class Login extends Component {
   constructor(props) {

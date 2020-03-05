@@ -1,7 +1,6 @@
 import { checkIfDirectoryExists } from '../../../utils/directoryFunctions'
 import { DISALLOW_OPEN_DIALOG, ALLOW_OPEN_DIALOG } from './../../../constants/action-types'
 import { action } from './../../../utils/action'
-import defined from '../../../utils/defined'
 
 var electron = window.require("electron");
 var remote = electron.remote;

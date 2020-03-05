@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 // Handle submit when the user clicks on the Submit Job Button
 
-import { Auth } from 'aws-amplify'
 import Deposition from "../../../classes/deposition/deposition";
 import APIPayloadCreator from "../../../classes/api_call/api_payload_creator";
 import APICaller from "../../../classes/api_call/api_caller";

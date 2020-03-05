@@ -27,6 +27,7 @@
   max-height:none;
   margin-left:0;
   margin-right:0;
+  padding-top:4px;
   padding-left:2px;
   padding-right:2px;
   display:flex;
@@ -39,16 +40,12 @@
   margin-bottom:10px;
 }
 
-.container-fluid > .col {
-  padding-left:5px;
-  padding-right:5px;
-  margin-left:3px;
-  margin-right:3px;
-  font-size:18px;
-  text-align:center;
-  border-style:dotted;
-  border-width:1px;
-  border-top:none;
-  border-bottom:none;
 
+.dropdownRow {
+  height: 10px;
+  font-size: 15px;
+  max-height: 25px;
+  margin-bottom:5px;
+  padding-left:10px;
+  width:100%;
 }

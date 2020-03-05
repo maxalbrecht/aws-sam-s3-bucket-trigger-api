@@ -16,7 +16,6 @@ import { ListGroup } from 'react-bootstrap'
 import "./List.css"
 import ListItem from  './ListItem/ListItem';
 import { Scrollbars } from 'react-custom-scrollbars';
-import defined from '../../utils/defined';
 
 function mapStateToProps(state){
   return { 

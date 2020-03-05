@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { Container, Row } from 'react-bootstrap'
 import './JobStatus.scss'
-import DuringQC from './fields/DuringQC'
+import fieldBind from './fields'
+import { logicConstructor } from './JobStatus.logic/JobStatus.logic'
 
 class JobStatus extends Component {
   constructor(props) {
     super(props)
-    this.DuringQC = DuringQC.bind(this)
+    logicConstructor.bind(this)(props)
+    fieldBind.bind(this)()
+
+    console.log("JobStatus state:")
+    console.log(this.state)
   }
   render() {
     return (
@@ -25,9 +30,8 @@ class JobStatus extends Component {
         id='jobStatusView'
         className='main jobStatusView'
       >
-        <Row className='jobStatusRow'>{ this.DuringQC() }</Row>
-        <Row className='jobStatusRow'>{ this.DuringQC() }</Row>
-        <Row className='jobStatusRow'>{ this.DuringQC() }</Row>
+      <Row className="dropdownRow">Job Status: QC</Row>
+        <Row className='jobStatusRow'>{ this.TaskAssignmentGrid() }</Row>
       </Container>
     )
   }
