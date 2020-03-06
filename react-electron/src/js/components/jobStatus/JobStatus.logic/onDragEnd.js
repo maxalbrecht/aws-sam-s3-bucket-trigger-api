@@ -21,7 +21,7 @@ function getDroppableClass(droppableId) {
 
 function onDragEnd(result) {
   console.log("Inside JobStatus.logic.onDragEnd")
-  console.timeLog("result:")
+  console.log("result:")
   console.log(result)
   const { destination, source, draggableId } = result
   const typeOfItemBeingDragged = result.type
@@ -136,7 +136,7 @@ function onDragEnd(result) {
       // REMOVE TASK FROM THE SOURCE JOB
       let startJob = this.state.jobs[source.droppableId]
       let taskBeingMoved = startJob.tasks[source.index]
-      console.log("fdafdasstaskBeingMoved:")
+      console.log("taskkBeingMoved:")
       console.log(taskBeingMoved)
       let startTasks = Array.from(startJob.tasks)
       console.log("startTasks:")
@@ -183,7 +183,47 @@ function onDragEnd(result) {
       //let currentParent = getTopParent()
 
     }
-    
+    // TASK IS TAKEN FROM A COLUMN
+    else if(sourceClass === COLUMN) {
+      console.log("sourceClass ===COLUMN")
+      // REMOVE TASK FROM THE SOURCE COLUMN
+      let startColumn = this.state.columns[source.droppableId]
+      let taskBeingMoved = startColumn.tasks[source.index]
+      console.log("taskBeingMoved:")
+      console.log(taskBeingMoved)
+      let startTasks = startColumn.tasks
+      console.log("startTasks:")
+      console.log(startTasks)
+      startTasks.splice(source.index, 1)
+      const newStartColumn = {
+        ...startColumn,
+        tasks: startTasks
+      }
+
+      //TASK MUST BE DROPPED INTO A COLUMN
+      let finishColumn = this.state.columns[destination.droppableId]
+      let finishTasks = Array.from(finishColumn.tasks)
+      finishTasks.splice(destination.index, 0, taskBeingMoved)
+      const newFinishColumn = {
+        ...finishColumn,
+        tasks: finishTasks
+      }
+
+      const newColumns = {
+        ...this.state.columns,
+        [newStartColumn.id]: newStartColumn,
+        [newFinishColumn.id]: newFinishColumn
+      }
+
+      const newState = {
+        ...this.state,
+        columns: newColumns
+      }
+
+      this.setState(newState)
+
+      return
+    }
   }
 }
 
