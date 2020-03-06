@@ -5,11 +5,6 @@ import { TASK } from './../../../constants/reactBeautifulDndTypes'
 import './Task.scss'
 class Task extends React.Component {
   render() {
-    console.log("Inside Task.render")
-    console.log("this.props.task:")
-    console.log(this.props.task)
-    console.log("this.props.task.id:")
-    console.log(this.props.task.id)
     return (
       <Draggable
         draggableId={this.props.task.id}
