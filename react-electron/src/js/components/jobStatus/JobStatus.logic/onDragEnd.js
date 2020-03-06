@@ -21,6 +21,8 @@ function getDroppableClass(droppableId) {
 
 function onDragEnd(result) {
   console.log("Inside JobStatus.logic.onDragEnd")
+  console.timeLog("result:")
+  console.log(result)
   const { destination, source, draggableId } = result
   const typeOfItemBeingDragged = result.type
 
@@ -177,6 +179,9 @@ function onDragEnd(result) {
     // TASK IS BEING TAKEN FROM INSIDE ANOTHER TASK
     else if(sourceClass === TASK) {
       console.log("sourceClass === TASK")
+      // CASE #1: The task is still within its parent job
+      //let currentParent = getTopParent()
+
     }
     
   }
