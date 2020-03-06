@@ -127,6 +127,9 @@ function onDragEnd(result) {
 
     // TASK IS TAKEN FROM A JOB
     if(sourceClass === JOB) {
+      if(destinationClass === TASK) {
+        return
+      }
       console.log("sourceClass === JOB")
       // REMOVE TASK FROM THE SOURCE JOB
       let startJob = this.state.jobs[source.droppableId]
@@ -167,13 +170,11 @@ function onDragEnd(result) {
         columns: newColumns
       }
 
-      console.log("newState:")
-      console.log(newState)
-
       this.setState(newState)
 
       return
     }
+    // TASK IS BEING TAKEN FROM INSIDE ANOTHER TASK
     else if(sourceClass === TASK) {
       console.log("sourceClass === TASK")
     }

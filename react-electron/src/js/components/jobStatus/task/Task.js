@@ -28,6 +28,26 @@ class Task extends React.Component {
               >
                 {`Task: ${this.props.task.taskTitle}`}
               </h2>
+              <AbleToBeDroppedInto 
+                droppableId={this.props.task.id} 
+                type={TASK}
+                isDropDisabled={true}
+              >
+                {(provided, snapshot) => {
+                  return (
+                    <div
+                      className={"TaskList"}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {this.props.task.tasks.map((task, index) =>
+                        <Task key={task.id} task={task} index={index}>{task.taskTitle}</Task>
+                      )}
+                      {provided.placeholder}
+                    </div>
+                  )
+                }}
+              </AbleToBeDroppedInto>
               
 
             </Col>

@@ -11,7 +11,18 @@ const initialData = {
             {
               id: 'job-1-task-1-task-1',
               taskTitle: 'Grab Trash Bag',
-              tasks: []
+              tasks: [
+                {
+                  id:'job-1-task-1-task-1-task-1',
+                  taskTitle: 'Open Lid',
+                  tasks: []
+                },
+                {
+                  id:'job-1-task-1-task-1-task-2',
+                  taskTitle: 'Reach Down',
+                  tasks: []
+                }
+              ]
             },
             {
               id: 'job-1-task-1-task-2',
@@ -40,10 +51,16 @@ const initialData = {
       title: 'Joe',
       jobIds: [],
       tasks: []
+    },
+    'column-3': {
+      id: 'column-3',
+      title: 'Sam',
+      jobIds: [],
+      tasks: []
     }
   },
   //Facilitate reordering of the columns
-  columnOrder: ['column-1', 'column-2']
+  columnOrder: ['column-1', 'column-2', 'column-3']
 }
 
 export default initialData;
