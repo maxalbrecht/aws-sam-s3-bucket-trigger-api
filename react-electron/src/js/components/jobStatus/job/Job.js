@@ -4,6 +4,9 @@ import { Col } from 'react-bootstrap'
 import Task from './../task/Task'
 import './Job.scss'
 import { TASK } from './../../../constants/reactBeautifulDndTypes'
+import { action } from './../../../utils/action'
+import { DRAGGING_JOB } from './../../../constants/action-types'
+
 class Job extends React.Component {
   render() {
     return (
@@ -15,6 +18,7 @@ class Job extends React.Component {
           let draggingOrNotDragging = 'NOT_DRAGGING'
           if(snapshot.isDragging) {
             draggingOrNotDragging = 'DRAGGING'
+            //window.store.dispatch(action(DRAGGING_JOB))
           }
           return (
             <Col 

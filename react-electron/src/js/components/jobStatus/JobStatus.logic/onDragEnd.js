@@ -1,4 +1,6 @@
 import { COLUMN, JOB, TASK } from './../../../constants/reactBeautifulDndTypes'
+import { action } from './../../../utils/action'
+import { CLEAR_STATE_ACTION } from './../../../constants/action-types'
 
 const JOB_INFIX = 'job-'
 const COLUMN_INFIX = 'column-'
@@ -63,6 +65,7 @@ function onDragEnd(result) {
   else if(typeOfItemBeingDragged === JOB) {
     const start = this.state.columns[source.droppableId]
     const finish = this.state.columns[destination.droppableId]
+    let newState = {}
 
     console.log(">>>typeOfItemBeingDragged === JOB")
     // ITEM IS DRAGGED WITHIN THE SAME CONTAINER
@@ -76,16 +79,13 @@ function onDragEnd(result) {
         jobIds: newJobIds
       }
 
-      const newState = {
+      newState = {
         ...this.state,
         columns: {
           ...this.state.columns,
           [newColumn.id]: newColumn
         }
       }
-
-      this.setState(newState)
-      return
     }
     // ITEM IS DRAGGED FROM ONE CONTAINER TO ANOTHER 
     else {
@@ -103,7 +103,7 @@ function onDragEnd(result) {
         jobIds: finishJobIds
       }
 
-      const newState = {
+      newState = {
         ...this.state,
         columns: {
           ...this.state.columns,
@@ -111,9 +111,11 @@ function onDragEnd(result) {
           [newFinish.id]: newFinish
         }
       }
-      this.setState(newState)
-      return
     }
+
+    window.store.dispatch(action(CLEAR_STATE_ACTION))
+    this.setState(newState)
+      return
   }
   // DRAGGING A TASK
   else if(typeOfItemBeingDragged === TASK) {
