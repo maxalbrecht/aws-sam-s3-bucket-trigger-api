@@ -6,6 +6,7 @@ const columns = [
       {
         id: 'task-1',
         taskTitle: '8237',
+        taskType: 'job',
         tasks: [
           {
             id: 'task-1_task-1',

@@ -4,6 +4,7 @@ import { Droppable as AbleToBeDroppedInto, Draggable } from 'react-beautiful-dnd
 import Task from './../task/Task'
 import './TaskAssignmentCol.scss'
 import { TASK } from './../../../constants/reactBeautifulDndTypes'
+import defined from './../../../utils/defined'
 
 
 class TaskAssignmentCol extends React.Component {
@@ -17,7 +18,13 @@ class TaskAssignmentCol extends React.Component {
   }
 
   getIsDropDisabled() {
-    return this.getIsDragDisabled()
+    if(this.props.index === 0) {
+      //return true
+      return false
+    }
+    else {
+      return false
+    }
   }
   getType(){
     if(this.props.index === 0) {
@@ -61,7 +68,7 @@ class TaskAssignmentCol extends React.Component {
                 if(snapshot.isDraggingOver) {
                   draggingOrNotDragging = 'COL_DRAGGING'
                 }
-
+                
                 return (
                   <div 
                     className={`JobList ${draggingOrNotDragging}`}
@@ -69,8 +76,20 @@ class TaskAssignmentCol extends React.Component {
                     {...provided.droppableProps}
                   >
                     {this.props.column.tasks.map((task, index) => {
+                      let displayAsAJob = false
+                      if(defined(task.taskType) && task.taskType === 'job') {
+                        displayAsAJob = true
+                      }
+
                       return (
-                        <Task key={task.id} task={task} index={index} displayAsAJob={true}>{task.taskTitle}</Task>
+                        <Task
+                          key={task.id}
+                          task={task}
+                          index={index}
+                          displayAsAJob={displayAsAJob}
+                        >
+                          {task.taskTitle}
+                        </Task>
                       )
                     })
                     }
