@@ -5,7 +5,8 @@ import { DragDropContext, Droppable as AbleToBeDroppedInto } from 'react-beautif
 import { COLUMN } from './../../../constants/reactBeautifulDndTypes'
 
 function TaskAssignmentGrid() {
-  let that = this;
+  console.log("JobStatus.TaskAssignmentGrid.this:")
+  console.log(this)
   return(
     <DragDropContext
       onDragEnd={this.onDragEnd}
@@ -22,14 +23,11 @@ function TaskAssignmentGrid() {
           ref={provided.innerRef}
         >
           {
-            this.state.columnOrder.map((columnId, index) => {
-              const column = that.state.columns[columnId]
-              const jobs = column.jobIds.map(jobId => that.state.jobs[jobId])
+            this.state.columns.map((column, index) => {
 
               return  <TaskAssignmentCol 
                         key={column.id}
                         column={column}
-                        jobs={jobs}
                         index={index}
                       />
             })

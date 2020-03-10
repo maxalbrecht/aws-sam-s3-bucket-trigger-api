@@ -1,9 +1,11 @@
-import initialData from './../initial-data'
+import columns from './../initial-data'
 
 function getConstructorState() {
   console.log("Inside JobStatus.logic getConstructorState")
 
-return initialData
+  return {
+    columns: columns
+  }
 }
 
 export default getConstructorState;

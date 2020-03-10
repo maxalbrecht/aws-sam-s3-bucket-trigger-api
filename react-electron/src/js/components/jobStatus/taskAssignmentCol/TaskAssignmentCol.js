@@ -1,10 +1,9 @@
 import React from 'react'
 import { Col } from 'react-bootstrap'
 import { Droppable as AbleToBeDroppedInto, Draggable } from 'react-beautiful-dnd'
-import Job from '../job/Job'
 import Task from './../task/Task'
 import './TaskAssignmentCol.scss'
-import { JOB, TASK } from './../../../constants/reactBeautifulDndTypes'
+import { TASK } from './../../../constants/reactBeautifulDndTypes'
 
 
 class TaskAssignmentCol extends React.Component {
@@ -16,9 +15,14 @@ class TaskAssignmentCol extends React.Component {
       return false
     }
   }
+
+  getIsDropDisabled() {
+    return this.getIsDragDisabled()
+  }
   getType(){
     if(this.props.index === 0) {
-      return JOB
+      //return JOB
+      return TASK
     }
     else {
       return TASK
@@ -45,9 +49,13 @@ class TaskAssignmentCol extends React.Component {
             <h3 className="Title"
               {...provided.dragHandleProps}
             >
-              {this.props.column.title}
+              {this.props.column.columnTitle}
             </h3>
-            <AbleToBeDroppedInto droppableId={this.props.column.id} type={this.getType()}>
+            <AbleToBeDroppedInto
+              droppableId={this.props.column.id}
+              type={TASK}
+              isDropDisabled={this.getIsDropDisabled()}
+            >
               {(provided, snapshot) => {
                 let draggingOrNotDragging = 'COL_NOT_DRAGGING'
                 if(snapshot.isDraggingOver) {
@@ -60,13 +68,9 @@ class TaskAssignmentCol extends React.Component {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {this.props.jobs.map((job, index) => 
-                      <Job key={job.id} job={job} index={index} />
-                    )}
-                    
                     {this.props.column.tasks.map((task, index) => {
                       return (
-                        <Task key={task.id} task={task} index={index}>{task.taskTitle}</Task>
+                        <Task key={task.id} task={task} index={index} displayAsAJob={true}>{task.taskTitle}</Task>
                       )
                     })
                     }
