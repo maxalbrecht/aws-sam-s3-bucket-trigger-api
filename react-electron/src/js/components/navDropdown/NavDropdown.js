@@ -7,6 +7,8 @@ const SYNCING = 'Syncing'
 const SYNCING_ROUTE = '/app'
 const JOB_STATUS = 'Job Status'
 const JOB_STATUS_ROUTE = '/jobstatus'
+const JOB_ARCHIVING = 'Job Archiving'
+const JOB_ARCHIVING_ROUTE = '/jobarchiving'
 const DRC = 'DRC'
 const DRC_ROUTE = '/drc'
 const LOGIN = 'Log in'
@@ -15,6 +17,7 @@ const LOGIN_ROUTE = '/login'
 let dropdownRouteMappings = {}
 dropdownRouteMappings[SYNCING] = SYNCING_ROUTE
 dropdownRouteMappings[JOB_STATUS] = JOB_STATUS_ROUTE
+dropdownRouteMappings[JOB_ARCHIVING] = JOB_ARCHIVING_ROUTE
 dropdownRouteMappings[DRC] = DRC_ROUTE
 dropdownRouteMappings[LOGIN] = LOGIN_ROUTE 
 
@@ -50,6 +53,8 @@ function NavDropdownComponent() {
         </NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={JOB_STATUS}>{JOB_STATUS}</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item eventKey={JOB_ARCHIVING}>{JOB_ARCHIVING}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={LOGIN}>{LOGIN}</NavDropdown.Item>
       </NavDropdown>

@@ -27,7 +27,7 @@
       "username": "malbrecht",
       "contactName": "Max",
       "contactEmail": "max.albrecht100@gmail.com",
-      "contactPhone": "432120620",
+      "contactPhone": "+1432120620",
       "assignedUserEmail": "max.albrecht100@gmail.com"
     },
     {
@@ -197,6 +197,20 @@
       "contactEmail": "mmelvin@veritext.com",
       "contactPhone": "973-549-4531",
       "assignedUserEmail": "mmelvin@veritext.com"
+    },
+    {
+      "username": "tbornemann",
+      "contactName": "tim",
+      "contactEmail": "tbornemann@veritext.com",
+      "contactPhone": "5516655610",
+      "assignedUserEmail": "tbornemann@yeslaw.net"
+    },
+    {
+      "username": "jperez",
+      "contactName": "julian",
+      "contactEmail": "jperez@veritext.com",
+      "contactPhone": "7542465706",
+      "assignedUserEmail": "jperez@yeslaw.net"
     }
   ]
 }
