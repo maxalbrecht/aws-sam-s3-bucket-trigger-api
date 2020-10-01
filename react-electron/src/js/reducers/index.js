@@ -16,15 +16,18 @@ import {
   LOG_OUT,
   TOGGLE_DARK_THEME,
   CHECK_USER_ACTIVITY,
-  DRAGGING_JOB
+  DRAGGING_JOB,
+  ADD_ARCHIVED_JOB
 } from "../constants/action-types";
+import { AddArchivedJob } from '../actions';
 
 const getInitialState = () => ({
   allowOpenDialog: true,
   articles: [],
   user: null,
   theme: getPreferredTheme(),
-  lastTimeOfActivity: new Date()
+  lastTimeOfActivity: new Date(),
+  archivedJobs: []
 });
 
 function getPreferredTheme() {
@@ -66,6 +69,8 @@ function rootReducer(state = getInitialState(), action) {
       return CheckUserActivityReducer(state, action)
     case DRAGGING_JOB:
       return DraggingJobReducer(state, action)
+    case ADD_ARCHIVED_JOB:
+      return AddArchivedJobReducer(state, action)
     default:
       return state;
   }
@@ -107,6 +112,31 @@ function AddArticleReducer(state, action) {
       articles: articles
     }
   );
+}
+
+function AddArchivedJobReducer(state,action){
+  let archivedJobs = state.archivedJobs.concat(action.payload)
+
+  archivedJobs.sort(function(a, b) {
+    if(a.date.getTime() < b.date.getTime()) {
+      // a happened before b, therefore a will be placed
+      // second in the list, since we want to display them in
+      // reverse chronological order
+      return 1;
+    }
+    else {
+      return -1;
+    }
+  })
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      archivedJobs: archivedJobs
+    }
+  )
 }
 
 function APICallFinishedReducer(state, action) {

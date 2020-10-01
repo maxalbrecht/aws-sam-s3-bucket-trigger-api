@@ -1,6 +1,7 @@
 //src/js/middleware/index.js
 
-import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS, REMOVE_DOC } from '../constants/action-types';
+import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS, REMOVE_DOC, ADD_ARCHIVED_JOB } from '../constants/action-types';
+import { AddArchivedJob } from '../actions';
 //const forbiddenWords = ["spam", "money"];
 const forbiddenWords = [];
 
@@ -21,6 +22,9 @@ export function rootMiddleware({ dispatch }) {
           break;
         case REMOVE_DOC:
           returnAction = RemoveDocMiddleware(action);
+          break;
+        case ADD_ARCHIVED_JOB:
+          returnAction = AddArchivedJobMiddleware(action);
           break;
         default:
           break;
@@ -49,6 +53,13 @@ function AddArticleMiddleware(actionParam) {
   if (foundWord.length) {
     console.log("Found a disallowed word");
   }
+}
+
+function AddArchivedJobMiddleware(actionParam) {
+  console.log("Adding archived job... Currently in AddArchivedJobMiddleware()")
+  console.log("actionParam:");
+  console.log(actionParam);
+
 }
 
 function UpdateStatusMiddleware(actionParam) {

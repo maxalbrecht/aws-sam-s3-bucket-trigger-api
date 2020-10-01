@@ -1,12 +1,16 @@
 // src/js/actions/index.js
 
-import { ADD_ARTICLE, API_CALL_FINISHED } from "../constants/action-types";
+import { ADD_ARTICLE, API_CALL_FINISHED, ADD_ARCHIVED_JOB } from "../constants/action-types";
 
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 export function addArticle(payload) {
   return { type: ADD_ARTICLE, payload };
+}
+
+export function AddArchivedJob(payload) {
+  return { type: ADD_ARCHIVED_JOB, payload }
 }
 
 export function apiCallFinished(payload) {
