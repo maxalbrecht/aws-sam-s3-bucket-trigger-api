@@ -1,6 +1,6 @@
 {
   "name": "VeriSync",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -11,7 +11,8 @@
     "productName": "VeriSync",
     "win": {
       "icon": "build/icon.ico",
-      "certificateFile": "private/albrechtsoft.pfx",
+      "certificateFile": "private/testcert.pfx",
+      "certificatePassword": "a",
       "verifyUpdateCodeSignature": false,
       "publisherName": "albrechtsoft",
       "publish": [
@@ -60,7 +61,9 @@
     "test-react": "react-scripts test --env=jsdom",
     "eject-react": "react-scripts eject",
     "build-electron": "electron-builder",
+    "deploy-electron": "electron-builder build --win --publish always", 
     "build": "yarn build-react && yarn build-electron",
+    "deploy": "yarn build-react && yarn deploy-electron",
     "start": "concurrently \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
     "make-cert": "electron-builder create-self-signed-cert -p albrechtsoft",
     "storybook": "start-storybook -p 9009 -s public",
