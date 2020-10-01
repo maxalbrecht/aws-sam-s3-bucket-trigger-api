@@ -1,0 +1,46 @@
+@import "./../../../../styles/themes";
+
+.Container {
+  padding-left:0;
+  padding-right:0;
+  margin: 8px;
+  border: 1px solid lightgrey;
+  border-radius: 2px;
+  
+}
+
+.PARENT_DRAGGING {
+  border-width: 4px;
+  border-radius:4px;
+}
+
+.Title {
+  @include themify($themes) {
+    background-color: themed('list-header-background-color');
+    //background-color: #383838;
+    margin-bottom:0
+  }
+  width:100%;
+  padding:8px;
+  height:49px;
+}
+
+.JobList {
+  padding:8px;
+  padding-top:16px;
+  height:calc(100% - 49px);
+}
+
+.COL_NOT_DRAGGING {
+  @include themify($themes) {
+    background-color: themed('main-background-color');
+  }
+  transition: background-color 0.25s ease;
+}
+
+.COL_DRAGGING {
+  @include themify($themes) {
+    background-color: #424855;
+  }
+  transition: background-color 0.25s ease;
+}

@@ -1,0 +1,51 @@
+#jobStatusView {
+  display: flex;
+  flex-direction: column;
+}
+
+#jobStatusView > div {
+  flex: 1;
+}
+
+.jobStatusRow {
+  width:100%;
+  max-width:none;
+  max-height:none;
+  margin-left:0;
+  margin-right:0;
+  padding-top:0;
+  padding-left:0;
+  padding-right:0;
+  display:flex;
+  flex-direction:column;
+}
+
+.container-fluid {
+  width:100%;
+  max-width:none;
+  height:100%;
+  max-height:none;
+  margin-left:0;
+  margin-right:0;
+  padding-top:4px;
+  padding-left:2px;
+  padding-right:2px;
+  display:flex;
+  flex-wrap:column;
+  border-style:solid;
+  border-width: 1px;
+  border-color: darkgrey;
+  border-radius: 5px;
+  flex:1;
+  margin-bottom:10px;
+}
+
+
+.dropdownRow {
+  height: 10px;
+  font-size: 15px;
+  max-height: 25px;
+  margin-bottom:5px;
+  padding-left:10px;
+  width:100%;
+}

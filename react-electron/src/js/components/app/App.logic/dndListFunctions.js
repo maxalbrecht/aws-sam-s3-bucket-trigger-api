@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////
 // React-beautiful-dnd methods to handle user interactions
 // with the drag-and-drop list
-import { REMOVE_DOC } from './../../../constants/action-types'
-import { action } from './../../../utils/action'
 import defined from '../../../utils/defined';
-var store = window.store;
 
 function onDragStart() {
   //this.style.color = 'orange';

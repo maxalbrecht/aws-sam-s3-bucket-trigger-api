@@ -3,7 +3,7 @@ import { CHECK_USER_ACTIVITY } from './../constants/action-types'
 import defined from './../utils/defined'
 let store = window.store
 
-let timeoutTimeInMinutes = 1
+let timeoutTimeInMinutes = 100
 let timeoutTimeInMilliseconds = timeoutTimeInMinutes * 60 * 1000
 
 function CheckUserActivity(that) {

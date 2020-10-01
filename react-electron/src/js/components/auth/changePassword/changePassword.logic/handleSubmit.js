@@ -1,5 +1,4 @@
 import { Auth } from 'aws-amplify';
-var store = window.store;
 
 async function handleSubmit(event) {
   event.preventDefault();
@@ -17,7 +16,7 @@ async function handleSubmit(event) {
 
       const cognitoUser = await Auth.signIn(username, currentPassword);
 
-      const changePasswordResponse = await Auth.completeNewPassword(
+      await Auth.completeNewPassword(
         cognitoUser,
         newPassword,
         {

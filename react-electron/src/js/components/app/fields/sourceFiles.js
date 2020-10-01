@@ -10,11 +10,13 @@ function SourceFiles() {
     return (
       <Form.Group as={Col} 
         className="textFieldLabel sourceFilesFormGroup" 
-        style={{width:'200px', display:'inline-block', 
-          height:'fit-content', marginBottom:'10px'
+        style={{width:'200px',
+          display:'flex',
+          flexDirection:'column',
+          marginBottom:'10px'
         }}
       >
-        <Form.Row>
+        <Form.Row style={{maxHeight:'35px'}}>
           <Col>
             <Form.Label>Source Files</Form.Label>
           </Col>
@@ -25,7 +27,6 @@ function SourceFiles() {
         <Form.Row 
           className='dndRow'
           style={{
-            height:'400px',
             paddingLeft: '5px',
             paddingRight: '5px'
           }}
@@ -37,7 +38,7 @@ function SourceFiles() {
             onDragEnd={this.onDragEnd}
             style={{
               display:'inline-block',
-              height:'auto'
+              height:'100%'
             }}
           >
 
@@ -55,13 +56,16 @@ function SourceFiles() {
                       console.log("sourcefiles.js column.docIds is currently empty.");
                     }
                     
-                    return  <Column 
+                    return  <Column
+                              id="sourceFilesDnDColumn"
                               key={column.id}
                               column={column}
                               docs={docs}
                               style={{
                                 minHeight:'400px',
-                                display:'inline-block'
+                                display:'inline-block',
+                                height:'100%',
+                                flex:1
                               }}
                             />;
                   }

@@ -1,17 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable as AbleToBeDroppedInto } from 'react-beautiful-dnd';
 import Doc from './doc/doc';
 import { Scrollbars } from 'react-custom-scrollbars'
-
-const Title = styled.h3`
-  padding: 8px;
-`;
 
 const DocList = styled.div`
   padding: 8px;
   transition: background-color 0.2s ease;
-  /*background-color: ${props => (props.isDraggingOver ? 'blue' : 'inherit')};*/
 `;
 
 export default class Column extends React.Component {
@@ -20,16 +15,14 @@ export default class Column extends React.Component {
     console.log(this.props);
 
     return (
-      <div style={{width:'auto', height:'auto', marginLeft:'0', marginRight:'0'}}>
+      <div style={{width:'auto', height:'100%', marginLeft:'0', marginRight:'0'}}>
       <Scrollbars 
         className="scrollBars" 
-        autoHeight
         autoHeightMin={400}
-        autoHeightMax={400}
         style={{
           top:40,
           position:'absolute',
-          height:'fit-content',
+          height:'calc(100% - 40px)',
           margin:'inherit',
           border:'1px solid darkgrey',
           borderColor:'darkgrey',
@@ -38,7 +31,7 @@ export default class Column extends React.Component {
           width:'calc(100% - 10px)',
         }}
       >
-        <Droppable droppableId={this.props.column.id}>
+        <AbleToBeDroppedInto droppableId={this.props.column.id}>
           {provided => { 
             console.log("this.props.docs:");
             console.log(this.props.docs);
@@ -56,7 +49,7 @@ export default class Column extends React.Component {
             </div>
             )
           }}
-        </Droppable>
+        </AbleToBeDroppedInto>
       </Scrollbars>
       </div>
     );

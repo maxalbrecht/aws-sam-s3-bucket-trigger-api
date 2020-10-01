@@ -20,20 +20,17 @@ async function handleConfirm(event) {
     if (errorPresent === false && defined(this.state.cognitoUser)) {
       const { cognitoUser, confirm } = this.state;
 
-      // VERIFY TOTPTOKEN
-      let verifyTokenResponse = null;
-
       //// ALLOW USERS WHO ARE SETTING UP MFA FOR THE FIRST TIME TO DO SO AND LOG IN 
       if(defined(cognitoUser) && cognitoUser.challengeName === MFA_SETUP) {
         //CONFIRM TOKEN
-        verifyTokenResponse = await Auth.verifyTotpToken(cognitoUser, confirm)
+        await Auth.verifyTotpToken(cognitoUser, confirm)
 
         // SET PREFERRED MFA
-        const setPreferredMFAResponse = await Auth.setPreferredMFA(await Auth.currentAuthenticatedUser(), 'TOTP')
+        await Auth.setPreferredMFA(await Auth.currentAuthenticatedUser(), 'TOTP')
       }
       //// ALLOW USERS THAT ARE ALREADY SET UP WITH MFA TO LOG IN
       else if(defined(cognitoUser) && cognitoUser.challengeName === SOFTWARE_TOKEN_MFA) {
-        verifyTokenResponse = await Auth.confirmSignIn(cognitoUser, confirm, SOFTWARE_TOKEN_MFA);
+        await Auth.confirmSignIn(cognitoUser, confirm, SOFTWARE_TOKEN_MFA);
       }
 
       // SET STATE FOR THE LOGIN COMPONENT

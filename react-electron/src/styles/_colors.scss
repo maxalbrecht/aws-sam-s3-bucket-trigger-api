@@ -10,11 +10,20 @@ $dark-title-bar-button-highlight-color: #404040;
 
 $dark-log-out-button-color: lightgrey;
 
+
 $dark-submitted-jobs-color-default: $dark-main-background-color;
 $dark-submitted-jobs-color-success-odd:#001632; 
 $dark-submitted-jobs-color-success-even:#00224B;
 $dark-submitted-jobs-color-error-odd:#3E0000;
 $dark-submitted-jobs-color-error-even:#800000;
+
+$dark-primary-button-background-color:#007bff;
+
+$dark-list-header-background-color: #383838;
+$dark-list-item-dragging-background-color: #202020;
+$dark-job-header-background-color:#00224B;
+$dark-task-header-background-color:#001632;
+$dark-list-item-dragging-background-color: #202020;
 
 // LIGHT-THEME COLORS
 $light-main-background-color: white;
@@ -33,3 +42,10 @@ $light-submitted-jobs-color-success-odd:#accbff;
 $light-submitted-jobs-color-success-even:#92bbff;
 $light-submitted-jobs-color-error-odd: #fa8072;
 $light-submitted-jobs-color-error-even: #fdc3bc;
+
+$light-primary-button-background-color:#007bff;
+
+$light-list-header-background-color: darkgrey;
+$light-job-header-background-color:#accbff; 
+$light-task-header-background-color:#92bbff;
+$light-list-item-dragging-background-color: lightgrey;

@@ -1,19 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
-import { connect } from 'react-redux'
 import { logicConstructor } from './doc.logic'
-
-var Container = styled.div`
-  border: 1px solid lightgrey;
-  border-radius: 2px;
-  padding: 8px;
-  margin-bottom: 8px;
-  transition: background-color 0.2s ease;
-  background-color: ${props => (props.isDragging ? '#202020' : 'inherit')};
-  font-size: 14px;
-  transition: border-color 0s ease;
-`;
+import './doc.scss'
 
 class Doc extends React.Component {
   constructor(props) {
@@ -21,16 +9,19 @@ class Doc extends React.Component {
     logicConstructor.bind(this)(props);
   }
   render() {
-    var content = this.props.doc.content
-
     return (
       <Draggable
         draggableId={this.props.doc.id}
         index={this.props.index}
       >
         {(provided, snapshot) => {
+          let draggingOrNotDragging = 'NOT_DRAGGING'
+          if(snapshot.isDragging) {
+            draggingOrNotDragging = 'DRAGGING'
+          }
           return (
-            <Container
+            <div
+              className={`Doc-Container ${draggingOrNotDragging}`}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               ref={provided.innerRef}
@@ -50,7 +41,7 @@ class Doc extends React.Component {
               }
             >
               {this.props.doc.content}
-            </Container>
+            </div>
         )}}
       </Draggable>
     );

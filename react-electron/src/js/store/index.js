@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import rootReducer from "../reducers/index";
 import { rootMiddleware } from "../middleware/index"
 //import { forbiddenWordsMiddleware } from "../middleware";

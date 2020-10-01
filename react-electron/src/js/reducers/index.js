@@ -3,7 +3,6 @@ import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
 import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
 import { THEME } from './../constants/localStorageVariables'
-import LogOut from './../utils/logout'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_ARTICLE,
@@ -16,7 +15,8 @@ import {
   USER_LOGGED_IN,
   LOG_OUT,
   TOGGLE_DARK_THEME,
-  CHECK_USER_ACTIVITY
+  CHECK_USER_ACTIVITY,
+  DRAGGING_JOB
 } from "../constants/action-types";
 
 const getInitialState = () => ({
@@ -43,27 +43,29 @@ function rootReducer(state = getInitialState(), action) {
     case ADD_SYNC_APP_TO_STORE:
       return AddSyncAppToStoreReducer(state, action)
     case ADD_ARTICLE:
-      return AddArticleReducer(state, action);
+      return AddArticleReducer(state, action)
     case API_CALL_FINISHED:
-      return APICallFinishedReducer(state, action);
+      return APICallFinishedReducer(state, action)
     case TOGGLE_JOB_DETAILS:
-      return ToggleJobDetailsReducer(state, action);
+      return ToggleJobDetailsReducer(state, action)
     case CLEAR_STATE_ACTION:
-      return ClearStateActionReducer(state, action);
+      return ClearStateActionReducer(state, action)
     case DISALLOW_OPEN_DIALOG:
-      return DisallowOpenDialogReducer(state, action);
+      return DisallowOpenDialogReducer(state, action)
     case ALLOW_OPEN_DIALOG:
-      return AllowOpenDialogReducer(state, action);
+      return AllowOpenDialogReducer(state, action)
     case REMOVE_DOC:
-      return RemoveDocReducer(state, action);
+      return RemoveDocReducer(state, action)
     case USER_LOGGED_IN:
       return UserLoggedInReducer(state, action)
     case LOG_OUT:
-      return LogOutReducer(state, action);
+      return LogOutReducer(state, action)
     case TOGGLE_DARK_THEME:
-      return ToggleDarkThemeReducer(state, action);
+      return ToggleDarkThemeReducer(state, action)
     case CHECK_USER_ACTIVITY:
-      return CheckUserActivityReducer(state, action);
+      return CheckUserActivityReducer(state, action)
+    case DRAGGING_JOB:
+      return DraggingJobReducer(state, action)
     default:
       return state;
   }
@@ -195,10 +197,6 @@ function AllowOpenDialogReducer(state, action) {
   let newDocs = syncApp.state.sourceFiles.docs;
   delete newDocs[action.payload.draggableId];
 
-  const newColumn = {
-  // ...co
-  }
-  
   return Object.assign(
     {},
     state,
@@ -238,14 +236,11 @@ function LogOutReducerCommonCode(state, action) {
     console.log("Error signing out. error:");
     console.log(e)
   }
-
+  let newState = getInitialState();
   return Object.assign(
     {},
     state,
-    {
-      ...state,
-      user: null
-    }
+    newState
   )
 }
 
@@ -308,9 +303,23 @@ function CheckUserActivityReducer(state, action) {
       state,
       {
         ...state,
+        action: action
       }
     )
   }
+}
+
+function DraggingJobReducer(state, action) {
+  console.log("Inside DraggingJobReducer...")
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      action: action
+    }
+  )
 }
 
 export default rootReducer;

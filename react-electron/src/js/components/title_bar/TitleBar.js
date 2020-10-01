@@ -1,26 +1,33 @@
-import React, { Component } from "react";
-import './TitleBar.scss';
-import { Button, Row, Col } from 'react-bootstrap';
-var electron = window.require("electron");
-var remote = electron.remote;
+import React, { Component } from "react"
+import { withRouter } from 'react-router-dom'
+import './TitleBar.scss'
+import { Button, Row, Col } from 'react-bootstrap'
+import NavDropdown from './../navDropdown/NavDropdown'
+var electron = window.require("electron")
+var remote = electron.remote
 
 const currentWindow = remote.getCurrentWindow()
 
-class TitleBar extends Component {
+class WithRouterTitleBar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.NavDropdown = NavDropdown.bind(this)
+  }
   onMinimizeClicked(e) {
-    currentWindow.minimize();
+    currentWindow.minimize()
   }
 
   onMaximizeClicked(e) {
     if(currentWindow.isMaximized()){
-      currentWindow.unmaximize();
+      currentWindow.unmaximize()
     } else {
-      currentWindow.maximize();
+      currentWindow.maximize()
     }
   }
 
   onCloseClicked(e) {
-    currentWindow.close();
+    currentWindow.close()
   }
 
   render(){
@@ -33,6 +40,7 @@ class TitleBar extends Component {
         <Col >
           <div style={{paddingTop:'5px'}}>v {process.env.REACT_APP_VERSION}</div>
         </Col>
+          { this.NavDropdown() }
         <div id="title-bar-btns" style={{transition:'background-color 0.25s ease'}}>
           <Button 
             variant="info" 
@@ -67,4 +75,5 @@ class TitleBar extends Component {
   }
 }
 
+const TitleBar = withRouter(WithRouterTitleBar)
 export default TitleBar

@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 // Handle submit when the user clicks on the Submit Job Button
 
-import { Auth } from 'aws-amplify'
 import Deposition from "../../../classes/deposition/deposition";
 import APIPayloadCreator from "../../../classes/api_call/api_payload_creator";
 import APICaller from "../../../classes/api_call/api_caller";
@@ -51,6 +50,7 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
       priority: ConvertPriorityStringToInt(this.state.priority),
       assignedUserEmail: storeState.user.assignedUserEmail,
       imageType: 2,
+      imageBranding: "Veritext", 
       createImage: 1,
       contactName: storeState.user.contactName,
       contactEmail: storeState.user.contactEmail,

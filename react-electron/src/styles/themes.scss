@@ -15,6 +15,10 @@ $themes: (
     submitted-jobs-color-success-even: $dark-submitted-jobs-color-success-even,
     submitted-jobs-color-error-odd: $dark-submitted-jobs-color-error-odd,
     submitted-jobs-color-error-even: $dark-submitted-jobs-color-error-even,
+    list-header-background-color: $dark-list-header-background-color,
+    job-header-background-color: $dark-job-header-background-color,
+    task-header-background-color: $dark-task-header-background-color,
+    list-item-dragging-background-color: $dark-list-item-dragging-background-color,
   ),
   light: (
     main-background-color: $light-main-background-color,
@@ -29,7 +33,10 @@ $themes: (
     submitted-jobs-color-success-even: $light-submitted-jobs-color-success-even,
     submitted-jobs-color-error-odd: $light-submitted-jobs-color-error-odd,
     submitted-jobs-color-error-even: $light-submitted-jobs-color-error-even,
-
+    list-header-background-color: $light-list-header-background-color,
+    job-header-background-color: $light-job-header-background-color,
+    task-header-background-color: $light-task-header-background-color,
+    list-item-dragging-background-color: $light-list-item-dragging-background-color
   )
 );
 

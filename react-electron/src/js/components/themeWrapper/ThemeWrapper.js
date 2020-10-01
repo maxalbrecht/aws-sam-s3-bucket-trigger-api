@@ -11,6 +11,7 @@ import FooterBar from './../footer_bar/FooterBar'
 import Login from './../auth/login/Login'
 import ChangePassword from './../auth/changePassword/ChangePassword'
 import App from './../app/App'
+import JobStatus from './../jobStatus/JobStatus'
 import About from './../../../pages/about'
 import Documentation from './../../../pages/documentation'
 import ClearStateAction from './../../utils/clearStateAction'
@@ -56,10 +57,8 @@ class ConnectedThemeWrapper extends Component {
   }
 
   render(){
-    console.log('rendering ThemeWrapper...')
     let className = this.getTheme();
-    console.log('themeWrapper.render.className:')
-    console.log(className)
+    
     return (
       <div id = "themeWrapper" 
         className = { className + ' ' + className } 
@@ -74,6 +73,8 @@ class ConnectedThemeWrapper extends Component {
         <Route exact path="/app" component={App} />
         <Route path="/about" component={About} />                
         <Route path="/documentation" component={Documentation} />
+        <Route path="/jobstatus" component={JobStatus} />
+        <Route path="/drc" component={Login} />
         <FooterBar />
       </Container>
       </div>

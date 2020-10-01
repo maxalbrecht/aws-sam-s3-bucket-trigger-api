@@ -18,7 +18,7 @@ async function handleSubmit(event) {
 
       // SIGN OUT ANY USERS THAT MIGHT ALREADY BE SIGNED IN ON THIS MACHINE
       try{
-        let signOutResponse = await Auth.signOut({ global: true })
+        await Auth.signOut({ global: true })
       } catch(error) {
         console.log("Login handleSubmit() error signing out previous users. Error:")
         console.log(error)
