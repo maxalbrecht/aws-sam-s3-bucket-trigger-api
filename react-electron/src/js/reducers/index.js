@@ -17,9 +17,11 @@ import {
   TOGGLE_DARK_THEME,
   CHECK_USER_ACTIVITY,
   DRAGGING_JOB,
-  ADD_ARCHIVED_JOB
+  ADD_ARCHIVED_JOB,
+  ADD_STITCHED_FILE
 } from "../constants/action-types";
 import { AddArchivedJob } from '../actions';
+import { AddStitchedFile } from './../actions'
 
 const getInitialState = () => ({
   allowOpenDialog: true,
@@ -27,7 +29,8 @@ const getInitialState = () => ({
   user: null,
   theme: getPreferredTheme(),
   lastTimeOfActivity: new Date(),
-  archivedJobs: []
+  archivedJobs: [],
+  stitchedFiles: []
 });
 
 function getPreferredTheme() {
@@ -71,6 +74,8 @@ function rootReducer(state = getInitialState(), action) {
       return DraggingJobReducer(state, action)
     case ADD_ARCHIVED_JOB:
       return AddArchivedJobReducer(state, action)
+    case ADD_STITCHED_FILE:
+      return AddStitchedFileReducer(state, action)
     default:
       return state;
   }
@@ -135,6 +140,31 @@ function AddArchivedJobReducer(state,action){
     {
       ...state,
       archivedJobs: archivedJobs
+    }
+  )
+}
+
+function AddStitchedFileReducer(state,action){
+  let stitchedFiles = state.stitchedFiles.concat(action.payload)
+
+  stitchedFiles.sort(function(a,b) {
+    if(a.date.getTime() < b.date.getTime()) {
+      // a happened before b, therefore a will be placed
+      // second in the list, since we want to display them in
+      // reverse chronological order
+      return 1
+    }
+    else {
+      return -1
+    }
+  })
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      stitchedFiles: stitchedFiles
     }
   )
 }

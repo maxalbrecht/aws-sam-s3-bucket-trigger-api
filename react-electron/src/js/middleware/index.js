@@ -1,7 +1,15 @@
 //src/js/middleware/index.js
 
-import { ADD_ARTICLE, API_CALL_FINISHED, TOGGLE_JOB_DETAILS, REMOVE_DOC, ADD_ARCHIVED_JOB } from '../constants/action-types';
+import {
+  ADD_ARTICLE,
+  API_CALL_FINISHED,
+  TOGGLE_JOB_DETAILS,
+  REMOVE_DOC,
+  ADD_ARCHIVED_JOB,
+  ADD_STITCHED_FILE 
+} from '../constants/action-types';
 import { AddArchivedJob } from '../actions';
+import { AddStitchedFile } from './../actions'
 //const forbiddenWords = ["spam", "money"];
 const forbiddenWords = [];
 
@@ -25,6 +33,9 @@ export function rootMiddleware({ dispatch }) {
           break;
         case ADD_ARCHIVED_JOB:
           returnAction = AddArchivedJobMiddleware(action);
+          break;
+        case ADD_STITCHED_FILE:
+          returnAction = AddStitchedFileMiddleware(action);
           break;
         default:
           break;
@@ -60,6 +71,12 @@ function AddArchivedJobMiddleware(actionParam) {
   console.log("actionParam:");
   console.log(actionParam);
 
+}
+
+function AddStitchedFileMiddleware(actionParam){
+  console.log("Adding stitched file... Currently in AddStitchedFileMiddleware()")
+  console.log("actionParam:")
+  console.log(actionParam)
 }
 
 function UpdateStatusMiddleware(actionParam) {

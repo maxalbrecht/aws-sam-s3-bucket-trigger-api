@@ -49,7 +49,7 @@ class ConnectedArchivedJobsList extends Component {
         height:'110px',
         paddingLeft:paddingSides,
         paddingRight:paddingSides,
-        paddingtop:paddingTop,
+        paddingTop:paddingTop,
         width:'100%',
         color:'darkgrey',
         fontSize:'14px'

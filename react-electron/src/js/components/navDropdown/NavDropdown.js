@@ -9,6 +9,8 @@ const JOB_STATUS = 'Job Status'
 const JOB_STATUS_ROUTE = '/jobstatus'
 const JOB_ARCHIVING = 'Job Archiving'
 const JOB_ARCHIVING_ROUTE = '/jobarchiving'
+const FILE_STITCHING = 'File Stiching' 
+const FILE_STITCHING_ROUTE = '/filestitching'
 const DRC = 'DRC'
 const DRC_ROUTE = '/drc'
 const LOGIN = 'Log in'
@@ -18,6 +20,7 @@ let dropdownRouteMappings = {}
 dropdownRouteMappings[SYNCING] = SYNCING_ROUTE
 dropdownRouteMappings[JOB_STATUS] = JOB_STATUS_ROUTE
 dropdownRouteMappings[JOB_ARCHIVING] = JOB_ARCHIVING_ROUTE
+dropdownRouteMappings[FILE_STITCHING] = FILE_STITCHING_ROUTE
 dropdownRouteMappings[DRC] = DRC_ROUTE
 dropdownRouteMappings[LOGIN] = LOGIN_ROUTE 
 
@@ -55,6 +58,8 @@ function NavDropdownComponent() {
         <NavDropdown.Item eventKey={JOB_STATUS}>{JOB_STATUS}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={JOB_ARCHIVING}>{JOB_ARCHIVING}</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item eventKey={FILE_STITCHING}>{FILE_STITCHING}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={LOGIN}>{LOGIN}</NavDropdown.Item>
       </NavDropdown>

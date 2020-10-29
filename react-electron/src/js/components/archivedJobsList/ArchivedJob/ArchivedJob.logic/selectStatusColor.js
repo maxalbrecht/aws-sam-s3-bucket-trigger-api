@@ -2,7 +2,7 @@ import {SUCCESS, ERROR} from './../../../../constants/job_archiving_statuses'
 import {COLOR_DEFAULT, COLOR_SUCCESS, COLOR_ERROR} from './../../../../constants/list_item_colors'
 
 function selectStatusColor(){
-  let status = this.ArchivedObject.jobArchiver.jobArchivingStatus
+  let status = this.ArchivedJobObject.jobArchiver.jobArchivingStatus
 
   switch(status){
     case SUCCESS:
