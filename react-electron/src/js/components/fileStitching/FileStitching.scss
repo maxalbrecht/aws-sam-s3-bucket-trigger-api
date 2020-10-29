@@ -1,0 +1,7 @@
+@import './../../../styles/themes.scss';
+
+.boxedGroupLabel {
+    @include themify ($themes){
+        background-color: themed('main-background-color')
+    }
+}
