@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net" modified="2020-10-29T23:05:58.431Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36" etag="ymcFO3zjrkMHnMK88i9x" version="13.8.7" type="github">
+  <diagram id="0p7Y7XEFj7FxuyLFe_8v" name="Page-1">
+    <mxGraphModel dx="992" dy="758" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="36mURrJE-a_8leEmK8Sf-15" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CCCCCC;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="21" y="539" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-1" value="Job Number&lt;br&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="21" y="98" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-2" value="&lt;font color=&quot;#b3b3b3&quot;&gt;Enter Job Number&lt;/font&gt;" style="rounded=.2;whiteSpace=wrap;html=1;align=left;strokeColor=#CCCCCC;" parent="1" vertex="1">
+          <mxGeometry x="31" y="122" width="310" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-5" value="Source Files" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="21" y="167" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-6" value="" style="rounded=.2;whiteSpace=wrap;html=1;align=left;strokeColor=#CCCCCC;" parent="1" vertex="1">
+          <mxGeometry x="31" y="204" width="310" height="286" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-7" value="&lt;font color=&quot;#ffffff&quot;&gt;Browse...&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CCCCCC;fillColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="261" y="167" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-8" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CCCCCC;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="20" y="79" width="340" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-9" value="Source" style="text;html=1;strokeColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="31" y="69" width="49" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-10" value="File Name" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="104" y="555" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-11" value="&lt;font color=&quot;#b3b3b3&quot;&gt;Enter File Name&lt;/font&gt;" style="rounded=.2;whiteSpace=wrap;html=1;align=left;strokeColor=#CCCCCC;" parent="1" vertex="1">
+          <mxGeometry x="114" y="579" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-14" value="&lt;font color=&quot;#ffffff&quot;&gt;Stitch File&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#CCCCCC;fillColor=#3399FF;" parent="1" vertex="1">
+          <mxGeometry x="20" y="658" width="340" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-16" value="Destination" style="text;html=1;strokeColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="32" y="529" width="78" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-17" value="&lt;font color=&quot;#666666&quot;&gt;videoin02/&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="46" y="584" width="64" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-18" value="Stitched Files" style="text;html=1;strokeColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fillColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="400" y="69" width="77" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-20" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#CCCCCC;fillColor=none;dashed=1;align=left;" parent="1" vertex="1">
+          <mxGeometry x="401" y="89" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-21" value="&lt;span style=&quot;text-align: left&quot;&gt;&lt;font color=&quot;#999999&quot;&gt;Stitch a New File by Clicking the &#39;Stitch File&#39; Button&lt;/font&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="410" y="102" width="290" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-22" value="videoin02/&amp;lt;jobNumber&amp;gt;/File1.mpg" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=none;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="46" y="229" width="274" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-23" value="videoin02/&amp;lt;jobNumber&amp;gt;/File2.mpg" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=none;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="46" y="279" width="274" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-24" value="videoin02/&amp;lt;jobNumber&amp;gt;/File3.mpg" style="rounded=1;whiteSpace=wrap;html=1;align=left;fillColor=none;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="46" y="327" width="274" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="36mURrJE-a_8leEmK8Sf-25" value="&lt;font style=&quot;font-size: 24px&quot;&gt;File Stitching&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="20" width="300" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
