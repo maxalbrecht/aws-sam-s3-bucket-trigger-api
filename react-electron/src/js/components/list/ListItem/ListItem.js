@@ -21,6 +21,8 @@ class ConnectedListItem extends Component {
   }
 
   render() {
+    console.log("this.ListItemObject:")
+    console.log(this.ListItemObject)
     let oddOrEven = ODD
     if(this.props.jobOrdinalNumber%2 === 0){
       oddOrEven = EVEN

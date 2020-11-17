@@ -12,7 +12,7 @@ export function addArticle(payload) {
 export function AddArchivedJob(payload) {
   return { type: ADD_ARCHIVED_JOB, payload }
 }
-export function AddStitchedFile(payload){
+export function addStitchedFile(payload){
   return { type: ADD_STITCHED_FILE, payload }
 }
 

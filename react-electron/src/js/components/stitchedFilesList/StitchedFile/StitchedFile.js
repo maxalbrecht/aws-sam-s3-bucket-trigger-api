@@ -69,14 +69,9 @@ class ConnectedStitchedFile extends Component {
         </Row>
 
         <Row className="JobNumber">
-          <Col style={{malWidth:'140px', padding:'0px'}}><u>Source:</u></Col>
-          <Col style={{padingLeft:'10px'}}>videoin02/{this.StitchedFileObject.jobNumber}</Col>
-        </Row>
-
-        <Row className="JobNumber">
-          <Col style={{malWidth:'140px', padding:'0px'}}><u>Destination:</u></Col>
+          <Col style={{malWidth:'140px', padding:'0px'}}><u>Destination File Name:</u></Col>
           <Col style={{paddingLeft:'10px'}}>
-            videoin02/{this.StitchedFileObject.newFileName}
+            videoin02/{this.StitchedFileObject.fileStitcher.destinationFileName}
           </Col>
         </Row>
 
@@ -88,9 +83,10 @@ class ConnectedStitchedFile extends Component {
         <Row className="SubmissionResponse">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Stitching Service Response:</u></Col>
           <Col style={{padingLeft:'10px'}}>
-            <Row style={{margin:'0 0'}}>{this.StitchedJobObject.fileStitchingStatus.fileStitchingStatus}</Row>
+            <Row style={{margin:'0 0'}}>{this.StitchedFileObject.fileStitcher.fileStitchingStatus}</Row>
           </Col>
         </Row>
+
 
       </ListGroup.Item>
     )

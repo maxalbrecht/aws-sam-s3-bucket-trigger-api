@@ -3,7 +3,7 @@ async function handleChange(event) {
   await this.setState({ [event.target.id]: event.target.value })
 
   if(defined(this.state)){
-    this.ValidateJobArchivingFields()
+    this.ValidateFileStitchingFields()
   }
 }
 

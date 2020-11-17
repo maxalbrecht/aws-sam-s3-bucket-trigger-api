@@ -5,3 +5,12 @@
         background-color: themed('main-background-color')
     }
 }
+
+.boxedGroupBorder {
+    @include themify ($themes){
+        border-color: themed('log-out-button-color');
+        border-width:'1px';
+        border-style:'solid';
+        padding:'10px';
+    }
+}

@@ -15,44 +15,31 @@ class ConnectedFileStitching extends Component {
     fieldBind.bind(this)()
   }
 
-  MainFields(){
-    if(defined(this.state.cognitoUser)){
-      return(
-        <div style = {{height:'100%'}} className="main">
-          <Form
-            style={{
-              height:'100%',
-              display:'flex',
-              flexDirection:'column'
-            }}
-            className="form" onSubmit={this.handleSubmit}
-          >
-            <Form.Row style={{height:'100%'}}>
-              <Col xs={6} style={{padingBottom:'20px', display:'flex', flexDirection:'column'}}>
-                { SectionTitle('File Stitching' )}
-                { this.FormErrors() }
-                <Form.Row>{ this.JobNumber() }</Form.Row>
-                <Form.Row style={{marginTop:'15px'}}>{ this.DestinationFields() }</Form.Row>
-                { this.StitchFileButton() }
-              </Col>
-
-              <Col xs={6} className="submittedJobsCol">
-                <StitchedFilesList />
-              </Col>
-            </Form.Row>
-          </Form>
-        </div>
-      )
-    }
-    else {
-      return null
-    }
-  }
-
   render() {
     return(
-      <div className='main authMain'>
-        { this.MainFields() }
+      <div style={{height:'100%'}} className="main">
+        <Form
+          style={{
+            height:'100%',
+            display:'flex',
+            flexDirection:'column'
+          }}
+          className="form" onSubmit={this.handleSubmit}
+        >
+          <Form.Row style={{height:'100%'}}>
+            <Col xs={6} style={{paddingBottom:'20px', display:'flex', flexDirection:'column'}}>
+              <Form.Row style={{maxHeight:'35px'}}>{ SectionTitle('File Stitching' ) }</Form.Row>
+              <Form.Row style={{marginTop:'15px'}}>{ this.SourceFields() }</Form.Row>
+              <Form.Row style={{marginTop:'15px', maxHeight:'80px'}}>{ this.DestinationFields() }</Form.Row>
+              <Form.Row style={{maxHeight:'20px'}}>{ this.FormErrors() }</Form.Row>
+              <Form.Row style={{maxHeight:'35px'}}>{ this.StitchFileButton() }</Form.Row>
+            </Col>
+
+            <Col xs={6} className="submittedJobsCol">
+              <StitchedFilesList />
+            </Col>
+          </Form.Row>
+        </Form>
       </div>
     )
   }

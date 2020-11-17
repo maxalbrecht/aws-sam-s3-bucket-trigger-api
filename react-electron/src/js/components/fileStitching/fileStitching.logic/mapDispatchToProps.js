@@ -1,8 +1,8 @@
-import { AddStitchedFile } from "./../../../actions/index"
+import { addStitchedFile } from "./../../../actions/index"
 
 function mapDispatchToProps(dispatch){
   return{
-    AddStitchedFile: stitchedFile => dispatch(AddStitchedFile(stitchedFile))
+    addStitchedFile: stitchedFile => dispatch(addStitchedFile(stitchedFile))
   }
 }
 
