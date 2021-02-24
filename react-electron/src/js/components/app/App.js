@@ -2,6 +2,7 @@ import { mapDispatchToProps, logicConstructor } from './App.logic/App.logic'
 import React, { Component } from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { connect } from "react-redux";
+import SectionTitle from './../../utils/sectionTitle'
 import SubmittedJobsList from "../list/List";
 import fieldBind from './fields';
 
@@ -24,6 +25,7 @@ class ConnectedApp extends Component {
           className="form" onSubmit={this.handleSubmit}>
           <Form.Row style={{height:'100%'}}>
             <Col xs={6} style={{paddingBottom:'20px', display:'flex', flexDirection:'column'}}>
+              <Form.Row style={{maxHeight:'35px', marginBottom:'10px'}}>{ SectionTitle('File Syncing' ) }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.JobNumber() }</Form.Row>
               <Form.Row>{ this.SourceFiles() }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.OrderType() }{ this.Priority() }</Form.Row>

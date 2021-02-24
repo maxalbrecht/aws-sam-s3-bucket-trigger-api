@@ -11,7 +11,7 @@ const DocList = styled.div`
 
 export default class Column extends React.Component {
   render() {
-    console.log("column.js this.props:");
+    console.log("***********column.js this.props:");
     console.log(this.props);
 
     return (
@@ -42,7 +42,7 @@ export default class Column extends React.Component {
               {...provided.droppableProps}
             >
               {this.props.docs.map((doc, index) => (
-                <Doc key={doc.id} doc={doc} index={index} />
+                <Doc key={doc.id} doc={doc} index={index} parentViewName={this.props.parentViewName} />
               ))}
               {provided.placeholder}
             </DocList>

@@ -30,12 +30,13 @@ async function createWindow() {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
-      devTools: allowDevTools
+      //devTools: allowDevTools
+      devTools: true
     }
   });
 
   if(!allowDevTools) {
-    mainWindow.webContents.on("devtools-opened", () => { mainWindow.webContents.closeDevTools(); });
+    //mainWindow.webContents.on("devtools-opened", () => { mainWindow.webContents.closeDevTools(); });
   }
 
   const hideSplashscreen = initSplashScreen({
@@ -45,10 +46,10 @@ async function createWindow() {
     color: '#1f2329',
     width: 460,
     height: 600,
-    brand: 'AlbrechtSoft',
-    productName: 'VeriSync',
+    brand: '',
+    productName: 'VeriSuite',
     logo: `file://${path.join(__dirname, "../build/index.html")}`,
-    text: 'VeriSync is initializing...',
+    text: 'VeriSuite is initializing...',
     website: 'www.veritext.com'
   });
 

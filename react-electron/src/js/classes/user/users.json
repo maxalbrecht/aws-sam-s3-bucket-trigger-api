@@ -20,6 +20,13 @@
       "contactEmail": "ddasilva@veritext.com",
       "contactPhone": "9735494436",
       "assignedUserEmail": "ddasilva@veritext.com"
+    },
+    {
+      "username": "jperez",
+      "contactName": "julian",
+      "contactEmail": "jperez@veritext.com",
+      "contactPhone": "7542465706",
+      "assignedUserEmail": "jperez@veritext.com"
     }
   ],
   "prod": [
@@ -149,8 +156,7 @@
       "contactPhone": "240-252-7037",
       "assignedUserEmail": "spillmeier@veritext.com"
     },
-    {
-      "username": "kpotkay",
+    { "username": "kpotkay",
       "contactName": "Kelsey",
       "contactEmail": "kpotkay@veritext.com",
       "contactPhone": "818-465-9235",
@@ -203,14 +209,42 @@
       "contactName": "tim",
       "contactEmail": "tbornemann@veritext.com",
       "contactPhone": "5516655610",
-      "assignedUserEmail": "tbornemann@yeslaw.net"
+      "assignedUserEmail": "tbornemann@veritext.com"
     },
     {
       "username": "jperez",
       "contactName": "julian",
       "contactEmail": "jperez@veritext.com",
       "contactPhone": "7542465706",
-      "assignedUserEmail": "jperez@yeslaw.net"
+      "assignedUserEmail": "jperez@veritext.com"
+    },
+    {
+      "username": "jcollins",
+      "contactName": "jared",
+      "contactEmail": "jcollins@veritext.com",
+      "contactPhone": "9734140400",
+      "assignedUserEmail": "jcollins@veritext.com"
+    },
+    {
+    "username": "emathai",
+    "contactName": "eric",
+    "contactEmail": "emathai@veritext.com",
+    "contactPhone": "9734140401",
+    "assignedUserEmail": "emathai@veritext.com"
+    },
+    {
+      "username": "jsimone",
+      "contactName": "jennifer",
+      "contactEmail": "jsimone@veritext.com",
+      "contactPhone": "9734140402",
+      "assignedUserEmail": "jsimone@veritext.com"
+    },
+    {
+      "username": "abeneroff",
+      "contactName": "adam",
+      "contactEmail": "abeneroff@veritext.com",
+      "contactPhone": "9734140403",
+      "assignedUserEmail": "abeneroff@veritext.com"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
-  "name": "VeriSync",
-  "version": "1.7.4",
+  "name": "VeriSuite",
+  "version": "1.7.21",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -8,7 +8,7 @@
     "directories": {
       "buildResources": "."
     },
-    "productName": "VeriSync",
+    "productName": "VeriSuite",
     "win": {
       "icon": "build/icon.ico",
       "certificateFile": "private/testcert.pfx",

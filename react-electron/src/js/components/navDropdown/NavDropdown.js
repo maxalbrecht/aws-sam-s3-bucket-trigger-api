@@ -3,13 +3,13 @@ import { Nav, NavDropdown } from 'react-bootstrap'
 import './NavDropdown.scss'
 
 // DROPDOWN OPTIONS AND THEIR CORRESPONDING ROUTES
-const SYNCING = 'Syncing'
+const SYNCING = 'Sync'
 const SYNCING_ROUTE = '/app'
 const JOB_STATUS = 'Job Status'
 const JOB_STATUS_ROUTE = '/jobstatus'
-const JOB_ARCHIVING = 'Job Archiving'
+const JOB_ARCHIVING = 'Store'
 const JOB_ARCHIVING_ROUTE = '/jobarchiving'
-const FILE_STITCHING = 'File Stiching' 
+const FILE_STITCHING = 'Stitch' 
 const FILE_STITCHING_ROUTE = '/filestitching'
 const DRC = 'DRC'
 const DRC_ROUTE = '/drc'
@@ -45,21 +45,15 @@ function NavDropdownComponent() {
       <NavDropdown
         className="navDropdown"
         title={
-          <span className="navDropdownLabel" id="navDropdownLabel" >Views</span>
+          <span className="navDropdownLabel" id="navDropdownLabel" >Functions</span>
         }
         id="nav-dropdown"
       >
-        <NavDropdown.Item 
-          eventKey={SYNCING}
-        >
-          {SYNCING}
-        </NavDropdown.Item>
+        <NavDropdown.Item eventKey={FILE_STITCHING}>{FILE_STITCHING}</NavDropdown.Item>
         <NavDropdown.Divider />
-        <NavDropdown.Item eventKey={JOB_STATUS}>{JOB_STATUS}</NavDropdown.Item>
+        <NavDropdown.Item eventKey={SYNCING}>{SYNCING}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={JOB_ARCHIVING}>{JOB_ARCHIVING}</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item eventKey={FILE_STITCHING}>{FILE_STITCHING}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={LOGIN}>{LOGIN}</NavDropdown.Item>
       </NavDropdown>

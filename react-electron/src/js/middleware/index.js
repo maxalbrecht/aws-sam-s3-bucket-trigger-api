@@ -1,12 +1,17 @@
 //src/js/middleware/index.js
 
 import {
-  ADD_ARTICLE,
-  API_CALL_FINISHED,
   TOGGLE_JOB_DETAILS,
   REMOVE_DOC,
+
+  ADD_ARTICLE,
+  API_CALL_FINISHED,
+  
   ADD_ARCHIVED_JOB,
-  ADD_STITCHED_FILE 
+  JOB_ARCHIVING_FINISHED,
+
+  ADD_STITCHED_FILE,
+  FILE_STITCHING_QUEUED
 } from '../constants/action-types';
 import { AddArchivedJob } from '../actions';
 import { AddStitchedFile } from './../actions'
@@ -19,24 +24,34 @@ export function rootMiddleware({ dispatch }) {
       let returnAction = null;
 
       switch (action.type) {
-        case ADD_ARTICLE:
-          returnAction = AddArticleMiddleware(action);
-          break;
-        case API_CALL_FINISHED:
-          returnAction = UpdateStatusMiddleware(action);
-          break;
         case TOGGLE_JOB_DETAILS:
           returnAction = ToggleJobDetailsMiddleware(action);
           break;
         case REMOVE_DOC:
           returnAction = RemoveDocMiddleware(action);
           break;
+
+        case ADD_ARTICLE:
+          returnAction = AddArticleMiddleware(action);
+          break;
+        case API_CALL_FINISHED:
+          returnAction = UpdateStatusMiddleware(action);
+          break;
+
         case ADD_ARCHIVED_JOB:
           returnAction = AddArchivedJobMiddleware(action);
           break;
+        case JOB_ARCHIVING_FINISHED:
+          returnAction = UpdateArchivedJobStatusMiddleware(action); 
+          break;
+
         case ADD_STITCHED_FILE:
           returnAction = AddStitchedFileMiddleware(action);
           break;
+        case FILE_STITCHING_QUEUED:
+          returnAction = UpdateStitchedFileStatusMiddleware(action);
+          break;
+
         default:
           break;
       }
@@ -53,6 +68,19 @@ export function rootMiddleware({ dispatch }) {
   }
 }
 
+function ToggleJobDetailsMiddleware(actionParam) {
+  console.log("Toggling JobDetails... Currently in ToggleJobDetailsMiddleware()");
+  console.log("actionParam:");
+  console.log(actionParam);
+}
+
+function RemoveDocMiddleware(actionParam) {
+  console.log("Inside RemoveDocMiddleware");
+  console.log("actionParam:");
+  console.log(actionParam);
+}
+
+
 function AddArticleMiddleware(actionParam) {
   console.log("Adding article... Currently in AddArticleMiddleware()");
   console.log(`action.payload:\n${JSON.stringify(actionParam.payload)}`)
@@ -66,19 +94,6 @@ function AddArticleMiddleware(actionParam) {
   }
 }
 
-function AddArchivedJobMiddleware(actionParam) {
-  console.log("Adding archived job... Currently in AddArchivedJobMiddleware()")
-  console.log("actionParam:");
-  console.log(actionParam);
-
-}
-
-function AddStitchedFileMiddleware(actionParam){
-  console.log("Adding stitched file... Currently in AddStitchedFileMiddleware()")
-  console.log("actionParam:")
-  console.log(actionParam)
-}
-
 function UpdateStatusMiddleware(actionParam) {
   console.log("Updating Status... Currently UpdateStatusMiddleware()");
   console.log("actionParam:");
@@ -87,14 +102,35 @@ function UpdateStatusMiddleware(actionParam) {
   console.log(window.store.getState());
 }
 
-function ToggleJobDetailsMiddleware(actionParam) {
-  console.log("Toggling JobDetails... Currently in ToggleJobDetailsMiddleware()");
+
+function AddArchivedJobMiddleware(actionParam) {
+  console.log("Adding archived job... Currently in AddArchivedJobMiddleware()")
   console.log("actionParam:");
   console.log(actionParam);
 }
 
-function RemoveDocMiddleware(actionParam) {
-  console.log("Inside RemoveDocMiddleware");
-  console.log("actionParam:");
-  console.log(actionParam);
+function UpdateArchivedJobStatusMiddleware(actionParam) {
+  console.log("Updating Archived Job Status... Currently in UpdateArchivedJobStatusMiddleware()")
+  console.log("actionParam:")
+  console.log(actionParam)
+  console.log("store.getState:")
+  console.log(window.store.getState())
 }
+
+
+function AddStitchedFileMiddleware(actionParam){
+  console.log("Adding stitched file... Currently in AddStitchedFileMiddleware()")
+  console.log("actionParam:")
+  console.log(actionParam)
+}
+
+function UpdateStitchedFileStatusMiddleware(actionParam) {
+  console.log("Updating Stitched File Status... Currently in UpdateStitchedFileStatusMiddleware()")
+  console.log("actionParam:")
+  console.log(actionParam)
+  console.log("store.getState:")
+  console.log(window.store.getState())
+}
+
+
+

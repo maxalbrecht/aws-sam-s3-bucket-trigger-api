@@ -46,23 +46,7 @@ function onDragEnd(result) {
                      // are dropped outside of a droppable item
     newDocIds.splice(destination.index, 0, draggableId);
   }
-  /*
-  else {
-    console.log("onDragEnd draggableIdee:");
-    console.log(draggableId);
-    console.log("this:");
-    console.log(this);
 
-  let payload = { 
-    type: REMOVE_DOC,
-    draggableId: draggableId
-  };
-
-  store.dispatch(action(REMOVE_DOC, payload));
-
-    delete newDocs[draggableId];
-  }
-  */
 
   const newColumn = {
     ...column,

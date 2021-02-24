@@ -9,6 +9,8 @@ class Doc extends React.Component {
     logicConstructor.bind(this)(props);
   }
   render() {
+    console.log("Doc.this.props:");
+    console.log(this.props);
     return (
       <Draggable
         draggableId={this.props.doc.id}
@@ -27,17 +29,17 @@ class Doc extends React.Component {
               ref={provided.innerRef}
               isDragging={snapshot.isDragging}
               onContextMenu={
-                event => { this.handleClickSourceFile(event, this.props.doc.id) }
+                event => { this.handleClickSourceFile(event, this.props.doc.id, this.props.parentViewName) }
               }
               onClick={
-                event => { this.handleClickSourceFile(event, this.props.doc.id) }
+                event => { this.handleClickSourceFile(event, this.props.doc.id, this.props.parentViewName) }
               }
               onDoubleClick={this.handleDoubleClickSourceFile}
               onKeyPress={
-                event => { this.handleSourceFileDelete(event, this.props.doc.id) }
+                event => { this.handleSourceFileDelete(event, this.props.doc.id, this.props.parentViewName) }
               }
               onKeyDown={
-                event => { this.handleSourceFileDelete(event, this.props.doc.id) }
+                event => { this.handleSourceFileDelete(event, this.props.doc.id, this.props.parentViewName) }
               }
             >
               {this.props.doc.content}

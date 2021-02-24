@@ -4,6 +4,7 @@ import StitchFileButton from './stitchFileButton'
 import SourceFields from './sourceFields'
 import SourceFiles from './../../app/fields/sourceFiles'
 import DestinationFields from './destinationFields'
+import AudioAdjustment from './audioAdjustment'
 import DestinationFileName from './destinationFileName'
 
 function fieldBind() {
@@ -13,6 +14,7 @@ function fieldBind() {
   this.SourceFields = SourceFields.bind(this)
   this.SourceFiles = SourceFiles.bind(this)
   this.DestinationFields = DestinationFields.bind(this)
+  this.AudioAdjustment = AudioAdjustment.bind(this)
   this.DestinationFileName = DestinationFileName.bind(this)
 
   this.FormErrors = FormErrors.bind(this)

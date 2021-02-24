@@ -1,5 +1,6 @@
 import React from 'react';
 import { ListGroup, Row, Col, Button, Form } from 'react-bootstrap';
+import Logging from './../../../../utils/logging'
 
 import { ConvertPriorityIntToString } from '../../../../constants/priority_options'
 import Collapse from '@kunukn/react-collapse'
@@ -7,6 +8,9 @@ import Collapse from '@kunukn/react-collapse'
 function JobDetails() {
   let docs = this.ListItemObject.sourceFiles.docs;
   let docsParsed = []
+  Logging.LogSectionStart()
+  Logging.LogEach("Inside ListItem.JobDetails()", "this.ListItemObject:", this.ListItemObject)
+  Logging.LogSectionEnd()
   
   for (var prop in docs) {
     if (Object.prototype.hasOwnProperty.call(docs, prop)) {

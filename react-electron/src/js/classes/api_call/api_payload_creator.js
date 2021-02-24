@@ -76,9 +76,9 @@ class APIPayloadCreator {
   }
   ReplaceJSONPlaceHolders(jsonTemplate, ...args){
     //      This function should take a json template and a number of parameters.
-    //      Each of the parameter is expected to be an object with one key-value pair.
+    //      Each of the parameters is expected to be an object with one key-value pair.
     //      For each of the parameters, it should scan the json template and replace
-    //      and any instances of the the parameter's placeholder with the
+    //      any instances of the the parameter's placeholder with the
     //      parameter values, as well as any necessary formatting such as quotation marks.
     let finishedTemplate = JSON.stringify(jsonTemplate);
     for (let arg of args) {

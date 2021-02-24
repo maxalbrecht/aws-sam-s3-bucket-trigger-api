@@ -12,7 +12,7 @@ function LogOutButton() {
       <Button
             type="button"
             variant="secondary"
-            className="logOutButton"
+            className="footerLogoutButton"
             onClick={ ()=>(LogOut(this)) }
             style={{
               fontSize: '14px',

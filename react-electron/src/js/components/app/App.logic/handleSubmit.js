@@ -14,12 +14,29 @@ const uuidv4 = window.require("uuid/v4");
 // Method to prepare to call the API with an APICaller object
 // Gives the default job path that is used for the jobInputPath and jobOutputPath
 // and passed as part of the API call
-function ReturnJobPath(jobNumber, inputOrOutput = "input") {
-  let mainFolder = "vxttest01";
+function ReturnJobPath(jobNumber, subfolders, inputOrOutput = "input") {
+  let mainFolder = "vxtprod";
   let region = "region=us_east_1";
-  let path = `aws://${mainFolder}/${jobNumber}?region=${region}`;
+  let path = `aws://${mainFolder}/${jobNumber}${subfolders}?region=${region}`;
   
   return path;
+}
+
+
+function GetSubfolders(fileList_raw){
+  let subfolders = ""
+
+  if( fileList_raw.docs !== undefined && Object.keys(fileList_raw.docs).length > 0){
+    let value = fileList_raw.docs[Object.keys(fileList_raw.docs)[0]]
+    let docValue = value.content
+    let docValueSplit = docValue.split('\\');
+
+    for (let i = 2; i < docValueSplit.length - 1; i++) {
+      subfolders += "/" + docValueSplit[i]
+    }
+  }
+
+  return subfolders
 }
 
 // Creates an APIPayloadCreator and APICaller to call the external API
@@ -28,6 +45,7 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
  function handleSubmit(event) {
   let date = new Date();
   let storeState = window.store.getState()
+  let subfolders = GetSubfolders(this.state.sourceFiles)
   
 
   if(defined(storeState.user)) {
@@ -43,13 +61,13 @@ function ReturnJobPath(jobNumber, inputOrOutput = "input") {
       //depositionDate: this.state.deposition.depositionDate,
       //caseName: this.state.deposition.caseName,
       //caseNumber: this.state.deposition.caseNumber,
-      jobInputPath: ReturnJobPath(this.state.jobNumber),
-      jobOutputPath: ReturnJobPath(this.state.jobNumber, "output"),
+      jobInputPath: ReturnJobPath(this.state.jobNumber, subfolders),
+      jobOutputPath: ReturnJobPath(this.state.jobNumber, subfolders, "output"),
       orderType: this.state.orderType,
       fileList_raw: this.state.sourceFiles,
       priority: ConvertPriorityStringToInt(this.state.priority),
       assignedUserEmail: storeState.user.assignedUserEmail,
-      imageType: 2,
+      imageType: 3,
       imageBranding: "Veritext", 
       createImage: 1,
       contactName: storeState.user.contactName,

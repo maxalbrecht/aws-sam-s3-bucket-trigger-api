@@ -12,11 +12,14 @@ function DestinationFields() {
         style={{marginTop:'-25px', marginBottom:'10px', width:'88px', paddingLeft:'2px'}}
       >Destination</div>
 
-      <Form.Row style={{maxHeight:'60px', marginBottom:'5px', borderWidth:'2px', borderColor:'white'}}>
+      <Form.Row style={{maxHeight:'35px', marginBottom:'5px', borderWidth:'2px', borderColor:'white'}}>
+        { this.AudioAdjustment() }
+      </Form.Row>
+      <Form.Row style={{maxHeight:'60px', marginTop:'25px', marginBottom:'5px', borderWidth:'2px', borderColor:'white'}}>
         <Form.Group as={Col} className="textFieldLabel" style={{maxWidth:'80px'}}>
           <Form.Label
             style={{paddingTop:'35px', color:'darkgrey'}}
-          >videoin02/</Form.Label>
+          >vxtprod/</Form.Label>
         </Form.Group>
         { this.DestinationFileName() }
       </Form.Row>

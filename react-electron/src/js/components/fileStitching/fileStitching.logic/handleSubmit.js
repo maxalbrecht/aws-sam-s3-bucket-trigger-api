@@ -28,6 +28,7 @@ async function handleSubmit(event) {
         storeState.user.resetLastTimeOfActivity()
         let currentFileId = uuidv4()
 
+        console.log(this.state.audioAdjustment)
         console.log(this.state.destinationFileName)
 
         /*
@@ -48,6 +49,7 @@ async function handleSubmit(event) {
           this.state.jobNumber,
           this.state.sourceFiles,
           this.state.sourceFiles.columns["column-1"].docIds,
+          this.state.audioAdjustment,
           this.state.destinationFileName,
           storeState.user.assignedUserEmail,
           storeState.user.contactName,
@@ -66,6 +68,7 @@ async function handleSubmit(event) {
         this.setState(
           {
             jobNumber: "",
+            audioAdjustment: "0",
             destinationFileName: "",
             sourceFiles: initialData,
             user: this.state.user

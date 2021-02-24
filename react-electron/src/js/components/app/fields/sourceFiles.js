@@ -6,6 +6,19 @@ import BrowseButton from './browseButton';
 
 function SourceFiles() {
   this.BrowseButton = BrowseButton.bind(this);
+  console.log(">>############################################################################")
+  console.log("sourceFiles.js this:")
+  console.log(this)
+  console.log("this.constructor.name:")
+  console.log(this.constructor.name)
+  console.log("this.state")
+  console.log(this.state)
+  console.log("this.state.sourceFiles:")
+  console.log(this.state.sourceFiles)
+  console.log("this.state.sourceFiles.columns:")
+  console.log(this.state.sourceFiles.columns)
+  console.log(">>>>>>this.state.sourceFiles.columns[\"column-1\"]:")
+  console.log(this.state.sourceFiles.columns["column-1"])
 
     return (
       <Form.Group as={Col} 
@@ -53,7 +66,7 @@ function SourceFiles() {
                       docs = column.docIds.map(docId => this.state.sourceFiles.docs[docId]);
                     } else {
                       // empty
-                      console.log("sourcefiles.js column.docIds is currently empty.");
+                      console.log("#######sourcefiles.js column.docIds is currently empty.");
                     }
                     
                     return  <Column
@@ -61,6 +74,7 @@ function SourceFiles() {
                               key={column.id}
                               column={column}
                               docs={docs}
+                              parentViewName={this.viewName}
                               style={{
                                 minHeight:'400px',
                                 display:'inline-block',

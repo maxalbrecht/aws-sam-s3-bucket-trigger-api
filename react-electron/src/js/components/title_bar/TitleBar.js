@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { withRouter } from 'react-router-dom'
 import './TitleBar.scss'
+import Logging from './../../utils/logging'
 import { Button, Row, Col } from 'react-bootstrap'
 import NavDropdown from './../navDropdown/NavDropdown'
 var electron = window.require("electron")
@@ -35,7 +36,7 @@ class WithRouterTitleBar extends Component {
       <Row id="title-bar" >
         <img  id="small-icon" src={process.env.PUBLIC_URL + '/favicon.ico'} alt="app icon"/>
         <Col style={{width:'20px', maxWidth:'100px'}}>
-          <div id="app-title">VeriSync</div>
+          <div id="app-title">VeriSuite</div>
         </Col>
         <Col >
           <div style={{paddingTop:'5px'}}>v {process.env.REACT_APP_VERSION}</div>

@@ -1,14 +1,18 @@
 import React from 'react';
 import { ListGroup, Row, Col, Button, Form } from 'react-bootstrap';
-
-import { ConvertPriorityIntToString } from '../../../../constants/priority_options'
+import Logging from './../../../../utils/logging'
 
 import Collapse from '@kunukn/react-collapse'
 
 function JobDetails() {
-  let docs = this.StitchedFileObject.sourceFiles.docs;
+  //let docs = this.StitchedFileObject.sourceFiles.docs;
+  Logging.LogSectionStart()
+  Logging.LogEach("Inside StitchedFile.JobDetails()", "this.StitchedFileObject:", this.StitchedFileObject)
+  Logging.LogSectionEnd()
+
+  let docs = this.StitchedFileObject.fileStitcher.fileList_raw.docs
   let docsParsed = []
-  
+
   for (var prop in docs) {
     if (Object.prototype.hasOwnProperty.call(docs, prop)) {
       let file = docs[prop].content;
@@ -47,32 +51,6 @@ function JobDetails() {
         isOpen={this.JobDetailsIsOpen}
       >
         <Col style={{paddingLeft:'18px'}}>
-          <Row className="OrderType">
-            <Col style={{maxWidth:'140px', padding:'0px'}}><u>Order Type:</u></Col>
-            <Col style={{paddingLeft:'10px'}}>
-              <Row style={{margin:'0 0'}}>{this.StitchedFileObject.apiCaller.APIPayloadCreator.state.OrderType}</Row>
-            </Col>
-          </Row>
-
-          <Row className="Priority">
-            <Col style={{maxWidth:'140px', padding:'0px'}}><u>Priority:</u></Col>
-            <Col style={{paddingLeft:'10px'}}>
-              <Row style={{margin:'0 0'}}>
-                { ConvertPriorityIntToString(
-                    this.StitchedFileObject.apiCaller.APIPayloadCreator.state.Priority,
-                    this.StitchedFileObject.apiCaller.APIPayloadCreator.state.OrderType
-                  )
-                }
-              </Row>
-            </Col>
-          </Row>
-
-          <Row className="Notes">
-            <Col style={{maxWidth:'140px', padding:'0px'}}><u>Notes:</u></Col>
-            <Col style={{paddingLeft:'10px'}}>
-              <Row style={{margin:'0 0'}}>{this.StitchedFileObject.apiCaller.APIPayloadCreator.state.Notes}</Row>
-            </Col>
-          </Row>
 
           <Row className="SourceFilesTitle">
             <Col style={{maxWidth:'140px', padding:'0px'}}><u>SourceFiles:</u></Col>

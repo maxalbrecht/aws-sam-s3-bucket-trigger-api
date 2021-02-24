@@ -8,9 +8,10 @@ import './StitchedFile.scss'
 import fieldBind from './StitchedFile.fields/StitchedFile.fields'
 
 import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
-import { STITCHING_FILE, SUCCESS, ERROR } from './../../../constants/job_archiving_statuses'
+import { STITCHING_FILE, QUEUED, SUCCESS, ERROR } from './../../../constants/list_item_statuses'
 
 import defined from './../../../utils/defined'
+import Logging from '../../../utils/logging'
 
 const uuidv4 = window.require("uuid/v4")
 
@@ -20,26 +21,19 @@ class ConnectedStitchedFile extends Component {
 
     logicConstructor.bind(this)(props)
     fieldBind.bind(this)()
-
-    if(defined(this.StitchedFileObject)){
-      console.log("StitchedFileObject:")
-      console.log(this.StitchedFileObject)
-    }
-    else {
-      console.log("StitchedFileObject is not defined...")
-    }
   }
 
   render() {
     let oddOrEven = ODD
 
-    if(this.props.jobOrdinalNumber%2 ===0){
+    if(this.props.fileOrdinalNumber % 2 === 0){
       oddOrEven = EVEN
     }
 
     let successOrFailure = ''
 
-    if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === STITCHING_FILE){
+    if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === STITCHING_FILE
+      || this.StitchedFileObject.fileStitcher.fileStitchingStatus === QUEUED){
       successOrFailure = ''
     }
     else if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === SUCCESS){
@@ -64,14 +58,22 @@ class ConnectedStitchedFile extends Component {
         key={this.StitchedFileObject.id}
       >
         <Row className="JobNumber">
-          <Col style={{maxWidth:'140px', padding:'0px'}}><ul>Job Number:</ul></Col>
+          <Col style={{maxWidth:'140px', padding:'0px'}}><u>Job Number:</u></Col>
           <Col style={{paddingLeft:'10px'}}>{this.StitchedFileObject.jobNumber}</Col>
         </Row>
+        
 
-        <Row className="JobNumber">
-          <Col style={{malWidth:'140px', padding:'0px'}}><u>Destination File Name:</u></Col>
+        <Row className="AudioAdjustment">
+          <Col style={{maxWidth:'140px', padding:'0px'}}><u>Audio Adjustment:</u></Col>
           <Col style={{paddingLeft:'10px'}}>
-            videoin02/{this.StitchedFileObject.fileStitcher.destinationFileName}
+            {this.StitchedFileObject.fileStitcher.audioAdjustment}
+          </Col>
+        </Row>
+        
+        <Row className="DestinationFileName">
+          <Col style={{maxWidth:'140px', padding:'0px'}}><u>Destination File Name:</u></Col>
+          <Col style={{paddingLeft:'10px'}}>
+            {this.StitchedFileObject.fileStitcher.ApiPayloadCreator.state.path_format}
           </Col>
         </Row>
 
@@ -87,7 +89,20 @@ class ConnectedStitchedFile extends Component {
           </Col>
         </Row>
 
-
+        <Row className="ErrorMsgList" style={{margin:'0 0'}}>
+          <ListGroup style={{border:'none'}}>
+            {
+              this.StitchedFileObject.fileStitcher.errorMsgList.map(
+                errorMsgObject => (
+                  <ListGroup.Item style={{padding:'2px 0', border:'none'}} key={uuidv4()}>
+                    {errorMsgObject.errorMsg}
+                  </ListGroup.Item>
+                )
+              )
+            }
+          </ListGroup>
+        </Row>
+        { this.JobDetails() }
       </ListGroup.Item>
     )
   }

@@ -1,15 +1,18 @@
-import axios from 'axios'
-import { API_CALL_FINISHED } from './../../constants/action-types.js'
-import { action } from './../../utils/action'
-import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../constants/list_item_statuses'
+import AxiosHelperCreateJob from './axios-helper-create-job'
+import AxiosHelperGetStatusUpdate from './axios-helper-get-status-update'
+import Logging from './../../utils/logging'
+import File from './../../utils/file'
+import DateUtils from './../../utils/date-utils'
+import { STARTING_JOB } from './../../constants/list_item_statuses'
 import ApiPayloadCreator from './api_payload_creator'
-var store = window.store
+import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
 
 class FileStitcher {
   constructor(
     externalJobNumber,
     fileList_raw,
     fileOrder,
+    audioAdjustment,
     destinationFileName,
     assignedUserEmail,
     contactName,
@@ -18,30 +21,51 @@ class FileStitcher {
     fileId,
     ...props
   ) {
-    this.externalJobNumber = externalJobNumber 
-    this.fileList_raw = fileList_raw 
-    this.fileOrder = fileOrder
-    this.destinationFileName = destinationFileName 
-    this.assignedUserEmail = assignedUserEmail 
-    this.contactName = contactName 
-    this.contactEmail = contactEmail 
-    this.contactPhone = contactPhone 
-    this.fileId = fileId 
-    
-    console.log("FileStitcher.constructor.destinationFileName:")
-    console.log(destinationFileName)
-    this.CallAPI = this.CallAPI.bind(this)
-    this.factoryId = "e725b4c22c6d5fc48085514fc114b23c"
-    this.apiUrl = `https://api.cloud.telestream.net/starfish/v1.0/factories/${this.factoryId}/jobs`
-    
-    try {
-      this.APIKey = this.getFileContent(".//private/SF_API_KEY.txt")
-    } catch (error) {
-      console.log("Error getting API key.")
+    SaveParameters(this)
+    Initialize(this)
+
+    AxiosHelperCallAPIAndStartPolling(this)
+
+    async function AxiosHelperCallAPIAndStartPolling(that){
+      await that.AxiosHelper.CallAPI(
+        that.apiUrl,
+        that.ApiPayloadCreator.formattedAPIPayload,
+        FILE_STITCHING_CONSTANTS.API.METHOD,
+        { [FILE_STITCHING_CONSTANTS.API.HEADER_NAMES.X_API_KEY]: that.APIKey },
+        that
+      )
+      that.jobId = that.result.data.id
+
+      that.PrintConstructorResults()
+
+      that.PollForJobStatusUpdates()
     }
 
-    try {
-      this.ApiPayloadCreator = new ApiPayloadCreator(
+    function SaveParameters(that){
+      Logging.LogSpacerLine()
+      Logging.Log(externalJobNumber)
+      that.externalJobNumber = externalJobNumber 
+      that.fileList_raw = fileList_raw 
+      that.fileOrder = fileOrder
+      that.audioAdjustment = audioAdjustment
+      that.destinationFileName = destinationFileName 
+      that.assignedUserEmail = assignedUserEmail 
+      that.contactName = contactName 
+      that.contactEmail = contactEmail 
+      that.contactPhone = contactPhone 
+      that.fileId = fileId
+  
+      that.PrintInitialConstructorParameters();
+    }
+
+    function Initialize(that){
+      that.AxiosHelper = new AxiosHelperCreateJob()
+      that.factoryId = FILE_STITCHING_CONSTANTS.FACTORY_ID
+      that.apiUrl = FILE_STITCHING_CONSTANTS.API.URL
+      that.templateId = that.DetermineTemplateID(that.audioAdjustment)
+      that.APIKey = that.GetAPIKey()
+  
+      that.ApiPayloadCreator = new ApiPayloadCreator(
         externalJobNumber,
         fileList_raw,
         fileOrder,
@@ -49,140 +73,109 @@ class FileStitcher {
         assignedUserEmail,
         contactName,
         contactEmail,
-        contactPhone
+        contactPhone,
+        that.templateId        
       )
+
+      that.continuePollingForUpdates = true
+      that.failedAttemptsToGetUpdate = 0
+      that.dateDisplay = FILE_STITCHING_CONSTANTS.DATE_DISPLAY_DEFAULT
+      that.fileStitchingStatus = STARTING_JOB
+      that.axiosSuccessResult = {}
+      that.axiosFailureReason = {}
+      that.errorMsgList = []
+      that.dateDisplay = DateUtils.GetDateDisplay()
+      Logging.Log(`File Stitching Submission Time: ${that.dateDisplay}`)
+    }
+  }
+
+  async GetJobStatusUpdate(){ 
+    if(this.updateApiUrl === undefined){
+      this.updateApiUrl = `${this.apiUrl}/${this.jobId}` 
+
+      //if (this.externalJobNumber === FILE_STITCHING_CONSTANTS.MOCK_JOB.EXTERNAL_JOB_NUMBER) {
+      //  this.updateApiUrl = `${this.apiUrl}/${FILE_STITCHING_CONSTANTS.MOCK_JOB.ID}` 
+      //}  
+    }
+    if(this.AxiosHelperForUpdates === undefined){
+      this.AxiosHelperForUpdates = new AxiosHelperGetStatusUpdate() //this.GetAxiosHelperForUpdates()
+    }
+
+    await this.AxiosHelperForUpdates.CallAPI(
+      this.updateApiUrl,
+      {},
+      FILE_STITCHING_CONSTANTS.API_JOB_STATUS.METHOD,
+      { [FILE_STITCHING_CONSTANTS.API.HEADER_NAMES.X_API_KEY]: this.APIKey },
+      this
+    )
+    
+    this.ShouldWeContinuePollingForUpdates()
+
+    Logging.LogEach("***&&&***Latest jobStatusUpdate:", this.jobStatusUpdate)
+  }
+
+  ShouldWeContinuePollingForUpdates(){
+    Logging.LogSectionStart()
+    Logging.LogEach("this.IdOfTimerToPollForJobStatusUpdates:", this.IdOfTimerToPollForJobStatusUpdates)
+    Logging.LogEach("this.failedAttemptsToGetUpdate: ", this.failedAttemptsToGetUpdate)
+    Logging.LogEach("continuePollingForUpdates: ", this.continuePollingForUpdates)
+
+    if(this.failedAttemptsToGetUpdate >= FILE_STITCHING_CONSTANTS.API_JOB_STATUS.MAX_FAILED_ATTEMPTS){
+      this.continuePollingForUpdates = false
+    }
+
+    if (!this.continuePollingForUpdates) {
+      clearInterval(this.IdOfTimerToPollForJobStatusUpdates)
+      Logging.Log(">>>clearing interval that checks for updates")
+    }
+
+    Logging.LogSectionEnd()
+  }
+
+  PollForJobStatusUpdates(){
+    let timeoutTimeInMilliseconds = FILE_STITCHING_CONSTANTS.POLLING.TIMEOUT_IN_SECONDS * 1000
+
+    this.IdOfTimerToPollForJobStatusUpdates = setInterval(
+      ( () => { this.GetJobStatusUpdate() } ),
+      timeoutTimeInMilliseconds
+    )
+  }
+
+  GetAPIKey(){
+    let APIKey
+
+    try {
+      APIKey = File.getContent(FILE_STITCHING_CONSTANTS.SF_API_KEY_FILE)
     } catch (error) {
-      console.log(`Error instanciating APIPayloadCreator. Error ${error}`)
+      Logging.LogError(FILE_STITCHING_CONSTANTS.ERRORS.ERROR_GETTING_API_KEY, error)
     }
 
-    try {
-      this.dateDisplay = "<<Date & Time>>"
-      this.APICallStatus = STARTING_JOB
-      this.axiosSuccessResult = {}
-      this.axiosFailureReason = {}
-      this.errorMsgList = []
-
-      let date_ob = new Date()
-      this.milliseconds = date_ob.getTime()
-      let date = this.IntTwoChars(date_ob.getDate())
-      let month = this.IntTwoChars(date_ob.getMonth() + 1)
-      let year = date_ob.getFullYear()
-      let hours = this.IntTwoChars(date_ob.getHours())
-      let minutes = this.IntTwoChars(date_ob.getMinutes())
-      let seconds = this.IntTwoChars(date_ob.getSeconds())
-      let dateDisplay = `${hours}:${minutes}:${seconds} ${month}/${date}/${year}`
-      console.log(`File Stitching Submission Time: ${dateDisplay}`)
-      this.dateDisplay = dateDisplay
-    } catch (error) {
-      console.log(`Error setting date display. Error ${error}`)
-    }
-
-    try {
-      this.result = this.CallAPI(
-        this.apiUrl,
-        this.ApiPayloadCreator.formattedAPIPayload,
-        this.APIKey
-      )
-
-      console.log("files Stitcher CallAPI result:")
-      console.log(JSON.stringify(this.result))
-    }
-    catch(e) {
-      console.log(`Error in FileStitcher. Error: ${e}`)
-      throw e
-    }
+    return APIKey
   }
 
-  IntTwoChars(i){
-    return (`0${i}`).slice(-2)
+  DetermineTemplateID(audioAdjustment) {
+    const TEMPLATES = FILE_STITCHING_CONSTANTS.TEMPLATES
+    const ADJUSTMENTS = FILE_STITCHING_CONSTANTS.AUDIO_ADJUSTMENTS
+
+    let templateId = TEMPLATES.DEFAULT
+
+    if (audioAdjustment === ADJUSTMENTS.PLUS_3) {
+      templateId = TEMPLATES.BOOST_3DB
+    } else if (audioAdjustment === ADJUSTMENTS.PLUS_6) {
+      templateId = TEMPLATES.BOOST_6DB
+    }
+
+    return templateId
   }
 
-  getFileContent(filePath) {
-    let fileContent = ""
-    try {
-      let fs = window.require('fs')
-      fileContent = fs.readFileSync(filePath, 'utf8')
-    }
-    catch(e){
-      console.log(`Error trying to get File Content. Error: ${e}`)
-      throw e
-    }
-
-    return fileContent
+  PrintConstructorResults(){
+    Logging.LogEach("files Stitcher CallAPI result:", JSON.stringify(this.result))
   }
 
-  AxiosThenSuccess(result) {
-    console.log("############################################################")
-    console.log("fileStitcher.CallApi.axiosResult:")
-    console.log(result)
-
-    let newAPICallStatus = ""
-    this.axiosSuccessResult = result
-
-    if(this.axiosSuccessResult.status === 200){
-      newAPICallStatus = SUCCESS
-    } else {
-      newAPICallStatus = ERROR
-    }
-
-
-
-
-
-
-
-
-    this.APICallStatus = newAPICallStatus
-    this.errorMsgList = {} //errorMsgList
-
-    store.dispatch(action(API_CALL_FINISHED, newAPICallStatus))
-  }
-
-  AxiosThenFailure(reason) {
-    console.log("fileStitcher.CallApi.axiosFailureReason:")
-    console.log(reason)
-
-    this.axiosFailureReason = reason
-    this.APICallStatus = ERROR
-
-    store.dispatch(action(API_CALL_FINISHED, this.APICallStatus))
-  }
-
-  CallAPI(apiUrl, payload, APIKey) {
-    // This is our redux action creator for API_CALL_FINISHED action
-    // Add a request interceptor
-    axios.interceptors.request.use(function (config) {
-      // Do something before request is sent
-      console.log(`axios request interceptor config:\n${JSON.stringify(config)}`)
-      return config
-    }, function (error) {
-      console.log(`axios request interceptor error:\n${error}`)
-      console.log(`axios request interceptor error, stringified:\n${JSON.stringify(error)}`)
-      // Do something with request error
-      return Promise.reject(error)
-    })
-
-    console.log(`axios API post payload:\n${payload}`)
-    console.log("posting with axios...")
-
-    try {
-      return axios({
-        method: 'post',
-        url: apiUrl,
-        headers: { 
-          //'content-type': 'application/json',
-          'X-Api-Key': APIKey
-        },
-        data: payload
-      }).then(
-        (result) => { this.AxiosThenSuccess(result) },
-        (reason) => { this.AxiosThenFailure(reason) }
-      )
-    }
-    catch (e) {
-      console.log(`Error calling api. Error:\n${e}`)
-      alert("error calling API. Please check that all fields have been filled in correctly. If the issue persists, please contact application support")
-    }
+  PrintInitialConstructorParameters(){
+    Logging.LogEach(`FileStitcher.constructor.audioAdjustment:`, this.audioAdjustment)
+    Logging.LogEach(`FileStitcher.constructor.destinationFileName:`, this.destinationFileName)
+    Logging.LogEach(`this.fileList_raw:`, this.fileList_raw)
   }
 }
 

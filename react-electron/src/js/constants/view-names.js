@@ -1,0 +1,7 @@
+const SYNC_VIEW = "SYNC_VIEW"
+const STITCH_VIEW = "STITCH_VIEW"
+
+export {
+  SYNC_VIEW,
+  STITCH_VIEW
+}

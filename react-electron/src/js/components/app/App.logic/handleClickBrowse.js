@@ -15,13 +15,13 @@ var store = window.store;
 // in by the user (and whether the environment is dev, demo or prod)
 async function setDefaultPath(jobNumber) {
   let defaultPath = "";
-  let prodPath = "Y:";
+  let prodPath = "V:";
   let testPath = "E:";
   let devPath = "C:";
 
   try {
     if (checkIfDirectoryExists(prodPath)) {
-      defaultPath = `${prodPath}\\vxttest01`;
+      defaultPath = prodPath;
     }
     else if (checkIfDirectoryExists(testPath)) {
       defaultPath = testPath;

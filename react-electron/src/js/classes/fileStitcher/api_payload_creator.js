@@ -10,26 +10,52 @@ class APIPayloadCreator {
     assignedUserEmail,
     contactName,
     contactEmail,
-    contactPhone
+    contactPhone,
+    templateId
   ){
-    console.log("debug1")
-    this.state = {
-      ExternalJobNumber: externalJobNumber,
-      inputs: this.formatInputsObject(fileList_raw, fileOrder),
-      FileOrder: fileOrder,
-      DestinationFileName: destinationFileName,
-      path_format: destinationFileName,
-      AssignedUserEmail: assignedUserEmail,
-      ContactName: contactName,
-      ContactEmail: contactEmail,
-      ContactPhone: contactPhone,
-      fileStatus: "Starting",
+    try {
+      this.FileUrlBase = "s3://vxtprod/"
+      this.subfolders = this.getSubfolders(fileList_raw)
+
+      this.state = {
+        ExternalJobNumber: externalJobNumber,
+        inputs: this.formatInputsObject(fileList_raw, fileOrder, this.FileUrlBase, externalJobNumber, this.subfolders),
+        FileOrder: fileOrder,
+        DestinationFileName: destinationFileName,
+        //path_format: this.FileUrlBase + externalJobNumber + "/" + destinationFileName,
+        path_format: externalJobNumber + "/" + this.subfolders + destinationFileName,
+        //path_format: destinationFileName,
+        AssignedUserEmail: assignedUserEmail,
+        ContactName: contactName,
+        ContactEmail: contactEmail,
+        ContactPhone: contactPhone,
+        fileStatus: "Starting",
+        template_id: templateId
+      }
+
+      this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state)
+    } catch (error) {
+      console.log(`Error instanciating APIPayloadCreator. Error ${error}`)
     }
-    console.log("debug2")
-    this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state)
   }
 
-  formatInputsObject(fileList_raw, fileOrder){
+  getSubfolders(fileList_raw){
+    let subfolders = ""
+
+    if( fileList_raw.docs !== undefined && Object.keys(fileList_raw.docs).length > 0){
+      let value = fileList_raw.docs[Object.keys(fileList_raw.docs)[0]]
+      let docValue = value.content
+      let docValueSplit = docValue.split('\\');
+
+      for (let i = 2; i < docValueSplit.length - 1; i++) {
+        subfolders += docValueSplit[i] + "/"
+      }
+    }
+
+    return subfolders
+  }
+
+  formatInputsObject(fileList_raw, fileOrder, fileUrlBase, externalJobNumber, subfolders){
     let inputs = {}
     let videoOrdinalPosition = 0
 
@@ -45,7 +71,7 @@ class APIPayloadCreator {
           FileName: FileName,
           FilePath: null,
           Position: null,
-          url: FileName
+          url: fileUrlBase + externalJobNumber + "/" + subfolders + FileName
         }
 
         videoOrdinalPosition++
@@ -60,11 +86,10 @@ class APIPayloadCreator {
 
   ReplaceJSONPlaceHolders(jsonTemplate, ...args){
     //      This function should take a json template and a number of parameters.
-    //      Each of the parameter is expected to be an object with one key-value pair.
+    //      Each of the parameters is expected to be an object with one key-value pair.
     //      For each of the parameters, it should scan the json template and replace
-    //      and any instances of the the parameter's placeholder with the
-    //      parameter values, as well as any necessary formatting such as quotation marks.
-    console.log("debug3")
+    //      any instances of the the parameter's placeholder with the
+    //      parameter values, as well as any necessary formatting, such as quotation marks.
     let finishedTemplate = JSON.stringify(jsonTemplate);
     console.log("finishedTemplate:")
     console.log(finishedTemplate)
@@ -99,7 +124,6 @@ class APIPayloadCreator {
         }
       }
     }
-    console.log("debug5")
 
     return finishedTemplate;
   }
@@ -127,7 +151,7 @@ class APIPayloadCreator {
   }
 
    SaveToFile(fileContent, filePath) {
-    var fs = window.require('fs');
+    let fs = window.require('fs');
     try { 
       fs.writeFileSync(filePath, fileContent, 'utf-8'); 
     } 

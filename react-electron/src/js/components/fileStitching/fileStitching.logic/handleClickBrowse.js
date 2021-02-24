@@ -15,13 +15,13 @@ var store = window.store;
 // in by the user (and whether the environment is dev, demo or prod)
 async function setDefaultPath(jobNumber) {
   let defaultPath = "";
-  let prodPath = "Y:";
+  let prodPath = "V:";
   let testPath = "E:";
   let devPath = "C:";
 
   try {
     if (checkIfDirectoryExists(prodPath)) {
-      defaultPath = `${prodPath}\\videoin02`;
+      defaultPath = prodPath;
     }
     else if (checkIfDirectoryExists(testPath)) {
       defaultPath = testPath;
@@ -48,12 +48,7 @@ async function setDefaultPath(jobNumber) {
 
 function allowOpenDialog() {
 //TODO: Implement
-let allow = true;
-console.log("inside allowOpenDialog()");
-console.log("store.getState():");
-console.log(store.getState());
-console.log("store.getState().allowOpenDialog;");
-console.log(store.getState().allowOpenDialog)
+let allow = true; 
 
 // If allowOpenDialog is not undefined or null in the store, use that value,
 // otherwise use the default of true

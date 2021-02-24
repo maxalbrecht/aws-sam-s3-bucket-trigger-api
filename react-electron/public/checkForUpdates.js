@@ -1,14 +1,14 @@
 function createProgressBar() {
   const ProgressBar = require('electron-progressbar');
   let progressBar = new ProgressBar({
-      text:'VeriSync is updating...',
+      text:'VeriSuite is updating...',
       detail: 'Updating...'
     });
 
   progressBar
     .on('completed', function() {
       console.info('Completed...');
-      progressBar.detail = 'Update has been downloaded. VeriSync will relaunch automatically after installation.';
+      progressBar.detail = 'Update has been downloaded. VeriSuite will relaunch automatically after installation.';
     })
     .on('aborted', function() {
       console.info('Update was aborted...');

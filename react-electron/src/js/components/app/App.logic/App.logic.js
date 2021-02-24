@@ -9,10 +9,12 @@ import mapDispatchToProps from './mapDispatchToProps'
 import getConstructorState from './getConstructorState'
 import handleJobNumberPressEnterKey from './handleJobNumberPressEnterKey'
 import RemoveDoc from './removeDoc'
+import { SYNC_VIEW } from './../../../constants/view-names'
 
 // Connect the App component's functions to the component itself
 function logicConstructor(props) {
   this.state = getConstructorState();
+  this.viewName = SYNC_VIEW;
 
   let payload = {
     type: ADD_SYNC_APP_TO_STORE,

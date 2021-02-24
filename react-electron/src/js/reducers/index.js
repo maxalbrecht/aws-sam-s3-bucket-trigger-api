@@ -1,10 +1,12 @@
 // src/js/reducers/index.js
 import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
+import Logging from './../utils/logging'
 import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
 import { THEME } from './../constants/localStorageVariables'
 import {
   ADD_SYNC_APP_TO_STORE,
+  ADD_STITCH_APP_TO_STORE,
   ADD_ARTICLE,
   API_CALL_FINISHED,
   TOGGLE_JOB_DETAILS,
@@ -18,10 +20,14 @@ import {
   CHECK_USER_ACTIVITY,
   DRAGGING_JOB,
   ADD_ARCHIVED_JOB,
-  ADD_STITCHED_FILE
+  JOB_ARCHIVING_FINISHED,
+  ADD_STITCHED_FILE,
+  FILE_STITCHING_QUEUED,
+  GET_STITCHING_JOB_STATUS_UPDATE
 } from "../constants/action-types";
 import { AddArchivedJob } from '../actions';
 import { AddStitchedFile } from './../actions'
+import { SYNC_VIEW, STITCH_VIEW } from '../constants/view-names';
 
 const getInitialState = () => ({
   allowOpenDialog: true,
@@ -48,6 +54,8 @@ function rootReducer(state = getInitialState(), action) {
   switch(action.type) {
     case ADD_SYNC_APP_TO_STORE:
       return AddSyncAppToStoreReducer(state, action)
+    case ADD_STITCH_APP_TO_STORE:
+      return AddStitchAppToStoreReducer(state, action)
     case ADD_ARTICLE:
       return AddArticleReducer(state, action)
     case API_CALL_FINISHED:
@@ -72,10 +80,19 @@ function rootReducer(state = getInitialState(), action) {
       return CheckUserActivityReducer(state, action)
     case DRAGGING_JOB:
       return DraggingJobReducer(state, action)
+
     case ADD_ARCHIVED_JOB:
       return AddArchivedJobReducer(state, action)
+    case JOB_ARCHIVING_FINISHED:
+      return JobArchivingFinishedReducer(state, action)
+
     case ADD_STITCHED_FILE:
       return AddStitchedFileReducer(state, action)
+    case FILE_STITCHING_QUEUED:
+      return FileStitchingQueuedReducer(state, action)
+    case GET_STITCHING_JOB_STATUS_UPDATE:
+      return GetStitchingJobStatusUpdateReducer(state,action)
+
     default:
       return state;
   }
@@ -91,6 +108,17 @@ function AddSyncAppToStoreReducer(state, action) {
     {
       ...state,
       syncApp: action.payload.syncApp
+    }
+  )
+}
+
+function AddStitchAppToStoreReducer(state, action) {
+return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      stitchApp: action.payload.stitchApp
     }
   )
 }
@@ -180,6 +208,38 @@ function APICallFinishedReducer(state, action) {
   );
 }
 
+function JobArchivingFinishedReducer(state, action) {
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      archivedJobs: state.archivedJobs
+    }
+  )
+}
+function FileStitchingQueuedReducer(state, action) {
+  Logging.LogEach("Inside FileStitchingQueuedReducer. state:", state, "action:", action)
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      stitchedFiles: state.stitchedFiles
+    }
+  )
+}
+function GetStitchingJobStatusUpdateReducer(state, action) {
+  Logging.LogEach("Inside GetStitchingJobStatusUpdateReducer. state:", state, "action:", action)
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      stitchedFiles: state.stitchedFiles
+    }
+  )
+}
 function ToggleJobDetailsReducer(state, action) {
   console.log("Inside ToggleJobDetailsReducer");
 
@@ -233,28 +293,33 @@ function AllowOpenDialogReducer(state, action) {
   );
 }
 
-  function RemoveDocReducer(state, action) {
-  console.log("Inside RemoveDocReducer");
-  console.log("state");
+function RemoveDocReducer(state, action) {
+  console.log("#######>>>>>Inside RemoveDocReducer");
+  console.log("this:")
+  console.log(this)
+  console.log("state:");
   console.log(state);
-
-  let syncApp = state.syncApp;
-  
-  let draggableId = action.payload.draggableId;
-  console.log("state.syncApp.state.sourceFiles:");
-  console.log(state.syncApp.state.sourceFiles)
-
   console.log("action:");
   console.log(action);
 
-  console.log("draggableId:");
-  console.log(draggableId);
+  let draggableId = action.payload.draggableId;
 
-  syncApp.RemoveDoc(draggableId);
+  //let syncApp = state.syncApp;
+  //let stitchApp = state.stitchApp;
+  let app;
 
-  //const column = state.sourceFiles.columns[act]
+  if (
+    action.payload.parentViewName !== null
+    && action.payload.parentViewName === STITCH_VIEW
+  ) {
+    app = state.stitchApp;
+  } else {
+    app = state.syncApp;
+  }
 
-  let newDocs = syncApp.state.sourceFiles.docs;
+  app.RemoveDoc(draggableId);
+
+  let newDocs = app.state.sourceFiles.docs;
   delete newDocs[action.payload.draggableId];
 
   return Object.assign(
