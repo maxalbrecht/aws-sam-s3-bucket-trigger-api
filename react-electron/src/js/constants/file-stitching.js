@@ -1,10 +1,13 @@
+import STRING_CONSTANTS from './string'
+
 const API_URL_BASE = "https://api.cloud.telestream.net/starfish/v1.0/factories/"   
 const  FACTORY_ID = "e725b4c22c6d5fc48085514fc114b23c"
 
 const FILE_STITCHING_CONSTANTS = {
   FACTORY_ID: FACTORY_ID,
   DATE_DISPLAY_DEFAULT: "<<Date & Time>>",
-  SF_API_KEY_FILE: ".//private/SF_API_KEY.txt",
+  //SF_API_KEY_FILE:  ".//private/SF_API_KEY.txt",
+  SF_API_KEY_FILE:`${STRING_CONSTANTS.USER_DATA_FOLDER}\\private\\SF_API_KEY.txt`,
   TEMPLATES: {
     DEFAULT: 'e4813aa1d80eb4432ed14c5ae0db5b04',
     BOOST_3DB: '61a37e542d0a5d257d78842638af60fb',
@@ -16,7 +19,7 @@ const FILE_STITCHING_CONSTANTS = {
     PLUS_6: "+6"
   },
   API: {
-    URL: API_URL_BASE + FACTORY_ID + "/jobs",
+    URL: `${API_URL_BASE}${FACTORY_ID}/jobs`,
     METHOD: 'post',
     HEADER_NAMES: {
       X_API_KEY: 'X-Api-Key'
@@ -29,6 +32,9 @@ const FILE_STITCHING_CONSTANTS = {
   POLLING: {
     TIMEOUT_IN_SECONDS: 10
   },
+  FILE_URL_BASE: "s3://vxtprod/",
+  FILE_STATUS_DEFAULT: "Starting",
+  INPUT: "input",
   ERRORS: {
     ERROR_GETTING_API_KEY: "Error Getting API Key.",
     ERROR_SETTING_DATA_DISPLAY: "Error Setting Date Display.",

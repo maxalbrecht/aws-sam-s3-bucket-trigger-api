@@ -16,6 +16,12 @@ if(isDev) {
 }
 
 async function createWindow() {
+  console.log("Creating Window...")
+  console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+  console.log("userData folder:")
+  console.log(app.getPath('userData'))
+  console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+    
   mainWindow = new BrowserWindow({ 
     width: 1024,
     height: 900,
@@ -31,7 +37,8 @@ async function createWindow() {
       webSecurity: false,
       nodeIntegration: true,
       //devTools: allowDevTools
-      devTools: true
+      devTools: true,
+      additionalArguments: [app.getPath('userData')]
     }
   });
 
@@ -60,6 +67,7 @@ async function createWindow() {
   );
 
   mainWindow.once('ready-to-show', () => {
+    //setTimeout(CheckForUpdates, 2000);
     mainWindow.show()
   })
 
@@ -69,6 +77,7 @@ async function createWindow() {
 }
 
 app.on("ready", () => {
+  console.log("app is ready...")
   // Create the main window
   createWindow();
   try {
@@ -82,12 +91,12 @@ app.on("ready", () => {
 });
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
-    app.quit();
+      app.quit();
     }
 });
 
 app.on("activate", () => {
     if (mainWindow === null) {
-    createWindow();
+      createWindow();
     }
 });

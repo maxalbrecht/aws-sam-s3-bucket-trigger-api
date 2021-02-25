@@ -1,6 +1,6 @@
 {
   "name": "VeriSuite",
-  "version": "1.7.21",
+  "version": "1.7.26",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -11,8 +11,7 @@
     "productName": "VeriSuite",
     "win": {
       "icon": "build/icon.ico",
-      "certificateFile": "private/testcert.pfx",
-      "certificatePassword": "a",
+      "certificateFile": "private/albrechtsoft.pfx",
       "verifyUpdateCodeSignature": false,
       "publisherName": "albrechtsoft",
       "publish": [
@@ -27,14 +26,14 @@
   "dependencies": {
     "@kunukn/react-collapse": "^1.2.7",
     "aws-amplify": "^2.3.0",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.2.4",
     "electron-progressbar": "^1.2.0",
     "electron-splashscreen": "^1.0.0",
-    "electron-updater": "^4.3.4",
+    "electron-updater": "^4.3.5",
     "email-prop-type": "^3.0.1",
     "file-sizeof": "^1.0.4",
     "jquery": "^3.5.1",
@@ -61,7 +60,7 @@
     "test-react": "react-scripts test --env=jsdom",
     "eject-react": "react-scripts eject",
     "build-electron": "electron-builder",
-    "deploy-electron": "electron-builder build --win --publish always", 
+    "deploy-electron": "electron-builder build --win --publish always",
     "build": "yarn build-react && yarn build-electron",
     "deploy": "yarn build-react && yarn deploy-electron",
     "start": "concurrently \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",

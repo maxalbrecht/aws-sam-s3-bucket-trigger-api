@@ -4,7 +4,6 @@ import { Form, Col } from 'react-bootstrap'
 import fieldBind from './fileStitching.fields'
 import { mapDispatchToProps, logicConstructor } from './fileStitching.logic/FileStitching.logic'
 import SectionTitle from './../../utils/sectionTitle'
-import defined from './../../utils/sectionTitle'
 import StitchedFilesList from '../stitchedFilesList/StitchedFilesList'
 import './FileStitching.scss'
 

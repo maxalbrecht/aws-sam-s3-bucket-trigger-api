@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Col } from 'react-bootstrap';
+import FILE_SYNCING_CONSTANTS from './../../../constants/file-syncing'
 
 function OrderType() {    
   return (
@@ -11,8 +12,8 @@ function OrderType() {
         value={this.state.orderType}
         onChange={this.handleChange}
       >
-        <option>QuickSync</option>
-        <option>ManualSync</option>
+        <option>{FILE_SYNCING_CONSTANTS.ORDER_TYPES.QUICK_SYNC}</option>
+        <option>{FILE_SYNCING_CONSTANTS.ORDER_TYPES.MANUAL_SYNC}</option>
       </Form.Control>
     </Form.Group>
   )

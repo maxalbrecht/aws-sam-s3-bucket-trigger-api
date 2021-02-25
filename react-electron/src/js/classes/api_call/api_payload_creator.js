@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import emailPropType from 'email-prop-type';
-import { QuickSync, ManualSync } from './../../constants/order_types'
+import FILE_SYNCING_CONSTANTS from './../../constants/file-syncing'
+import File from './../../utils/file'
+import Regex from './../../utils/regex'
 import api_payload_template from './api_payload_template'
 import file_list_item_template from './file_list_item_template' 
 import file_list_item_template_no_position from './file_list_item_template_no_position'
@@ -49,77 +51,18 @@ class APIPayloadCreator {
       ContactEmail: contactEmail,
       ContactPhone: contactPhone,
       AllowedConfidenceLevelPercent: allowedConfidenceLevelPercent,
-      jobStatus: "Starting",
+      jobStatus: FILE_SYNCING_CONSTANTS.JOB_STATUS_DEFAULT,
       fileOrder: fileOrder,
       Notes: notes
     }
-    this.formattedAPIPayload = this.ReplaceJSONPlaceHolders(api_payload_template, this.state);
+    this.formattedAPIPayload = Regex.ReplaceJSONPlaceHolders(api_payload_template, this.state)
 
-    var fs = window.require('fs');
-    const OUTPUT = 'Output'
-    const OUTPUT_FOLDER = `./${OUTPUT}/`
-    if (!fs.existsSync(OUTPUT_FOLDER)){
-      fs.mkdirSync(OUTPUT_FOLDER);
-    }
+    File.makeDirIfItDoesNotExist(FILE_SYNCING_CONSTANTS.OUTPUT_FOLDER)
     
-    this.SaveToFile(this.formattedAPIPayload, OUTPUT_FOLDER + externalJobNumber + "_payload.json");
-  }
-
-  SaveToFile(fileContent, filePath) {
-    var fs = window.require('fs');
-    try { 
-      fs.writeFileSync(filePath, fileContent, 'utf-8'); 
-    } 
-    catch(e) { alert('Failed to save the payload file!');
-      return console.log(e);
-    }
-  }
-  ReplaceJSONPlaceHolders(jsonTemplate, ...args){
-    //      This function should take a json template and a number of parameters.
-    //      Each of the parameters is expected to be an object with one key-value pair.
-    //      For each of the parameters, it should scan the json template and replace
-    //      any instances of the the parameter's placeholder with the
-    //      parameter values, as well as any necessary formatting such as quotation marks.
-    let finishedTemplate = JSON.stringify(jsonTemplate);
-    for (let arg of args) {
-      for (let key in arg){
-        if(arg.hasOwnProperty(key)){
-          let argKey = key;
-          let argValue = arg[argKey];
-          finishedTemplate = 
-            finishedTemplate
-              .replace("\""+argKey+"_val\"", "\""+argValue+"\"" )
-              .replace("\""+argKey+"_val_date\"", "\""+argValue+"\"" )
-              .replace("\""+argKey+"_val_array\"", argValue)
-              .replace("\""+argKey+"_val_int\"", argValue)
-              .replace("\"null\"", "null")
-        }
-      }
-    }
-
-    return finishedTemplate;
-  }
-
-  getFileContent(filePath){
-    let fileContent = "";
-    let fs = window.require('fs');
-    fileContent = fs.readFileSync(filePath, 'utf8')
-
-    return fileContent;
-  }
-  
-  getFileSize(filePath){
-    let fs = window.require("fs"); //Load the filesystem module
-    try{
-    let stats = fs.statSync(filePath);let fileSizeInBytes = stats["size"]
-    let fileSizeInKilobytes = fileSizeInBytes / 1000.0
-
-    return fileSizeInKilobytes + " KB";
-    }
-    catch(err) {
-      console.log("Error getting file size. Error: " + err);
-      alert("Error getting file size. Please check that the file exists.");
-    }
+    File.saveTo(
+      this.formattedAPIPayload, 
+      FILE_SYNCING_CONSTANTS.OUTPUT_FOLDER + externalJobNumber + FILE_SYNCING_CONSTANTS.PAYLOAD_FILE_NAME_ENDING
+    )
   }
 
   formatFileList(fileList_raw, fileOrder) {
@@ -133,34 +76,33 @@ class APIPayloadCreator {
         let docValue = value.content;
         let docValueSplit = docValue.split('\\');
         let FileName = docValueSplit[docValueSplit.length - 1];
-        let FileType = "Transcript";
+        let FileType = FILE_SYNCING_CONSTANTS.FILE_TYPES.TRANSCRIPT
         
-        let FileSize = this.getFileSize(docValue);
-        //let FilePath = docValue.replace(/\\/g, "\\\\");
+        let FileSize = File.getSize(docValue);
       
         let params = {
           FileType: FileType,
           FileName: FileName,
           FileSize: FileSize,
-          //FilePath: FilePath
           FilePath: null
         }
         
         let template = file_list_item_template_no_position;
 
-        if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
+        if ( Regex.endsWithOneOf(FileName, FILE_SYNCING_CONSTANTS.VIDEO_FILE_EXTENSIONS) ) {
+        //if (FileName.endsWith(".mp3") || FileName.endsWith(".mp4") || FileName.endsWith(".mpg")) {
           template = file_list_item_template;
           params = {
             ...params, 
             Position: null
           }
-          FileType = "Video";
+          FileType = FILE_SYNCING_CONSTANTS.FILE_TYPES.VIDEO
           videoOrdinalPosition++;
           params.FileType = FileType;
           params.Position = videoOrdinalPosition;
         }
 
-        let doc = this.ReplaceJSONPlaceHolders(template, params);
+        let doc = Regex.ReplaceJSONPlaceHolders(template, params);
 
         fileList.push(doc);
       });
@@ -180,7 +122,10 @@ APIPayloadCreator.propTypes = {
   CaseNumber: PropTypes.string,
   JobInputPath: PropTypes.string.isRequired,
   JobOutputPath: PropTypes.string.isRequired,
-  OrderType: PropTypes.oneOf([QuickSync, ManualSync]).isRequired,
+  OrderType: PropTypes.oneOf([
+    FILE_SYNCING_CONSTANTS.ORDER_TYPES.QUICK_SYNC,
+    FILE_SYNCING_CONSTANTS.ORDER_TYPES.MANUAL_SYNC
+  ]).isRequired,
   FileList: PropTypes.object.isRequired,
   Priority: PropTypes.oneOf([1, 2, 3, 4]).isRequired,
   AssignedUserEmail: emailPropType.isRequired,

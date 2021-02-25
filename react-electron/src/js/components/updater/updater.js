@@ -7,12 +7,26 @@ class Updater {
     autoUpdater.logger = require('electron-log');
     autoUpdater.logger.transports.file.level = 'info'
 
+    dialog.showMessageBox({
+        type: 'info',
+        title: 'About to check for Updates',
+        message: 'About to check for Updates',
+        button: ['Great', 'Awesome']
+      }, (buttonIndex) => {
+    })
     //Disable auto downloading
     autoUpdater.autoDownload = false;
 
     // Check for updates
     exports.check = () => {
-      console.log('Checking for update');
+      console.log('>>>Checking for update<<<');
+      dialog.showMessageBox({
+          type: 'info',
+          title: 'Checking for Updates',
+          message: 'Checking for Updates',
+          button: ['Great', 'Awesome']
+        }, (buttonIndex) => {
+      })
 
       // Start update check
       autoUpdater.checkForUpdates();

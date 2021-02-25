@@ -1,3 +1,5 @@
+const { dialog, BrowserWindow, ipcMain } = require('electron-updater');
+
 function createProgressBar() {
   const ProgressBar = require('electron-progressbar');
   let progressBar = new ProgressBar({
@@ -20,6 +22,7 @@ function createProgressBar() {
 
 async function CheckForUpdates() {
   try {
+    console.log("Checking for Updates...")
     const { autoUpdater } = require('electron-updater');
     //let progressBar;
 
@@ -39,7 +42,7 @@ async function CheckForUpdates() {
   }
   catch (e) {
     console.log(`Error while looking for available updates: ${e}`);
-    alert(`Error while looking for available updates. Please reach out to support with the following error: ${e}`);
+    //alert(`Error while looking for available updates. Please reach out to support with the following error: ${e}`);
   }
 }
 

@@ -1,47 +1,80 @@
 import axios from 'axios';
+import APIPayloadCreator from "./../../classes/api_call/api_payload_creator"
 import { API_CALL_FINISHED } from './../../constants/action-types.js';
 import { action } from './../../utils/action';
 import { STARTING_JOB, SUCCESS, ERROR, ERROR_API_NOT_RESOLVED } from './../../constants/list_item_statuses'
+import DateUtils from './../../utils/date-utils'
+import File from './../../utils/file'
+import Logging from './../../utils/logging'
+import FILE_SYNCING_CONSTANTS from './../../constants/file-syncing'
 var store = window.store;
 
 class APICaller {
-  constructor(apiPayloadCreator, articleId, ...props) {
-    this.CallAPI = this.CallAPI.bind(this);
-    this.apiUrl = "";
-    this.APIPayloadCreator = apiPayloadCreator;
-    this.json = apiPayloadCreator.formattedAPIPayload;
-    this.dateDisplay = "<<Date & Time>>";
-    this.APICallStatus = STARTING_JOB;
-    this.errorMsgList = [];
-    try {
-      let date_ob = new Date();
-      this.milliseconds = date_ob.getTime();
-      let date = this.IntTwoChars(date_ob.getDate());
-      let month = this.IntTwoChars(date_ob.getMonth() + 1);
-      let year = date_ob.getFullYear();
-      let hours = this.IntTwoChars(date_ob.getHours());
-      let minutes = this.IntTwoChars(date_ob.getMinutes());
-      let seconds = this.IntTwoChars(date_ob.getSeconds());
-      let dateDisplay = `${hours}:${minutes}:${seconds} ${month}/${date}/${year}`;
-      console.log(`Job submission time: ${dateDisplay}`);
-      this.dateDisplay = dateDisplay;
-    } catch (error) {
-      console.log(`Error setting date display. Error: ${error}`);
-    }
+  constructor({
+    externalJobNumber,
+    deponentFirstName,
+    deponentLastName,
+    depositionDate,
+    caseName,
+    caseNumber,
+    jobInputPath,
+    jobOutputPath,
+    orderType,
+    fileList_raw,
+    priority,
+    assignedUserEmail,
+    imageType,
+    imageBranding,
+    createImage,
+    contactName,
+    contactEmail,
+    contactPhone,
+    allowedConfidenceLevelPercent,
+    fileOrder,
+    notes
+  }) {
+    this.CallAPI = this.CallAPI.bind(this)
+    this.apiUrl = ""
+
+    this.APIPayloadCreator = new APIPayloadCreator({
+      externalJobNumber: externalJobNumber,
+      deponentFirstName: deponentFirstName,
+      deponentLastName: deponentLastName,
+      depositionDate: depositionDate,
+      caseName: caseName,
+      caseNumber: caseNumber,
+      jobInputPath: jobInputPath,
+      jobOutputPath: jobOutputPath,
+      orderType: orderType,
+      fileList_raw: fileList_raw,
+      priority: priority,
+      assignedUserEmail: assignedUserEmail,
+      imageType: imageType,
+      imageBranding: imageBranding,
+      createImage: createImage,
+      contactName: contactName,
+      contactEmail: contactEmail,
+      contactPhone: contactPhone,
+      allowedConfidenceLevelPercent: allowedConfidenceLevelPercent,
+      fileOrder: fileOrder,
+      notes: notes
+    })
+
+    this.json = this.APIPayloadCreator.formattedAPIPayload
+    this.dateDisplay = FILE_SYNCING_CONSTANTS.DATE_DISPLAY_DEFAULT
+    this.APICallStatus = STARTING_JOB
+    this.errorMsgList = []
+    this.dateDisplay = DateUtils.GetDateDisplay()
+    Logging.Log(`File Syncing Submission Time: ${this.dateDisplay}`)
 
     try{
-      this.clientAccessKey = this.getFileContent("./private/CLIENT_ACCESS_KEY.txt")
-      this.apiUrl = `https://legal.yeslaw.net/api/AutoJobManager/AddJobToQueue?clientAccessKey=${this.clientAccessKey}`;
-      this.result = this.CallAPI(this.apiUrl, this.json);
+      this.clientAccessKey = File.getContent(FILE_SYNCING_CONSTANTS.CLIENT_ACCESS_KEY_FILE)
+      this.apiUrl = `${FILE_SYNCING_CONSTANTS.API.URL_BASE}${this.clientAccessKey}`
+      this.result = this.CallAPI(this.apiUrl, this.json)
     }
     catch(e) {
-      console.log(`Error in API Caller. Error: ${e}`);
-      throw e;
+      Logging.LogAndThrowError("Error in API Caller. Error:", e)
     }
-  }
-
-  IntTwoChars(i) {
-    return (`0${i}`).slice(-2);
   }
 
   CallAPI(apiUrl, payload) {
@@ -49,27 +82,26 @@ class APICaller {
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
       // Do something before request is sent
-      console.log(`axios request interceptor config:\n${JSON.stringify(config)}`);
+      Logging.Log(`axios request interceptor config:\n${JSON.stringify(config)}`)
       return config;
     }, function (error) {
-      console.log(`axios request interceptor error:\n${error}`);
-      console.log(`axios request interceptor error, stringified:\n${JSON.stringify(error)}`);
+      Logging.LogEach(`axios request interceptor error:`, error)
+      Logging.LogEach(`axios request interceptor error, stringified:`, JSON.stringify(error))
       // Do something with request error
-      return Promise.reject(error);
+      return Promise.reject(error)
     });
       
-    console.log(`axios API post payload:\n${payload}`);
-    console.log("posting with axios...");
+    Logging.LogEach(`axios API post payload:`, payload, "posting with axios...");
     try {
       return axios({
-        method: 'post',
+        method: FILE_SYNCING_CONSTANTS.API.METHOD,
         url: apiUrl,
-        headers: { 'content-type': 'application/json' },
+        headers: FILE_SYNCING_CONSTANTS.API.HEADERS,
+        //headers: { 'content-type': 'application/json' },
         data: payload
       }).then(res => {
-        let errorMsgList = res.data.data.result.errorMsgList;
-        console.log("api call response errorMsgList:");
-        console.log(errorMsgList);
+        let errorMsgList = res.data.data.result.errorMsgList
+        Logging.LogEach("api call response errorMsgList:", errorMsgList)
         
         let newAPICallStatus = ""
 
@@ -77,35 +109,21 @@ class APICaller {
           newAPICallStatus = ERROR_API_NOT_RESOLVED;
         }
         else if (errorMsgList.length === 0) {
-          newAPICallStatus = SUCCESS;
+          newAPICallStatus = SUCCESS
         } else {
-          newAPICallStatus = ERROR;
+          newAPICallStatus = ERROR
         }
 
-        this.APICallStatus = newAPICallStatus;
-        this.errorMsgList = errorMsgList; 
+        this.APICallStatus = newAPICallStatus
+        this.errorMsgList = errorMsgList
 
-        store.dispatch(action(API_CALL_FINISHED, newAPICallStatus));
-      });
+        store.dispatch(action(API_CALL_FINISHED, newAPICallStatus))
+      })
     }
     catch (e) {
-      console.log(`Error calling api. Error:\n${e}`);
+      Logging.LogError(`Error calling api. Error:`, e)
       alert("Error calling API. Please check that all fields have been filled in correctly. If the issue persists, please contact application support.")
     }
-  }
-
-  getFileContent(filePath){
-    let fileContent = "";
-    try {
-      let fs = window.require('fs');
-      fileContent = fs.readFileSync(filePath, 'utf8')
-    }
-    catch (e) {
-      console.log(`Error trying to get File Content. Error: ${e}`);
-      throw e;
-    }
-
-    return fileContent;
   }
 }
 

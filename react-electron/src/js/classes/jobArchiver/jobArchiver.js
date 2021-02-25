@@ -1,7 +1,8 @@
 import { JOB_ARCHIVING_FINISHED } from './../../constants/action-types'
 import { action } from './../../utils/action'
 import { SUCCESS, ERROR, ARCHIVING_JOB } from './../../constants/job_archiving_statuses'
-import JobArchiving from '../../components/jobArchiving/JobArchiving'
+import DateUtils from './../../utils/date-utils'
+
 var store = window.store
 
 class JobArchiver {
@@ -27,7 +28,7 @@ class JobArchiver {
     this.jobArchivingStatus = ARCHIVING_JOB;
     this.errorMsgList = [];
 
-    this.dateDisplay = this.SetDateDisplay() 
+    this.dateDisplay = DateUtils.GetDateDisplay() 
 
     try{
       this.ArchiveJob(this.externalJobNumber, this.year, this.month)
@@ -35,28 +36,6 @@ class JobArchiver {
     catch(e){
       console.log(`Error in Job Archiver. Error: ${e}`)
       throw e
-    }
-  }
-
-  IntTwoChars(i) {
-    return (`0${i}`).slice(-2);
-  }
-
-  SetDateDisplay(){
-    try {
-      let date_ob = new Date()
-      this.milliseconds = date_ob.getTime()
-      let date = this.IntTwoChars(date_ob.getDate())
-      let month = this.IntTwoChars(date_ob.getMonth() + 1)
-      let year = date_ob.getFullYear()
-      let hours = this.IntTwoChars(date_ob.getHours())
-      let minutes = this.IntTwoChars(date_ob.getMinutes())
-      let seconds = this.IntTwoChars(date_ob.getSeconds())
-      let dateDisplay = `${hours}:${minutes}:${seconds} ${month}/${date}/${year}`
-      console.log(`Job submission time: ${dateDisplay}`)
-      return dateDisplay
-    } catch (error) {
-      console.log(`Error setting date display. Error: ${error}`);
     }
   }
 

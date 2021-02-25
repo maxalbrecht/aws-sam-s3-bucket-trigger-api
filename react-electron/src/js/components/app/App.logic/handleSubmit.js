@@ -8,20 +8,22 @@ import { ConvertPriorityStringToInt, NORMAL, HIGH } from "../../../constants/pri
 import { QuickSync } from "../../../constants/order_types"
 import initialData from '../../dnd_list/initial-data'
 import defined from './../../../utils/defined'
+import FILE_SYNCING_CONSTANTS from "../../../constants/file-syncing";
+import STRING_CONSTANTS from './../../../constants/string'
+import REACT_BEAUTIFUL_DND_CONSTANTS from './../../../constants/react-beautiful-dnd'
 
-const uuidv4 = window.require("uuid/v4");
+const uuidv4 = window.require(STRING_CONSTANTS.UUID_V4);
 
 // Method to prepare to call the API with an APICaller object
 // Gives the default job path that is used for the jobInputPath and jobOutputPath
 // and passed as part of the API call
-function ReturnJobPath(jobNumber, subfolders, inputOrOutput = "input") {
-  let mainFolder = "vxtprod";
-  let region = "region=us_east_1";
-  let path = `aws://${mainFolder}/${jobNumber}${subfolders}?region=${region}`;
+function ReturnJobPath(jobNumber, subfolders, inputOrOutput = FILE_SYNCING_CONSTANTS.INPUT_OR_OUTPUT.INPUT) {
+  let mainFolder = FILE_SYNCING_CONSTANTS.MAIN_FOLDER
+  let region = FILE_SYNCING_CONSTANTS.REGION
+  let path = `aws://${mainFolder}/${jobNumber}${subfolders}?region=${region}`
   
-  return path;
+  return path
 }
-
 
 function GetSubfolders(fileList_raw){
   let subfolders = ""
@@ -46,14 +48,13 @@ function GetSubfolders(fileList_raw){
   let date = new Date();
   let storeState = window.store.getState()
   let subfolders = GetSubfolders(this.state.sourceFiles)
-  
 
   if(defined(storeState.user)) {
     storeState.user.resetLastTimeOfActivity();
     let currentId = uuidv4();
     event.preventDefault();
 
-    let apiPayloadCreator = new APIPayloadCreator({
+    let apiCaller = new APICaller({
       externalJobNumber: this.state.jobNumber,
       // DO NOT ERASE
       //deponentFirstName: this.state.deposition.deponentFirstName,
@@ -62,23 +63,21 @@ function GetSubfolders(fileList_raw){
       //caseName: this.state.deposition.caseName,
       //caseNumber: this.state.deposition.caseNumber,
       jobInputPath: ReturnJobPath(this.state.jobNumber, subfolders),
-      jobOutputPath: ReturnJobPath(this.state.jobNumber, subfolders, "output"),
+      jobOutputPath: ReturnJobPath(this.state.jobNumber, subfolders, FILE_SYNCING_CONSTANTS.INPUT_OR_OUTPUT.OUTPUT),
       orderType: this.state.orderType,
       fileList_raw: this.state.sourceFiles,
       priority: ConvertPriorityStringToInt(this.state.priority),
       assignedUserEmail: storeState.user.assignedUserEmail,
-      imageType: 3,
-      imageBranding: "Veritext", 
-      createImage: 1,
+      imageType: FILE_SYNCING_CONSTANTS.IMAGE_TYPE,
+      imageBranding: FILE_SYNCING_CONSTANTS.IMAGE_BRANDING, 
+      createImage: FILE_SYNCING_CONSTANTS.CREATE_IMAGE,
       contactName: storeState.user.contactName,
       contactEmail: storeState.user.contactEmail,
       contactPhone: storeState.user.contactPhone,
-      allowedConfidenceLevelPercent: 70,
-      fileOrder: this.state.sourceFiles.columns["column-1"].docIds,
+      allowedConfidenceLevelPercent: FILE_SYNCING_CONSTANTS.ALLOWED_CONFIDENCE_LEVEL_PERCENT,
+      fileOrder: this.state.sourceFiles.columns[REACT_BEAUTIFUL_DND_CONSTANTS.COLUMNS.COLUMN_1].docIds,
       notes: this.state.notes
-    });
-
-    let apiCaller = new APICaller(apiPayloadCreator, currentId);
+    })
     
     this.props.addArticle(
       {
@@ -93,9 +92,8 @@ function GetSubfolders(fileList_raw){
         apiCaller: apiCaller,
         date: date
       }
-    );
+    )
     
-
     this.setState(
       { 
         id: "",

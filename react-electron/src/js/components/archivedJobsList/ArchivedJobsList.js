@@ -71,7 +71,7 @@ class ConnectedArchivedJobsList extends Component {
 
    return (
      <Fragment>
-       <Form.Label className="textFieldLabel">Archived Jobs</Form.Label>
+       <Form.Label className="textFieldLabel">Archived Jobs (note: archiving functionality not yet implemented)</Form.Label>
        <Scrollbars className="scrollBars">
          <ListGroup className="submittedJobsListGroup">
           { this.placeholder(this.props.archivedJobs) }
