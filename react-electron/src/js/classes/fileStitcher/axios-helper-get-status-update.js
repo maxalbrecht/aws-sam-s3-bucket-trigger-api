@@ -1,6 +1,6 @@
 import Logging from './../../utils/logging'
 import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
-import { SUCCESS, ERROR, QUEUED } from './../../constants/list_item_statuses'
+import { SUCCESS, ERROR, QUEUED, UPLOADING } from './../../constants/list_item_statuses'
 import AxiosHelper from './../../utils/axios-helper'
 import { GET_STITCHING_JOB_STATUS_UPDATE } from './../../constants/action-types.js'
 import { action } from './../../utils/action'
@@ -31,6 +31,11 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
 
     if (result.data.status.toLowerCase() === QUEUED.toLowerCase()) {
       newAPICallStatus = QUEUED
+      this.parentObject.failedAttemptsToGetUpdate = 0
+      errorMsgList = []
+    }
+    else if (result.data.status.toLowerCase() === UPLOADING.toLowerCase()) {
+      newAPICallStatus = UPLOADING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
