@@ -39,11 +39,13 @@ export const Regex = {
     return finishedTemplate;
   },
   endsWithOneOf(string, endingsList) {
+    let result = false
+
     endingsList.forEach(ending => {
-      if (string.endsWith(ending)) return true
+      if (string.endsWith(ending)) result = true
     })
 
-    return false
+    return result
   }
 }
 
