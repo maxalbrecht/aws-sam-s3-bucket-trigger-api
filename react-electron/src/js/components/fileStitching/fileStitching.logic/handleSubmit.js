@@ -1,5 +1,7 @@
 import defined from './../../../utils/defined'
 import FileStitcher from "./../../../classes/fileStitcher/fileStitcher"
+import Mpeg1Converter from './../../../classes/fileStitcher/fileStitcher'
+import Logging from './../../../utils/logging'
 import initialData from './../../dnd_list/initial-data'
 
 const uuidv4 = window.require("uuid/v4")
@@ -23,7 +25,6 @@ async function handleSubmit(event) {
       const { jobNumber } = this.state
 
       //STITCH FILE
-      //TODO: Implement
       if(defined(storeState.user)){
         storeState.user.resetLastTimeOfActivity()
         let currentFileId = uuidv4()
@@ -79,9 +80,6 @@ async function handleSubmit(event) {
       else {
         alert("You are not logged in. Please log in and try again.")
       }
-
-      //ADD STITCHED FILE TO LIST
-      //TODO: Implement
     }
     else {
       console.log("File Stitching handleSubmit errorsPresent:")

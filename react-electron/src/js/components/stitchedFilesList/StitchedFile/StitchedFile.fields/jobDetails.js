@@ -7,7 +7,7 @@ import Collapse from '@kunukn/react-collapse'
 function JobDetails() {
   //let docs = this.StitchedFileObject.sourceFiles.docs;
   Logging.LogSectionStart()
-  Logging.LogEach("Inside StitchedFile.JobDetails()", "this.StitchedFileObject:", this.StitchedFileObject)
+  Logging.log("Inside StitchedFile.JobDetails()", "this.StitchedFileObject:", this.StitchedFileObject)
   Logging.LogSectionEnd()
 
   let docs = this.StitchedFileObject.fileStitcher.fileList_raw.docs
@@ -53,7 +53,7 @@ function JobDetails() {
         <Col style={{paddingLeft:'18px'}}>
 
           <Row className="SourceFilesTitle">
-            <Col style={{maxWidth:'140px', padding:'0px'}}><u>SourceFiles:</u></Col>
+            <Col style={{maxWidth:'140px', padding:'0px'}}><u>Source Files:</u></Col>
           </Row>
           <Row className="SourceFiles">
             <ListGroup style={{border:'none', paddingLeft:'20px'}}>

@@ -13,6 +13,7 @@ import ChangePassword from './../auth/changePassword/ChangePassword'
 import App from './../app/App'
 import JobStatus from './../jobStatus/JobStatus'
 import JobArchiving from './../jobArchiving/JobArchiving'
+import Mpeg1Conversion from './../mpeg1Conversion/Mpeg1Conversion'
 import FileStitching from './../fileStitching/FileStitching'
 import About from './../../../pages/about'
 import Documentation from './../../../pages/documentation'
@@ -78,6 +79,7 @@ class ConnectedThemeWrapper extends Component {
         <Route path="/jobstatus" component={JobStatus} />
         <Route path="/jobarchiving" component={JobArchiving} />
         <Route path="/filestitching" component={FileStitching} />
+        <Route path="/mpeg1conversion" component={Mpeg1Conversion} />
         <Route path="/drc" component={Login} />
         <FooterBar />
       </Container>

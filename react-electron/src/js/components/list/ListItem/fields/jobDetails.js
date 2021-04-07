@@ -9,7 +9,7 @@ function JobDetails() {
   let docs = this.ListItemObject.sourceFiles.docs;
   let docsParsed = []
   Logging.LogSectionStart()
-  Logging.LogEach("Inside ListItem.JobDetails()", "this.ListItemObject:", this.ListItemObject)
+  Logging.log("Inside ListItem.JobDetails()", "this.ListItemObject:", this.ListItemObject)
   Logging.LogSectionEnd()
   
   for (var prop in docs) {

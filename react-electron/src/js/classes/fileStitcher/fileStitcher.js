@@ -43,7 +43,7 @@ class FileStitcher {
 
     function SaveParameters(that){
       Logging.LogSpacerLine()
-      Logging.Log(externalJobNumber)
+      Logging.log(externalJobNumber)
       that.externalJobNumber = externalJobNumber 
       that.fileList_raw = fileList_raw 
       that.fileOrder = fileOrder
@@ -69,7 +69,7 @@ class FileStitcher {
         externalJobNumber,
         fileList_raw,
         fileOrder,
-        destinationFileName,
+        `${destinationFileName}.mp4`,
         assignedUserEmail,
         contactName,
         contactEmail,
@@ -85,7 +85,7 @@ class FileStitcher {
       that.axiosFailureReason = {}
       that.errorMsgList = []
       that.dateDisplay = DateUtils.GetDateDisplay()
-      Logging.Log(`File Stitching Submission Time: ${that.dateDisplay}`)
+      Logging.log(`File Stitching Submission Time: ${that.dateDisplay}`)
     }
   }
 
@@ -111,14 +111,14 @@ class FileStitcher {
     
     this.ShouldWeContinuePollingForUpdates()
 
-    Logging.LogEach("***&&&***Latest jobStatusUpdate:", this.jobStatusUpdate)
+    Logging.log("***&&&***Latest jobStatusUpdate:", this.jobStatusUpdate)
   }
 
   ShouldWeContinuePollingForUpdates(){
     Logging.LogSectionStart()
-    Logging.LogEach("this.IdOfTimerToPollForJobStatusUpdates:", this.IdOfTimerToPollForJobStatusUpdates)
-    Logging.LogEach("this.failedAttemptsToGetUpdate: ", this.failedAttemptsToGetUpdate)
-    Logging.LogEach("continuePollingForUpdates: ", this.continuePollingForUpdates)
+    Logging.log("this.IdOfTimerToPollForJobStatusUpdates:", this.IdOfTimerToPollForJobStatusUpdates)
+    Logging.log("this.failedAttemptsToGetUpdate: ", this.failedAttemptsToGetUpdate)
+    Logging.log("continuePollingForUpdates: ", this.continuePollingForUpdates)
 
     if(this.failedAttemptsToGetUpdate >= FILE_STITCHING_CONSTANTS.API_JOB_STATUS.MAX_FAILED_ATTEMPTS){
       this.continuePollingForUpdates = false
@@ -126,7 +126,7 @@ class FileStitcher {
 
     if (!this.continuePollingForUpdates) {
       clearInterval(this.IdOfTimerToPollForJobStatusUpdates)
-      Logging.Log(">>>clearing interval that checks for updates")
+      Logging.log(">>>clearing interval that checks for updates")
     }
 
     Logging.LogSectionEnd()
@@ -169,13 +169,13 @@ class FileStitcher {
   }
 
   PrintConstructorResults(){
-    Logging.LogEach("files Stitcher CallAPI result:", JSON.stringify(this.result))
+    Logging.log("files Stitcher CallAPI result:", JSON.stringify(this.result))
   }
 
   PrintInitialConstructorParameters(){
-    Logging.LogEach(`FileStitcher.constructor.audioAdjustment:`, this.audioAdjustment)
-    Logging.LogEach(`FileStitcher.constructor.destinationFileName:`, this.destinationFileName)
-    Logging.LogEach(`this.fileList_raw:`, this.fileList_raw)
+    Logging.log(`FileStitcher.constructor.audioAdjustment:`, this.audioAdjustment)
+    Logging.log(`FileStitcher.constructor.destinationFileName:`, this.destinationFileName)
+    Logging.log(`this.fileList_raw:`, this.fileList_raw)
   }
 }
 

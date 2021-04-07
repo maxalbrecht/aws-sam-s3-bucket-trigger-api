@@ -108,7 +108,7 @@ async function handleClickBrowse() {
         newColumnOneDocIds = [...this.state.sourceFiles.columns["column-1"].docIds];
       } else {
         // empty
-        console.log("App.logic.js this.state.sourceFiles.columns[column-1].docIds is currently empty.");
+        console.log("FileStitching.logic.js this.state.sourceFiles.columns[column-1].docIds is currently empty.");
       }
 
       Object.values(selectedFiles).forEach((value) => {
@@ -136,12 +136,12 @@ async function handleClickBrowse() {
         },
       };
 
-      console.log("App.logic.js handleClickBrowse() newState:");
+      console.log("FileStitching.logic.js handleClickBrowse() newState:");
       console.log(newState);
 
       this.setState(newState);
 
-      console.log("App.logic.js this.state")
+      console.log("FileStitching.logic.js this.state")
       console.log(this.state);
     }
     catch(err) {

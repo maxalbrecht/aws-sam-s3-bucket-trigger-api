@@ -41,7 +41,12 @@ function mapStateToProps(state, ownProps) {
           state.action.type === API_CALL_FINISHED
           || state.action.type === TOGGLE_JOB_DETAILS
         )
-        && (article.id === state.action.payload.ListItemObject.id)
+        && (
+          defined(state.action.payload)
+          && defined(state.action.payload.ListItemObject)
+          && defined(state.action.payload.ListItemObject.id)
+          && article.id === state.action.payload.ListItemObject.id
+          )
       ) {
         UpdateComponent(state);
 

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import SectionTitle from './../../utils/sectionTitle'
 import SubmittedJobsList from "../list/List";
 import fieldBind from './fields';
+import Logging from './../../utils/logging'
 
 class ConnectedApp extends Component {
   constructor(props) {
@@ -14,6 +15,10 @@ class ConnectedApp extends Component {
   }
 
   render() {
+    Logging.LogSectionStart()
+    Logging.log("process.env", process.env)
+    Logging.LogSectionEnd()
+    
     return (
       <div style={{height:'100%'}} className="main">
         <Form
@@ -25,7 +30,7 @@ class ConnectedApp extends Component {
           className="form" onSubmit={this.handleSubmit}>
           <Form.Row style={{height:'100%'}}>
             <Col xs={6} style={{paddingBottom:'20px', display:'flex', flexDirection:'column'}}>
-              <Form.Row style={{maxHeight:'35px', marginBottom:'10px'}}>{ SectionTitle('File Syncing' ) }</Form.Row>
+              <Form.Row style={{maxHeight:'35px', marginBottom:'10px'}}>{ SectionTitle('File Syncing - QA') }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.JobNumber() }</Form.Row>
               <Form.Row>{ this.SourceFiles() }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.OrderType() }{ this.Priority() }</Form.Row>

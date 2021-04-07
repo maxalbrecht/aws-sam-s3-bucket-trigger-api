@@ -1,6 +1,7 @@
 import STRING_CONSTANTS from './string'
 
 const API_URL_BASE = "https://api.cloud.telestream.net/starfish/v1.0/factories/"   
+//const API_URL_BASE = "https://8071518d-4ff8-4328-8aec-9b95c45e70df.mock.pstmn.io/starfish/v1.0/factories/"   
 const  FACTORY_ID = "e725b4c22c6d5fc48085514fc114b23c"
 
 const FILE_STITCHING_CONSTANTS = {

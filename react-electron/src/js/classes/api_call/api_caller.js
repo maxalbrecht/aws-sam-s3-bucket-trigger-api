@@ -65,10 +65,10 @@ class APICaller {
     this.APICallStatus = STARTING_JOB
     this.errorMsgList = []
     this.dateDisplay = DateUtils.GetDateDisplay()
-    Logging.Log(`File Syncing Submission Time: ${this.dateDisplay}`)
+    Logging.log(`File Syncing Submission Time: ${this.dateDisplay}`)
 
     try{
-      this.clientAccessKey = File.getContent(FILE_SYNCING_CONSTANTS.CLIENT_ACCESS_KEY_FILE)
+      this.clientAccessKey = File.getContent(FILE_SYNCING_CONSTANTS.CLIENT_ACCESS_KEY_QA_FILE)
       this.apiUrl = `${FILE_SYNCING_CONSTANTS.API.URL_BASE}${this.clientAccessKey}`
       this.result = this.CallAPI(this.apiUrl, this.json)
     }
@@ -82,16 +82,16 @@ class APICaller {
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
       // Do something before request is sent
-      Logging.Log(`axios request interceptor config:\n${JSON.stringify(config)}`)
+      Logging.log(`axios request interceptor config:\n${JSON.stringify(config)}`)
       return config;
     }, function (error) {
-      Logging.LogEach(`axios request interceptor error:`, error)
-      Logging.LogEach(`axios request interceptor error, stringified:`, JSON.stringify(error))
+      Logging.log(`axios request interceptor error:`, error)
+      Logging.log(`axios request interceptor error, stringified:`, JSON.stringify(error))
       // Do something with request error
       return Promise.reject(error)
     });
       
-    Logging.LogEach(`axios API post payload:`, payload, "posting with axios...");
+    Logging.log(`axios API post payload:`, payload, "posting with axios...");
     try {
       return axios({
         method: FILE_SYNCING_CONSTANTS.API.METHOD,
@@ -101,7 +101,7 @@ class APICaller {
         data: payload
       }).then(res => {
         let errorMsgList = res.data.data.result.errorMsgList
-        Logging.LogEach("api call response errorMsgList:", errorMsgList)
+        Logging.log("api call response errorMsgList:", errorMsgList)
         
         let newAPICallStatus = ""
 

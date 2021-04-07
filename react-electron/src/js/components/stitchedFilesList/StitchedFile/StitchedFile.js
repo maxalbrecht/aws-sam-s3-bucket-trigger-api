@@ -84,7 +84,7 @@ class ConnectedStitchedFile extends Component {
 
         <Row className="SubmissionResponse">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Stitching Service Response:</u></Col>
-          <Col style={{padingLeft:'10px'}}>
+          <Col style={{paddingLeft:'10px'}}>
             <Row style={{margin:'0 0'}}>{this.StitchedFileObject.fileStitcher.fileStitchingStatus}</Row>
           </Col>
         </Row>

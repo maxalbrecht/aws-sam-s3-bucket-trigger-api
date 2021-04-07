@@ -14,7 +14,7 @@ export const Regex = {
           let argKey = key;
           let argValue = arg[argKey];
 
-          Logging.LogEach("argKey:", argKey, "argValue:", argValue)
+          Logging.log("argKey:", argKey, "argValue:", argValue)
 
           if(argValue != null){
             finishedTemplate = 

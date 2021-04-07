@@ -43,6 +43,13 @@ const File = {
     if (!fs.existsSync(directory)){
       fs.mkdirSync(directory)
     }
+  },
+  removeFileExtension(fileName) {
+    return fileName.substr(0, fileName.lastIndexOf('.'))
+  },
+  getNameFromPath(filePath) {
+    let filePathSplit = filePath.split('\\')
+    return filePathSplit[filePathSplit.length - 1]
   }
 }
 

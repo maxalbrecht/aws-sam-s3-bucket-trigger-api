@@ -1,12 +1,14 @@
 // src/js/reducers/index.js
 import { Auth } from 'aws-amplify'
 import defined from './../utils/defined'
+import DateUtils from './../utils/date-utils'
 import Logging from './../utils/logging'
 import { THEME_DARK, THEME_LIGHT } from './../constants/themes'
 import { THEME } from './../constants/localStorageVariables'
 import {
   ADD_SYNC_APP_TO_STORE,
   ADD_STITCH_APP_TO_STORE,
+  ADD_MPEG1_CONVERSION_APP_TO_STORE,
   ADD_ARTICLE,
   API_CALL_FINISHED,
   TOGGLE_JOB_DETAILS,
@@ -22,12 +24,15 @@ import {
   ADD_ARCHIVED_JOB,
   JOB_ARCHIVING_FINISHED,
   ADD_STITCHED_FILE,
+  ADD_MPEG1_CONVERSION_JOB,
+  MPEG1_CONVERSION_THIRD_PARTY_JOB_CREATED,
+  RECEIVED_MPEG1_CONVERSION_JOB_UPDATE,
   FILE_STITCHING_QUEUED,
   GET_STITCHING_JOB_STATUS_UPDATE
 } from "../constants/action-types";
 import { AddArchivedJob } from '../actions';
 import { AddStitchedFile } from './../actions'
-import { SYNC_VIEW, STITCH_VIEW } from '../constants/view-names';
+import { SYNC_VIEW, STITCH_VIEW, MPEG1_CONVERSION_VIEW } from '../constants/view-names';
 
 const getInitialState = () => ({
   allowOpenDialog: true,
@@ -36,7 +41,8 @@ const getInitialState = () => ({
   theme: getPreferredTheme(),
   lastTimeOfActivity: new Date(),
   archivedJobs: [],
-  stitchedFiles: []
+  stitchedFiles: [],
+  mpeg1ConversionVeriSuiteJobs: []
 });
 
 function getPreferredTheme() {
@@ -56,12 +62,18 @@ function rootReducer(state = getInitialState(), action) {
       return AddSyncAppToStoreReducer(state, action)
     case ADD_STITCH_APP_TO_STORE:
       return AddStitchAppToStoreReducer(state, action)
+    case ADD_MPEG1_CONVERSION_APP_TO_STORE:
+      return AddMpeg1ConversionAppToStoreReducer(state, action)
     case ADD_ARTICLE:
       return AddArticleReducer(state, action)
     case API_CALL_FINISHED:
       return APICallFinishedReducer(state, action)
     case TOGGLE_JOB_DETAILS:
       return ToggleJobDetailsReducer(state, action)
+    case MPEG1_CONVERSION_THIRD_PARTY_JOB_CREATED:
+      return Mpeg1ConversionThirdPartyJobCreatedReducer(state, action)
+    case RECEIVED_MPEG1_CONVERSION_JOB_UPDATE:
+      return ReceivedMpeg1ConversionJobUpdateReducer(state, action)
     case CLEAR_STATE_ACTION:
       return ClearStateActionReducer(state, action)
     case DISALLOW_OPEN_DIALOG:
@@ -88,6 +100,9 @@ function rootReducer(state = getInitialState(), action) {
 
     case ADD_STITCHED_FILE:
       return AddStitchedFileReducer(state, action)
+//ADD_MPEG1_CONVERSION_JOB
+    case ADD_MPEG1_CONVERSION_JOB:
+      return AddMpeg1ConversionJobReducer(state, action)
     case FILE_STITCHING_QUEUED:
       return FileStitchingQueuedReducer(state, action)
     case GET_STITCHING_JOB_STATUS_UPDATE:
@@ -119,6 +134,17 @@ return Object.assign(
     {
       ...state,
       stitchApp: action.payload.stitchApp
+    }
+  )
+}
+
+function AddMpeg1ConversionAppToStoreReducer(state, action) {
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      mpeg1ConversionApp: action.payload.mpeg1ConversionApp
     }
   )
 }
@@ -197,6 +223,21 @@ function AddStitchedFileReducer(state,action){
   )
 }
 
+function AddMpeg1ConversionJobReducer(state, action) {
+  let mpeg1ConversionVeriSuiteJobs = state.mpeg1ConversionVeriSuiteJobs.concat(action.payload)
+
+  DateUtils.SortArrayByReverseElement$_dot_$date(mpeg1ConversionVeriSuiteJobs)
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      mpeg1ConversionVeriSuiteJobs: mpeg1ConversionVeriSuiteJobs 
+    }
+  )
+}
+
 function APICallFinishedReducer(state, action) {
   return Object.assign(
     {},
@@ -219,18 +260,19 @@ function JobArchivingFinishedReducer(state, action) {
   )
 }
 function FileStitchingQueuedReducer(state, action) {
-  Logging.LogEach("Inside FileStitchingQueuedReducer. state:", state, "action:", action)
+  Logging.log("Inside FileStitchingQueuedReducer. state:", state, "action:", action)
   return Object.assign(
     {},
     state,
     {
       ...state,
-      stitchedFiles: state.stitchedFiles
+      stitchedFiles: state.stitchedFiles,
+      action: action
     }
   )
 }
 function GetStitchingJobStatusUpdateReducer(state, action) {
-  Logging.LogEach("Inside GetStitchingJobStatusUpdateReducer. state:", state, "action:", action)
+  Logging.log("Inside GetStitchingJobStatusUpdateReducer. state:", state, "action:", action)
   return Object.assign(
     {},
     state,
@@ -252,6 +294,32 @@ function ToggleJobDetailsReducer(state, action) {
       action: action
     }
   );
+}
+
+function Mpeg1ConversionThirdPartyJobCreatedReducer(state, action) {
+  console.log(" Inside Mpeg1ConversionThirdPartyJobCreatedReducer(state, action)...")
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      action: action
+    }
+  )
+}
+
+function ReceivedMpeg1ConversionJobUpdateReducer(state, action) {
+  console.log("Inside ReceivedMpeg1ConversionJobUpdateReducer(state, action)...")
+
+  return Object.assign(
+    {},
+    state,
+    {
+      ...state,
+      action: action
+    }
+  )
 }
 
 function ClearStateActionReducer(state, action) {
@@ -309,11 +377,18 @@ function RemoveDocReducer(state, action) {
   let app;
 
   if (
-    action.payload.parentViewName !== null
+    defined(action.payload.parentViewName)
     && action.payload.parentViewName === STITCH_VIEW
   ) {
     app = state.stitchApp;
-  } else {
+  } 
+  else if(
+    defined(action.payload.parentViewName)
+    && action.payload.parentViewName === MPEG1_CONVERSION_VIEW
+  ) {
+    app = state.mpeg1ConversionApp;
+  } 
+  else {
     app = state.syncApp;
   }
 

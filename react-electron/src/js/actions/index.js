@@ -8,7 +8,10 @@ import {
   JOB_ARCHIVING_FINISHED,
 
   ADD_STITCHED_FILE,
-  FILE_STITCHING_QUEUED
+  FILE_STITCHING_QUEUED,
+
+  ADD_MPEG1_CONVERSION_JOB,
+  MPEG1_CONVERSION_FINISHED
 } from "../constants/action-types";
 
 const sleep = (milliseconds) => {
@@ -23,6 +26,10 @@ export function AddArchivedJob(payload) {
 }
 export function addStitchedFile(payload){
   return { type: ADD_STITCHED_FILE, payload }
+}
+
+export function addMpeg1ConversionJob(payload){
+  return { type: ADD_MPEG1_CONVERSION_JOB, payload }
 }
 
 export function apiCallFinished(payload) {
@@ -52,7 +59,15 @@ export function jobArchivingFinished(payload) {
   )
 }
 
+export function mpeg1ConversionFinished(payload) {
+  console.log("executing mpeg1ConversionFinished(payload) in the actions definitions file...")
 
+  sleep(1000).then(
+    () => {
+      return { type: MPEG1_CONVERSION_FINISHED, payload }
+    }
+  )
+}
 
 
 

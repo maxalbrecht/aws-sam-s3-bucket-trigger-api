@@ -11,6 +11,8 @@ const JOB_ARCHIVING = 'Store'
 const JOB_ARCHIVING_ROUTE = '/jobarchiving'
 const FILE_STITCHING = 'Stitch' 
 const FILE_STITCHING_ROUTE = '/filestitching'
+const MPEG1_CONVERSION = 'MPEG1 Conversion'
+const MPEG1_CONVERSION_ROUTE = '/mpeg1conversion'
 const DRC = 'DRC'
 const DRC_ROUTE = '/drc'
 const LOGIN = 'Log in'
@@ -23,6 +25,7 @@ dropdownRouteMappings[JOB_ARCHIVING] = JOB_ARCHIVING_ROUTE
 dropdownRouteMappings[FILE_STITCHING] = FILE_STITCHING_ROUTE
 dropdownRouteMappings[DRC] = DRC_ROUTE
 dropdownRouteMappings[LOGIN] = LOGIN_ROUTE 
+dropdownRouteMappings[MPEG1_CONVERSION] = MPEG1_CONVERSION_ROUTE
 
 function handleSelect(that, eventKey) {
   that.props.history.push(dropdownRouteMappings[eventKey]);
@@ -50,6 +53,8 @@ function NavDropdownComponent() {
         id="nav-dropdown"
       >
         <NavDropdown.Item eventKey={FILE_STITCHING}>{FILE_STITCHING}</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item eventKey={MPEG1_CONVERSION}>{MPEG1_CONVERSION}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={SYNCING}>{SYNCING}</NavDropdown.Item>
         <NavDropdown.Divider />

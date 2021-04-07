@@ -1,6 +1,6 @@
 {
   "name": "VeriSuite",
-  "version": "1.7.29",
+  "version": "1.7.36",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -24,13 +24,14 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
+    "@aws-amplify/cli": "^4.46.0",
     "@kunukn/react-collapse": "^1.2.7",
     "aws-amplify": "^2.3.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "cross-env": "^6.0.3",
     "electron-is-dev": "^1.2.0",
-    "electron-log": "^4.2.4",
+    "electron-log": "^4.3.3",
     "electron-progressbar": "^1.2.0",
     "electron-splashscreen": "^1.0.0",
     "electron-updater": "^4.3.5",

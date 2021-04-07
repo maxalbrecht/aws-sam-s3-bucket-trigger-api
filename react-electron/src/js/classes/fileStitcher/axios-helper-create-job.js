@@ -1,7 +1,7 @@
 import Logging from './../../utils/logging'
 import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
-import { SUCCESS, ERROR, QUEUED } from './../../constants/list_item_statuses'
-import AxiosHelper from './../../utils/axios-helper'
+import { SUCCESS, ERROR, QUEUED, UPLOADING, PROCESSING } from './../../constants/list_item_statuses'
+import AxiosHelper from './../../utils/api-caller'
 import { FILE_STITCHING_QUEUED } from './../../constants/action-types.js'
 import { action } from './../../utils/action'
 var store = window.store
@@ -29,8 +29,25 @@ class AxiosHelperCreateJob extends AxiosHelper {
     if(result.data.status.toLowerCase() === QUEUED.toLowerCase()){
       newAPICallStatus = QUEUED
     }
+    else if (result.data.status.toLowerCase() === PROCESSING.toLowerCase()) {
+      newAPICallStatus = PROCESSING
+      errorMsgList = []
+    }
+    else if (result.data.status.toLowerCase() === UPLOADING.toLowerCase()) {
+      newAPICallStatus = UPLOADING
+      errorMsgList = []
+    }
+    else if (result.data.status.toLowerCase() === SUCCESS.toLowerCase()) {
+      newAPICallStatus = SUCCESS
+      errorMsgList = []
+    }
     else {
       newAPICallStatus = ERROR
+
+      Logging.LogSectionStart("fileStitcher.axiosHelperCreateTeleStreamJob.SuccessDetermineAPICallStatus. ERROR")
+      Logging.log("result.data.status did not match known positive statuses", "result:", result)
+      Logging.LogSectionEnd()
+
       errorMsgList.push( { ...result.data, errorMsg: result.data.error_message } )
     }
     /*

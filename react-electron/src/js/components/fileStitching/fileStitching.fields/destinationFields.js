@@ -17,11 +17,16 @@ function DestinationFields() {
       </Form.Row>
       <Form.Row style={{maxHeight:'60px', marginTop:'25px', marginBottom:'5px', borderWidth:'2px', borderColor:'white'}}>
         <Form.Group as={Col} className="textFieldLabel" style={{maxWidth:'80px'}}>
-          <Form.Label
-            style={{paddingTop:'35px', color:'darkgrey'}}
-          >vxtprod/</Form.Label>
+          <Form.Label style={{paddingTop:'35px', color:'darkgrey'}}>
+            vxtprod/
+          </Form.Label>
         </Form.Group>
         { this.DestinationFileName() }
+        <Form.Group as={Col} className="textFieldLabel" style={{maxWidth:'80px'}}>
+          <Form.Label style={{paddingTop:'35px', color:'darkgrey'}}>
+            .mp4
+          </Form.Label>
+        </Form.Group>
       </Form.Row>
 
     </Form.Group>

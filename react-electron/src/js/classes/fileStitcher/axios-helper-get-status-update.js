@@ -1,12 +1,12 @@
 import Logging from './../../utils/logging'
 import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
 import { SUCCESS, ERROR, QUEUED, UPLOADING, PROCESSING } from './../../constants/list_item_statuses'
-import AxiosHelper from './../../utils/axios-helper'
+import ApiCaller from './../../utils/api-caller'
 import { GET_STITCHING_JOB_STATUS_UPDATE } from './../../constants/action-types.js'
 import { action } from './../../utils/action'
 var store = window.store
 
-class AxiosHelperGetStatusUpdate extends AxiosHelper {
+class ApiCallerGetStatusUpdate extends ApiCaller {
   async CallAPI(apiUrl, payload, method, headers, parentObject) {
     this.parentObject = parentObject
     await super.CallAPI(apiUrl, payload, method, headers)
@@ -26,7 +26,7 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
     let newAPICallStatus = ""
     let errorMsgList = []
     Logging.LogSectionStart()
-    Logging.LogEach("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
+    Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 
     if (result.data.status.toLowerCase() === QUEUED.toLowerCase()) {
@@ -52,6 +52,11 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
     else {
       newAPICallStatus = ERROR
       this.parentObject.continuePollingForUpdates = false
+
+      Logging.LogSectionStart("fileStitcher.axiosHelperCreateTeleStreamJob.SuccessDetermineAPICallStatus. ERROR")
+      Logging.log("result.data.status did not match known positive statuses", "result:", result)
+      Logging.LogSectionEnd()
+
       errorMsgList.push( { ...result.data, errorMsg: result.data.error_message } )
     }
 
@@ -62,7 +67,7 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
 
   AxiosThenFailure(reason) {
     Logging.LogSectionStart()
-    Logging.LogEach("AxiosHelperGetStatusUpdate.AxiosDetermineAPICallStatus.reason:", reason)
+    Logging.log("AxiosHelperGetStatusUpdate.AxiosDetermineAPICallStatus.reason:", reason)
     Logging.LogSectionEnd()
 
     let newAPICallStatus = super.AxiosThenFailure(reason) 
@@ -77,7 +82,7 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
 
   SaveValuesToAnotherObject(otherObject){
     Logging.LogSectionStart()
-    Logging.Log("AxiosHelperGetStatusUpdate.SaveValuesToAnotherObject")
+    Logging.log("AxiosHelperGetStatusUpdate.SaveValuesToAnotherObject")
 
     otherObject.jobStatusUpdate = this.result
     otherObject.fileStitchingStatus = this.APICallStatus
@@ -85,10 +90,10 @@ class AxiosHelperGetStatusUpdate extends AxiosHelper {
     otherObject.axiosFailureReason = this.axiosFailureReason
     otherObject.errorMsgList = this.errorMsgList
 
-    Logging.LogEach("this.result: ", this.result)
-    Logging.LogEach("otherObject:", otherObject)
+    Logging.log("this.result: ", this.result)
+    Logging.log("otherObject:", otherObject)
     Logging.LogSectionEnd()
   }
 }
 
-export default AxiosHelperGetStatusUpdate
+export default ApiCallerGetStatusUpdate 

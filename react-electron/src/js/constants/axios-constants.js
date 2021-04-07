@@ -7,7 +7,7 @@ const AXIOS_CONSTANTS = {
   },
   ALERTS: {
     ERROR_CALLING_API:
-      "error calling API. Please check that all fields have been filled in correctly."
+      "error calling API. Please check that all fields have been filled in correctly. "
       + "If the issue persists, please contact application support"
   }
 }
