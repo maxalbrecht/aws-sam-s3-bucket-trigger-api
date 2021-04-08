@@ -3,9 +3,11 @@ import AxiosHelperGetStatusUpdate from './axios-helper-get-status-update'
 import Logging from './../../utils/logging'
 import File from './../../utils/file'
 import DateUtils from './../../utils/date-utils'
-import { STARTING_JOB } from './../../constants/list_item_statuses'
+import defined from './../../utils/defined'
+import { STARTING_JOB, SUCCESS, ERROR } from './../../constants/list_item_statuses'
 import ApiPayloadCreator from './api_payload_creator'
 import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
+import Mpeg1Converter from '../mpeg1Converter/mpeg1Converter'
 
 class FileStitcher {
   constructor(
@@ -19,6 +21,7 @@ class FileStitcher {
     contactEmail,
     contactPhone,
     fileId,
+    convertToMpeg1 = false,
     ...props
   ) {
     SaveParameters(this)
@@ -42,8 +45,6 @@ class FileStitcher {
     }
 
     function SaveParameters(that){
-      Logging.LogSpacerLine()
-      Logging.log(externalJobNumber)
       that.externalJobNumber = externalJobNumber 
       that.fileList_raw = fileList_raw 
       that.fileOrder = fileOrder
@@ -54,9 +55,11 @@ class FileStitcher {
       that.contactEmail = contactEmail 
       that.contactPhone = contactPhone 
       that.fileId = fileId
+      that.convertToMpeg1 = convertToMpeg1
   
       that.PrintInitialConstructorParameters();
     }
+
 
     function Initialize(that){
       that.AxiosHelper = new AxiosHelperCreateJob()
@@ -90,14 +93,10 @@ class FileStitcher {
   }
 
   async GetJobStatusUpdate(){ 
-    if(this.updateApiUrl === undefined){
+    if(!defined(this.updateApiUrl)){
       this.updateApiUrl = `${this.apiUrl}/${this.jobId}` 
-
-      //if (this.externalJobNumber === FILE_STITCHING_CONSTANTS.MOCK_JOB.EXTERNAL_JOB_NUMBER) {
-      //  this.updateApiUrl = `${this.apiUrl}/${FILE_STITCHING_CONSTANTS.MOCK_JOB.ID}` 
-      //}  
     }
-    if(this.AxiosHelperForUpdates === undefined){
+    if(!defined(this.AxiosHelperForUpdates)){
       this.AxiosHelperForUpdates = new AxiosHelperGetStatusUpdate() //this.GetAxiosHelperForUpdates()
     }
 
@@ -111,25 +110,19 @@ class FileStitcher {
     
     this.ShouldWeContinuePollingForUpdates()
 
-    Logging.log("***&&&***Latest jobStatusUpdate:", this.jobStatusUpdate)
+    Logging.log("Latest jobStatusUpdate:", this.jobStatusUpdate)
+
+    this.CheckAndStartMpeg1Conversion()
   }
 
   ShouldWeContinuePollingForUpdates(){
-    Logging.LogSectionStart()
-    Logging.log("this.IdOfTimerToPollForJobStatusUpdates:", this.IdOfTimerToPollForJobStatusUpdates)
-    Logging.log("this.failedAttemptsToGetUpdate: ", this.failedAttemptsToGetUpdate)
-    Logging.log("continuePollingForUpdates: ", this.continuePollingForUpdates)
-
     if(this.failedAttemptsToGetUpdate >= FILE_STITCHING_CONSTANTS.API_JOB_STATUS.MAX_FAILED_ATTEMPTS){
       this.continuePollingForUpdates = false
     }
 
     if (!this.continuePollingForUpdates) {
       clearInterval(this.IdOfTimerToPollForJobStatusUpdates)
-      Logging.log(">>>clearing interval that checks for updates")
     }
-
-    Logging.LogSectionEnd()
   }
 
   PollForJobStatusUpdates(){
@@ -139,6 +132,44 @@ class FileStitcher {
       ( () => { this.GetJobStatusUpdate() } ),
       timeoutTimeInMilliseconds
     )
+  }
+
+  CheckAndStartMpeg1Conversion(){
+    Logging.LogSectionStart("Inside FileStitcher.CheckAndStartMpeg1Conversion()")
+
+    if (this.fileStitchingStatus === SUCCESS) {
+      if (this.convertToMpeg1) {
+        let fileDirectory = File.removeNameFromPath(this.fileList_raw.docs["doc-1"].content)
+        let dummyFileList_raw = {
+          docs: {
+            "doc-1": {
+              id: "doc-1",
+              content: `${fileDirectory}${this.destinationFileName}.mp4`
+            }
+          }
+        }
+        let dummyFileOrder = ["doc-1"]
+
+        this.mpeg1Converter = new Mpeg1Converter(
+          this.externalJobNumber,
+          dummyFileList_raw,
+          dummyFileOrder,
+          this.assignedUserEmail,
+          this.contactName,
+          this.contactEmail,
+          this.contactPhone,
+          this.fileId
+        )
+      }
+      else {
+        Logging.info("fileStitcher: convertToMpeg1 is false. fileStitcher's output file will not be converted to mpeg1.")
+      }
+    }
+    else if(this.fileStitchingStatus === ERROR) {
+      Logging.info("fileStitcher: fileStitchingStatus equals ERROR. No file will not be converted to mpeg1.")
+    }
+
+    Logging.LogSectionEnd("End of FileStitcher.CheckAndStartMpeg1Conversion()")
   }
 
   GetAPIKey(){

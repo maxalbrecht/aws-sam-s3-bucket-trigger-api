@@ -12,6 +12,8 @@ import { STITCHING_FILE, QUEUED, SUCCESS, ERROR } from './../../../constants/lis
 
 import defined from './../../../utils/defined'
 import Logging from '../../../utils/logging'
+import Regex from './../../../utils/regex'
+import firstEqualsOneOfTheOthers from './../../../utils/first-equals-one-of-the-others'
 
 const uuidv4 = window.require("uuid/v4")
 
@@ -24,29 +26,55 @@ class ConnectedStitchedFile extends Component {
   }
 
   render() {
-    let oddOrEven = ODD
+    let fileClasses = this.getClassNamesForColorCoding(
+      this.StitchedFileObject.fileStitcher.fileStitchingStatus,
+      Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus"),
+      this.props.fileOrdinalNumber
+    )
+    
+    /*
+    let successOrFailure_stitching = ''
+    let successOrFailure_conversion = ''
+    let successOrFailure_overall = ''
+    let oddOrEven = (this.props.fileOrdinalNumber % 2 === 0 ? EVEN : ODD) 
 
-    if(this.props.fileOrdinalNumber % 2 === 0){
-      oddOrEven = EVEN
-    }
-
-    let successOrFailure = ''
-
+    // STITCHING SUCCESS OR FAILURE
     if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === STITCHING_FILE
       || this.StitchedFileObject.fileStitcher.fileStitchingStatus === QUEUED){
-      successOrFailure = ''
+      successOrFailure_stitching = ''
     }
     else if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === SUCCESS){
-      successOrFailure = SUCCESS
+      successOrFailure_stitching = SUCCESS
     }
     else if(this.StitchedFileObject.fileStitcher.fileStitchingStatus === ERROR){
-      successOrFailure = FAILURE
+      successOrFailure_stitching = FAILURE
     }
 
-    let fileClasses = ''
-    if(successOrFailure !== ''){
-      fileClasses = successOrFailure + '_' + oddOrEven
+    // CONVERSION SUCCESS OR FAILURE
+    if(successOrFailure_stitching === SUCCESS) {
+      let status = Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus")
+
+      if(status === SUCCESS) {
+        successOrFailure_conversion = SUCCESS
+      }
+      else if(firstEqualsOneOfTheOthers(status, FAILURE, ERROR)) {
+        successOrFailure_conversion = FAILURE
+      }
     }
+
+    // OVERALL SUCCESS OR FAILURE
+    if(successOrFailure_stitching === SUCCESS && successOrFailure_conversion === SUCCESS) {
+      successOrFailure_overall = SUCCESS
+    }
+    else if(successOrFailure_stitching === FAILURE || successOrFailure_conversion === FAILURE) {
+      successOrFailure_overall = FAILURE
+    }
+
+    // GET FINAL RESULT
+    if(successOrFailure_overall !== ''){
+      fileClasses = successOrFailure_overall + '_' + oddOrEven
+    }
+    */
 
     return (
       <ListGroup.Item
@@ -102,6 +130,31 @@ class ConnectedStitchedFile extends Component {
             }
           </ListGroup>
         </Row>
+
+        <Row className="SubmissionResponse">
+          <Col style={{maxWidth:'140px', padding:'0px'}}><u>Conversion Service Response:</u></Col>
+          <Col style={{paddingLeft:'10px'}}>
+            <Row style={{margin:'0 0'}}>
+              { Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus") }
+            </Row>
+          </Col>
+        </Row>
+
+        <Row className="ErrorMsgList" style={{margin:'0 0'}}>
+          <ListGroup style={{border:'none'}}>
+            {
+              (Regex.defaultIfNotDefined([], this.StitchedFileObject.fileStitcher, 'mpeg1Converter.errorMsgList')).map(
+                errorMsgObject => (
+                  <ListGroup.Item style={{padding:'2px 0', border:'none'}} key={uuidv4()}>
+                    {errorMsgObject.errorMsg}
+                  </ListGroup.Item>
+                )
+              )
+            }
+          </ListGroup>
+        </Row>
+
+
         { this.JobDetails() }
       </ListGroup.Item>
     )

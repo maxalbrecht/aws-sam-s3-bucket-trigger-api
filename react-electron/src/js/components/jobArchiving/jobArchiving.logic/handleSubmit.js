@@ -1,5 +1,6 @@
 import defined from './../../../utils/defined'
 import JobArchiver from "../../../classes/jobArchiver/jobArchiver"
+import getConstructorState from './getConstructorState'
 
 const uuidv4 = window.require("uuid/v4")
 
@@ -41,18 +42,11 @@ async function handleSubmit(event) {
           jobArchiver: jobArchiver,
           date: date
         })
-
-        console.log("this.state:")
-        console.log(this.state)
-
-        this.setState({
-          id: "",
-          jobNumber: "",
-          year: "",
-          month: "",
-          user: this.state.user
-        })
-
+        
+        this.setState((state, props) => ({
+          ...getConstructorState(),
+          errors: state.errors
+        }))
       } 
       else {
         alert("You are not logged in. Please log in and try again.");

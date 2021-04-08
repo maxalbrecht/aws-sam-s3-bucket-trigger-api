@@ -47,12 +47,10 @@ async function handleSubmit(event) {
             date: date
           })
 
-          this.setState(
-            {
-              ...getConstructorState(),
-              user: this.state.user
-            }
-          )
+          this.setState((state, props) => ({
+            ...getConstructorState(),
+            errors: state.errors
+          }))
         }
         else {
           alert("No source files selected. Please select at least one source file and try again.")

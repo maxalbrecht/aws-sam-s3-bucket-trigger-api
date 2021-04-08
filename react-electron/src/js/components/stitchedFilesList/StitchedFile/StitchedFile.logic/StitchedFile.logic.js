@@ -3,12 +3,14 @@ import selectStatusColor from './selectStatusColor'
 import selectBackgroundColor from './selectBackgroundColor'
 import handleToggleCollapse from './handleToggleCollapse'
 import ToggleButtonLabel from './toggleButtonLabel'
+import getClassNamesForColorCoding from './getClassNamesForColorCoding'
 
 function logicConstructor(props){
   this.selectStatusColor = selectStatusColor.bind(this)
   this.selectBackgroundColor = selectBackgroundColor.bind(this)
   this.handleToggleCollapse = handleToggleCollapse.bind(this)
   this.ToggleButtonLabel = ToggleButtonLabel.bind(this)
+  this.getClassNamesForColorCoding = getClassNamesForColorCoding.bind(this)
 
   this.JobDetailsIsOpen = false
   if(props.jobDetailsIsOpen){

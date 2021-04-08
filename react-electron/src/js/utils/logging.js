@@ -1,5 +1,5 @@
 import defined from './defined'
-const electron_log = require('electron-log')
+//const electron_log = require('electron-log')
 
 const HASHTAG_LINE = "############################################################"
 const SECTION_START = "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
@@ -13,22 +13,22 @@ const silly_const = "silly"
 
 export const Logging = {
   error(...messages){
-    this.logWithLevel(error_const, messages)
+    this.logWithLevel(error_const, ...messages)
   },
   warn(...messages){
-    this.logWithLevel(warn_const, messages)
+    this.logWithLevel(warn_const, ...messages)
   },
   info(...messages){
-    this.logWithLevel(info_const, messages)
+    this.logWithLevel(info_const, ...messages)
   },
   verbose(...messages){
-    this.logWithLevel(verbose_const, messages)
+    this.logWithLevel(verbose_const, ...messages)
   },
   debug(...messages){
-    this.logWithLevel(debug_const, messages)
+    this.logWithLevel(debug_const, ...messages)
   },
   silly(...messages){
-    this.logWithLevel(silly_const, messages)
+    this.logWithLevel(silly_const, ...messages)
   },
   logWithLevel(level, ...messages){
     messages.forEach(message => {
@@ -39,7 +39,7 @@ export const Logging = {
   log(...messages){
     messages.forEach(message => {
       // console.log(message)
-      this.logWithLevel("info", messages)
+      this.logWithLevel("info", ...messages)
     })
   },
   LogSpacerLine(){
@@ -60,7 +60,8 @@ export const Logging = {
     console.log(SECTION_END)
   },
   LogError(errorMessage, error){
-    console.log(`${errorMessage} Error: ${error}`)
+    console.log(errorMessage)
+    console.log(error)
   },
   LogAndThrowError(errorMessage, error){
     this.LogError(errorMessage, error)

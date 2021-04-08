@@ -1,4 +1,5 @@
 import Logging from './logging'
+import defined from './defined'
 
 export const Regex = {
   ReplaceJSONPlaceHolders(jsonTemplate, ...args){
@@ -46,6 +47,21 @@ export const Regex = {
     })
 
     return result
+  },
+  defaultIfNotDefined(defaultValue, param, propertyPath) {
+    if(defined(param, propertyPath)) {
+      let currentObject = param
+      let properties = propertyPath.split('.')
+
+      for (let j = 0; j < properties.length; j++) {
+        currentObject = currentObject[properties[j]]
+      }
+
+      return currentObject
+    }
+    else {
+      return defaultValue
+    }
   }
 }
 

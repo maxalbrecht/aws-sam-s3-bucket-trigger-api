@@ -50,6 +50,9 @@ const File = {
   getNameFromPath(filePath) {
     let filePathSplit = filePath.split('\\')
     return filePathSplit[filePathSplit.length - 1]
+  },
+  removeNameFromPath(filePath) {
+    return `${filePath.substr(0, filePath.lastIndexOf('\\'))}\\`
   }
 }
 
