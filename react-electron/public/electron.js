@@ -16,11 +16,11 @@ if(isDev) {
 }
 
 async function createWindow() {
-  console.log("Creating Window...")
-  console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-  console.log("userData folder:")
-  console.log(app.getPath('userData'))
-  console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+  //^^//console.log("Creating Window...")
+  //^^//console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+  //^^//console.log("userData folder:")
+  //^^//console.log(app.getPath('userData'))
+  //^^//console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
     
   mainWindow = new BrowserWindow({ 
     width: 1024,
@@ -77,16 +77,16 @@ async function createWindow() {
 }
 
 app.on("ready", () => {
-  console.log("app is ready...")
+  //^^//console.log("app is ready...")
   // Create the main window
   createWindow();
   try {
     // Check for update after two seconds
     //setTimeout(CheckForUpdates, 2000);
-    CheckForUpdates();
+    //CheckForUpdates();
   }
   catch (e) {
-    console.log(`Error at setTimeout(CheckForUpdates(). Error: ${e})`);
+    //^^//console.log(`Error at setTimeout(CheckForUpdates(). Error: ${e})`);
   }
 });
 app.on("window-all-closed", () => {

@@ -1,4 +1,5 @@
 import defined from './../../../utils/defined'
+import Logging from './../../../utils/logging'
 import JobArchiver from "../../../classes/jobArchiver/jobArchiver"
 import getConstructorState from './getConstructorState'
 
@@ -7,17 +8,16 @@ const uuidv4 = window.require("uuid/v4")
 async function handleSubmit(event) {
   let date = new Date()
   event.preventDefault();
-  console.log("Inside Job Archiving handleSubmit()...")
+  //^^//console.log("Inside Job Archiving handleSubmit()...")
 
   let storeState = window.store.getState()
 
-  console.log(storeState)
+  //^^//console.log(storeState)
   
   let errorPresent = this.ValidateJobArchivingFields();
 
   try {
     if(errorPresent === false) {
-      const { jobNumber, year, month } = this.state;
 
       // ARCHIVE JOB
       //TODO: Implement
@@ -57,8 +57,7 @@ async function handleSubmit(event) {
       //TODO: Implement
     }
     else {
-      console.log("Job Archiving handleSubmit errorsPresent:");
-      console.log(errorPresent);
+      Logging.error(null, "Job Archiving handleSubmit errorsPresent:", errorPresent)
     }
   
   } catch (error) {
@@ -70,8 +69,8 @@ async function handleSubmit(event) {
       }
     })
 
-    console.log("Error Archiving Job. error:");
-    console.log(e);
+    Logging.logError("Error Archiving Job:", e)
+
   }
 }
 

@@ -7,7 +7,7 @@ import defined from './../../utils/defined'
 import { STARTING_JOB, SUCCESS, ERROR } from './../../constants/list_item_statuses'
 import ApiPayloadCreator from './api_payload_creator'
 import FILE_STITCHING_CONSTANTS from './../../constants/file-stitching'
-import Mpeg1Converter from '../mpeg1Converter/mpeg1Converter'
+import MpegConverter from '../mpegConverter/mpegConverter'
 
 class FileStitcher {
   constructor(
@@ -21,7 +21,7 @@ class FileStitcher {
     contactEmail,
     contactPhone,
     fileId,
-    convertToMpeg1 = false,
+    convertToMpeg = false,
     ...props
   ) {
     SaveParameters(this)
@@ -55,7 +55,7 @@ class FileStitcher {
       that.contactEmail = contactEmail 
       that.contactPhone = contactPhone 
       that.fileId = fileId
-      that.convertToMpeg1 = convertToMpeg1
+      that.convertToMpeg = convertToMpeg
   
       that.PrintInitialConstructorParameters();
     }
@@ -112,7 +112,7 @@ class FileStitcher {
 
     Logging.log("Latest jobStatusUpdate:", this.jobStatusUpdate)
 
-    this.CheckAndStartMpeg1Conversion()
+    this.CheckAndStartMpegConversion()
   }
 
   ShouldWeContinuePollingForUpdates(){
@@ -134,11 +134,11 @@ class FileStitcher {
     )
   }
 
-  CheckAndStartMpeg1Conversion(){
-    Logging.LogSectionStart("Inside FileStitcher.CheckAndStartMpeg1Conversion()")
+  CheckAndStartMpegConversion(){
+    Logging.LogSectionStart("Inside FileStitcher.CheckAndStartMpegConversion()")
 
     if (this.fileStitchingStatus === SUCCESS) {
-      if (this.convertToMpeg1) {
+      if (this.convertToMpeg) {
         let fileDirectory = File.removeNameFromPath(this.fileList_raw.docs["doc-1"].content)
         let dummyFileList_raw = {
           docs: {
@@ -150,7 +150,7 @@ class FileStitcher {
         }
         let dummyFileOrder = ["doc-1"]
 
-        this.mpeg1Converter = new Mpeg1Converter(
+        this.mpegConverter = new MpegConverter(
           this.externalJobNumber,
           dummyFileList_raw,
           dummyFileOrder,
@@ -162,14 +162,14 @@ class FileStitcher {
         )
       }
       else {
-        Logging.info("fileStitcher: convertToMpeg1 is false. fileStitcher's output file will not be converted to mpeg1.")
+        Logging.info("fileStitcher: convertToMpeg is false. fileStitcher's output file will not be converted to mpeg.")
       }
     }
     else if(this.fileStitchingStatus === ERROR) {
-      Logging.info("fileStitcher: fileStitchingStatus equals ERROR. No file will not be converted to mpeg1.")
+      Logging.warn("fileStitcher: fileStitchingStatus equals ERROR. No file will not be converted to mpeg.")
     }
 
-    Logging.LogSectionEnd("End of FileStitcher.CheckAndStartMpeg1Conversion()")
+    Logging.LogSectionEnd("End of FileStitcher.CheckAndStartMpegConversion()")
   }
 
   GetAPIKey(){
@@ -178,7 +178,7 @@ class FileStitcher {
     try {
       APIKey = File.getContent(FILE_STITCHING_CONSTANTS.SF_API_KEY_FILE)
     } catch (error) {
-      Logging.LogError(FILE_STITCHING_CONSTANTS.ERRORS.ERROR_GETTING_API_KEY, error)
+      Logging.logError(FILE_STITCHING_CONSTANTS.ERRORS.ERROR_GETTING_API_KEY, error)
     }
 
     return APIKey

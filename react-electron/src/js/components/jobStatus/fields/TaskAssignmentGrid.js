@@ -5,8 +5,8 @@ import { DragDropContext, Droppable as AbleToBeDroppedInto } from 'react-beautif
 import { COLUMN } from './../../../constants/reactBeautifulDndTypes'
 
 function TaskAssignmentGrid() {
-  console.log("JobStatus.TaskAssignmentGrid.this:")
-  console.log(this)
+  //^^//console.log("JobStatus.TaskAssignmentGrid.this:")
+  //^^//console.log(this)
   return(
     <DragDropContext
       onDragEnd={this.onDragEnd}

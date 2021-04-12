@@ -1,5 +1,5 @@
 function getConstructorState() {
-  console.log("inside register getConstructorState");
+  //^^//console.log("inside register getConstructorState");
   
   return {
     username: "",

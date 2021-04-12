@@ -18,9 +18,9 @@ const uuidv4 = window.require("uuid/v4")
 // within each UI component, and use the store only to save data that is used in the business logic (as opposed to
 // how the data is displayed to the user).
 function mapStateToProps(state, ownProps) {
-  console.log("Inside ListItemLogic mapStateToProps...");
-  console.log("state.articles:");
-  console.log(state.articles);
+  //^^//console.log("Inside ListItemLogic mapStateToProps...");
+  //^^//console.log("state.articles:");
+  //^^//console.log(state.articles);
 
   let update = {};
 
@@ -32,8 +32,8 @@ function mapStateToProps(state, ownProps) {
       // Check that an action was passed along with the state, and that the current list item
       // is the list item that triggered the action.
       if(defined(state.action) ){
-        console.log("state.action")
-        console.log(state.action)
+        //^^//console.log("state.action")
+        //^^//console.log(state.action)
       }
       
       if (defined(state.action)

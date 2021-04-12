@@ -34,7 +34,7 @@ class JobArchiver {
       this.ArchiveJob(this.externalJobNumber, this.year, this.month)
     }
     catch(e){
-      console.log(`Error in Job Archiver. Error: ${e}`)
+      //^^//console.log(`Error in Job Archiver. Error: ${e}`)
       throw e
     }
   }
@@ -51,7 +51,7 @@ class JobArchiver {
     }
     catch(e){
       newJobArchivingStatus = ERROR
-      console.log(`Error archiving job. Error: ${e}`)
+      //^^//console.log(`Error archiving job. Error: ${e}`)
       this.errorMsgList = { error: e }
     }
 

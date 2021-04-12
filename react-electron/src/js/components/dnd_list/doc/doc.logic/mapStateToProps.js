@@ -4,7 +4,7 @@ import ClearStateAction from "../../../../utils/clearStateAction";
 const uuidv4 = window.require("uuid/v4")
 
 function mapStateToProps(state, ownProps) {
-  console.log("Inside doc.logic mapStateToProps()...")
+  //^^//console.log("Inside doc.logic mapStateToProps()...")
   let update = {};
   let draggableId = ownProps.doc.id;
 
@@ -13,8 +13,8 @@ function mapStateToProps(state, ownProps) {
       && (state.action.payload.draggableId === draggableId)
     ) {
     update.removeDoc = true;
-    console.log("update.removeDoc:");
-    console.log(update.removeDoc);
+    //^^//console.log("update.removeDoc:");
+    //^^//console.log(update.removeDoc);
     
     ClearStateAction(window.store);
     update.TriggerRender = uuidv4();

@@ -5,7 +5,7 @@ import "./pages.css"
 
 class Documentation extends Component {
     render(){
-        console.log(this.props.location.state)
+        //^^//console.log(this.props.location.state)
         window.open(this.props.location.state)
         return (
             <div className="header">
@@ -19,7 +19,7 @@ class Documentation extends Component {
 }
 
 // const Documentation = () => {
-//     console.log("this is the process.env", process.env)
+//     //^^//console.log("this is the process.env", process.env)
 //     window.open(process.env.PUBLIC_URL + '/docs/build/index.html')
 //     // <img  id="small-icon" src={process.env.PUBLIC_URL + '/favicon.ico'} />
 //     return (

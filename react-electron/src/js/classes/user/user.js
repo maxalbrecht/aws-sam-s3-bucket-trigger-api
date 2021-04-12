@@ -13,11 +13,11 @@ class User {
 
     if (defined(cognitoUser)) {
       let environment = this.chooseEnvironment();
-      console.log("User constructor cognitoUser:");     
-      console.log(cognitoUser);     
+      //^^//console.log("User constructor cognitoUser:");     
+      //^^//console.log(cognitoUser);     
 
-      console.log("users:");
-      console.log(users)
+      //^^//console.log("users:");
+      //^^//console.log(users)
 
       let selectedUser = null;
       
@@ -33,20 +33,20 @@ class User {
       this.contactPhone = selectedUser.contactPhone;
       this.assignedUserEmail = selectedUser.assignedUserEmail;
 
-      console.log("User constructor selectedUser:");
-      console.log(selectedUser);
+      //^^//console.log("User constructor selectedUser:");
+      //^^//console.log(selectedUser);
 
-      console.log("User this.contactName:");
-      console.log(this.contactName);
-      console.log("User this.contactEmail:");
-      console.log(this.contactEmail);
-      console.log("User this.contactPhone:");
-      console.log(this.contactPhone);
-      console.log("User this.assignedUserEmail:");
-      console.log(this.assignedUserEmail);
+      //^^//console.log("User this.contactName:");
+      //^^//console.log(this.contactName);
+      //^^//console.log("User this.contactEmail:");
+      //^^//console.log(this.contactEmail);
+      //^^//console.log("User this.contactPhone:");
+      //^^//console.log(this.contactPhone);
+      //^^//console.log("User this.assignedUserEmail:");
+      //^^//console.log(this.assignedUserEmail);
     }
     else {
-      console.log("User constructor cognitoUser is not defined");
+      //^^//console.log("User constructor cognitoUser is not defined");
     }
   }
 
@@ -65,8 +65,8 @@ class User {
   */
   chooseEnvironment() {
     const isDev = window.require("electron-is-dev");
-    console.log("chooseEnvironment isDev:")
-    console.log(isDev);
+    //^^//console.log("chooseEnvironment isDev:")
+    //^^//console.log(isDev);
 
     if(isDev) {
       return DEV

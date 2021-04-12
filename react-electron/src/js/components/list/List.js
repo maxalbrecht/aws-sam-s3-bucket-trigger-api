@@ -32,17 +32,17 @@ class ConnectedList extends Component {
   constructor(props){
     super(props); 
     this.articles = props.articles;
-    console.log("props.articles:");
-    console.log(props.articles);
+    //^^//console.log("props.articles:");
+    //^^//console.log(props.articles);
     this.render = this.render.bind(this);
     this.placeholder = this.placeholder.bind(this);
   }
 
   placeholder(articles) {
-    console.log("testing inside List.js...")
+    //^^//console.log("testing inside List.js...")
 
-    console.log("articles:");
-    console.log(articles);
+    //^^//console.log("articles:");
+    //^^//console.log(articles);
     
     if(!Array.isArray(articles) || articles.length < 1) {
       let paddingSides = '10px'
@@ -77,7 +77,7 @@ class ConnectedList extends Component {
   }
 
   render() {
-    console.log("rendering list group...");
+    //^^//console.log("rendering list group...");
 
     let jobOrdinalNumber = 0;
     

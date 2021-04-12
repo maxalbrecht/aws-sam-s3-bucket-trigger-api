@@ -22,17 +22,17 @@ class ConnectedStitchedFilesList extends Component {
   constructor(props){
     super(props)
     this.stitchedFiles = props.stitchedFiles
-    console.log("props.stitchedFiles:")
-    console.log(props.stitchedFiles)
+    //^^//console.log("props.stitchedFiles:")
+    //^^//console.log(props.stitchedFiles)
     this.render = this.render.bind(this)
     this.placeholder = this.placeholder.bind(this)
   }
 
   placeholder(stitchedFiles) {
-    console.log("testing inside ConnectedStitchedFilesList.js...")
+    //^^//console.log("testing inside ConnectedStitchedFilesList.js...")
 
-    console.log("stitchedFiles:")
-    console.log(stitchedFiles)
+    //^^//console.log("stitchedFiles:")
+    //^^//console.log(stitchedFiles)
 
     if(!Array.isArray(stitchedFiles) || stitchedFiles.length < 1){
       let paddingSides = '10px'
@@ -65,7 +65,7 @@ class ConnectedStitchedFilesList extends Component {
   }
 
   render() {
-    console.log("rendering stitched jobs list group...")
+    //^^//console.log("rendering stitched jobs list group...")
 
     let fileOrdinalNumber = 0
 

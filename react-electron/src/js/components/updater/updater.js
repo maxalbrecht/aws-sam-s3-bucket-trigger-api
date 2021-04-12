@@ -19,7 +19,7 @@ class Updater {
 
     // Check for updates
     exports.check = () => {
-      console.log('>>>Checking for update<<<');
+      //^^//console.log('>>>Checking for update<<<');
       dialog.showMessageBox({
           type: 'info',
           title: 'Checking for Updates',

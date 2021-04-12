@@ -1,5 +1,5 @@
 function getConstructorState() {
-  console.log("Inside ChangePassword getConstructorState")
+  //^^//console.log("Inside ChangePassword getConstructorState")
 
   return {
     username: "",

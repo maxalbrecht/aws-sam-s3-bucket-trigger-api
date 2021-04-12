@@ -9,11 +9,11 @@ function createProgressBar() {
 
   progressBar
     .on('completed', function() {
-      console.info('Completed...');
+      //^^//console.info('Completed...');
       progressBar.detail = 'Update has been downloaded. VeriSuite will relaunch automatically after installation.';
     })
     .on('aborted', function() {
-      console.info('Update was aborted...');
+      //^^//console.info('Update was aborted...');
       throw Error('Error during update');
     });
   
@@ -22,7 +22,7 @@ function createProgressBar() {
 
 async function CheckForUpdates() {
   try {
-    console.log("Checking for Updates...")
+    //^^//console.log("Checking for Updates...")
     const { autoUpdater } = require('electron-updater');
     //let progressBar;
 
@@ -41,7 +41,7 @@ async function CheckForUpdates() {
     });
   }
   catch (e) {
-    console.log(`Error while looking for available updates: ${e}`);
+    //^^//console.log(`Error while looking for available updates: ${e}`);
     //alert(`Error while looking for available updates. Please reach out to support with the following error: ${e}`);
   }
 }

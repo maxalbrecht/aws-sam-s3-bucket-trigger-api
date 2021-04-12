@@ -6,7 +6,7 @@ import defined from '../../../utils/defined';
 function onDragStart() {
   //this.style.color = 'orange';
   //this.style.transition = 'background-color 0.2s ease'
-  console.log("Drag started...");
+  //^^//console.log("Drag started...");
 };
 
 function onDragUpdate(update) {
@@ -15,14 +15,14 @@ function onDragUpdate(update) {
   //  ? destination.index / Object.keys(this.state.sourceFiles.docs).length
   //  : 0;
   //this.style.backgroundColor = 'rgba(153, 141, 217, ${opacity})';
-  console.log("Drag update...");
+  //^^//console.log("Drag update...");
 
 }
 
 function onDragEnd(result) {
   //this.style.color = 'black';
   //this.style.backgroundColor = 'beige';
-  console.log("drag ending...");
+  //^^//console.log("drag ending...");
 
   const { destination, source, draggableId } = result;
 

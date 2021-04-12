@@ -37,7 +37,7 @@ class APIPayloadCreator {
 
       this.formattedAPIPayload = Regex.ReplaceJSONPlaceHolders(api_payload_template, this.state)
     } catch (error) {
-      Logging.LogError("Error instanciating APIPayloadCreator. Error :", error)
+      Logging.logError("Error instanciating APIPayloadCreator. Error :", error)
     }
   }
 

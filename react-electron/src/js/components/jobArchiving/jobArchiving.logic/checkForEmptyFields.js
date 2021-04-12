@@ -1,5 +1,3 @@
-import defined from './../../../utils/defined'
-
 function Clean(field) {
   if (
     field === undefined

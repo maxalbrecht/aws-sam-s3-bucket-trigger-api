@@ -8,7 +8,7 @@ import AudioAdjustment from './audioAdjustment'
 import DestinationFileName from './destinationFileName'
 
 function fieldBind() {
-  console.log("inside file stitching fieldBind()...")
+  //^^//console.log("inside file stitching fieldBind()...")
   this.JobNumber = JobNumber.bind(this)
   this.StitchFileButton = StitchFileButton.bind(this)
   this.SourceFields = SourceFields.bind(this)

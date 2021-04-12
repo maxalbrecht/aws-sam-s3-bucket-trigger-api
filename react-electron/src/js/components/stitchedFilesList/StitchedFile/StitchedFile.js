@@ -7,13 +7,7 @@ import { connect } from 'react-redux'
 import './StitchedFile.scss'
 import fieldBind from './StitchedFile.fields/StitchedFile.fields'
 
-import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
-import { STITCHING_FILE, QUEUED, SUCCESS, ERROR } from './../../../constants/list_item_statuses'
-
-import defined from './../../../utils/defined'
-import Logging from '../../../utils/logging'
 import Regex from './../../../utils/regex'
-import firstEqualsOneOfTheOthers from './../../../utils/first-equals-one-of-the-others'
 
 const uuidv4 = window.require("uuid/v4")
 
@@ -28,7 +22,7 @@ class ConnectedStitchedFile extends Component {
   render() {
     let fileClasses = this.getClassNamesForColorCoding(
       this.StitchedFileObject.fileStitcher.fileStitchingStatus,
-      Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus"),
+      Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpegConverter.mpegConversionStatus"),
       this.props.fileOrdinalNumber
     )
     
@@ -52,7 +46,7 @@ class ConnectedStitchedFile extends Component {
 
     // CONVERSION SUCCESS OR FAILURE
     if(successOrFailure_stitching === SUCCESS) {
-      let status = Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus")
+      let status = Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpegConverter.mpegConversionStatus")
 
       if(status === SUCCESS) {
         successOrFailure_conversion = SUCCESS
@@ -135,7 +129,7 @@ class ConnectedStitchedFile extends Component {
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Conversion Service Response:</u></Col>
           <Col style={{paddingLeft:'10px'}}>
             <Row style={{margin:'0 0'}}>
-              { Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus") }
+              { Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpegConverter.mpegConversionStatus") }
             </Row>
           </Col>
         </Row>
@@ -143,7 +137,7 @@ class ConnectedStitchedFile extends Component {
         <Row className="ErrorMsgList" style={{margin:'0 0'}}>
           <ListGroup style={{border:'none'}}>
             {
-              (Regex.defaultIfNotDefined([], this.StitchedFileObject.fileStitcher, 'mpeg1Converter.errorMsgList')).map(
+              (Regex.defaultIfNotDefined([], this.StitchedFileObject.fileStitcher, 'mpegConverter.errorMsgList')).map(
                 errorMsgObject => (
                   <ListGroup.Item style={{padding:'2px 0', border:'none'}} key={uuidv4()}>
                     {errorMsgObject.errorMsg}

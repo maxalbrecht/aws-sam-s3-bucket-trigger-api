@@ -1,4 +1,25 @@
 import Int from './int'
+
+function getCurrentDateTimeDataPoints() {
+  let date_ob = new Date()
+  
+  return {
+    year: date_ob.getFullYear(),
+    month: Int.TwoChars(date_ob.getMonth() + 1),
+    day: Int.TwoChars(date_ob.getDate()),
+    hours: Int.TwoChars(date_ob.getHours()),
+    minutes: Int.TwoChars(date_ob.getMinutes()),
+    seconds: Int.TwoChars(date_ob.getSeconds()),
+    milliseconds: Int.ThreeChars(date_ob.getMilliseconds())
+  }
+}
+
+function getCurrentISOTimestamp() {
+  let dt = getCurrentDateTimeDataPoints()
+
+  return `${dt.year}-${dt.month}-${dt.day}T${dt.hours}:${dt.minutes}:${dt.seconds}:${dt.milliseconds}`
+}
+
 const DateUtils = {
   GetDateDisplay(){
     let date_ob = new Date()
@@ -12,20 +33,16 @@ const DateUtils = {
     
     return `${hours}:${minutes}:${seconds} ${month}/${date}/${year}`
   },
-  getCurrentDateTimeDataPoints() {
-    let date_ob = new Date()
+  getCurrentDateTimeDataPoints: getCurrentDateTimeDataPoints,
+  getCurrentDateStamp() {
+    let timestamp = getCurrentISOTimestamp()
 
-    let year = date_ob.getFullYear()
-    let month = Int.TwoChars(date_ob.getMonth() + 1)
-    let day = Int.TwoChars(date_ob.getDate())
-    let hours = Int.TwoChars(date_ob.getHours())
-    let minutes = Int.TwoChars(date_ob.getMinutes())
-    let seconds = Int.TwoChars(date_ob.getSeconds())
-    let milliseconds = date_ob.getTime()
+    return timestamp.substr(0, timestamp.indexOf("T"))
   },
-  getCurrentTimestamp() {
-
+  getCurrentTimestampWithoutColonsOrPeriods() {
+    return getCurrentISOTimestamp().replace(":", '').replace(".", '')
   },
+  getCurrentISOTimestamp: getCurrentISOTimestamp,
   SortArrayByReverseElement$_dot_$date(array) {
     array.sort(function(a,b) {
       if(a.date.getTime() < b.date.getTime()) {

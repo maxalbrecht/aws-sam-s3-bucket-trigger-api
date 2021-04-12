@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import { withRouter } from 'react-router-dom'
 import './TitleBar.scss'
-import Logging from './../../utils/logging'
 import { Button, Row, Col } from 'react-bootstrap'
 import NavDropdown from './../navDropdown/NavDropdown'
 var electron = window.require("electron")

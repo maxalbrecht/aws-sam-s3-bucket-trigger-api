@@ -1,6 +1,6 @@
 import UpdateComponent from './updateComponent'
 import defined from './../../../../utils/defined'
-import { FILE_STITCHING_QUEUED, TOGGLE_JOB_DETAILS, RECEIVED_MPEG1_CONVERSION_JOB_UPDATE, MPEG1_CONVERSION_THIRD_PARTY_JOB_CREATED } from './../../../../constants/action-types'
+import { FILE_STITCHING_QUEUED, TOGGLE_JOB_DETAILS, RECEIVED_MPEG_CONVERSION_JOB_UPDATE, MPEG_CONVERSION_THIRD_PARTY_JOB_CREATED } from './../../../../constants/action-types'
 import Logging from './../../../../utils/logging'
 import firstEqualsOneOfTheOthers from './../../../../utils/first-equals-one-of-the-others'
 
@@ -25,7 +25,7 @@ function mapStateToProps(state, ownProps){
             && file.id === state.action.payload.StitchedFileObject.id
           )
           || (
-            firstEqualsOneOfTheOthers(state.action.type, MPEG1_CONVERSION_THIRD_PARTY_JOB_CREATED, RECEIVED_MPEG1_CONVERSION_JOB_UPDATE)                
+            firstEqualsOneOfTheOthers(state.action.type, MPEG_CONVERSION_THIRD_PARTY_JOB_CREATED, RECEIVED_MPEG_CONVERSION_JOB_UPDATE)                
             && defined(state.action.payload.veriSuiteJobId)
             && file.id === state.action.payload.veriSuiteJobId
           )

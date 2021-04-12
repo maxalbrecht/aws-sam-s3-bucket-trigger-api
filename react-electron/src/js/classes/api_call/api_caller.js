@@ -73,7 +73,7 @@ class APICaller {
       this.result = this.CallAPI(this.apiUrl, this.json)
     }
     catch(e) {
-      Logging.LogAndThrowError("Error in API Caller. Error:", e)
+      Logging.logAndThrowError("Error in API Caller. Error:", e)
     }
   }
 
@@ -121,7 +121,7 @@ class APICaller {
       })
     }
     catch (e) {
-      Logging.LogError(`Error calling api. Error:`, e)
+      Logging.logError(`Error calling api. Error:`, e)
       alert("Error calling API. Please check that all fields have been filled in correctly. If the issue persists, please contact application support.")
     }
   }

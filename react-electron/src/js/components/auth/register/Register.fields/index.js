@@ -6,7 +6,7 @@ import RegisterButton from './registerButton'
 import FormErrors from './../../auth.fields/formErrors'
 
 function fieldBind() {
-  console.log("inside register fieldBind()...")
+  //^^//console.log("inside register fieldBind()...")
   this.Username = Username.bind(this);
   this.Email = Email.bind(this);
   this.Password = Password.bind(this);

@@ -74,7 +74,7 @@ class ApiCallerGetStatusUpdate extends ApiCaller {
 
 
     this.parentObject.failedAttemptsToGetUpdate++
-    Logging.LogError(FILE_STITCHING_CONSTANTS.ERRORS.AXIOS_FAILURE_REASON, reason)
+    Logging.logError(FILE_STITCHING_CONSTANTS.ERRORS.AXIOS_FAILURE_REASON, reason)
 
     this.SaveValuesToAnotherObject(this.parentObject)
     store.dispatch(action(GET_STITCHING_JOB_STATUS_UPDATE, newAPICallStatus))

@@ -44,14 +44,14 @@ class ConnectedFooterBar extends Component {
   }
   
   render(){
-    console.log("FooterBar this.props:")
-    console.log(this.props)
+    //^^//console.log("FooterBar this.props:")
+    //^^//console.log(this.props)
     
     let usernameLabel = 'Not logged in'
     if(defined(this.props.username) && this.props.username !== '') {
       usernameLabel = `Logged in as ${this.props.username}`;
-      console.log("FooterBar render usernameLabel:")
-      console.log(usernameLabel)
+      //^^//console.log("FooterBar render usernameLabel:")
+      //^^//console.log(usernameLabel)
     }
 
     let logo = '/SmallLogoNew.png'

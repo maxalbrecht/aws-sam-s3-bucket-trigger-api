@@ -10,8 +10,8 @@ class JobStatus extends Component {
     logicConstructor.bind(this)(props)
     fieldBind.bind(this)()
 
-    console.log("JobStatus state:")
-    console.log(this.state)
+    //^^//console.log("JobStatus state:")
+    //^^//console.log(this.state)
   }
   render() {
     return (

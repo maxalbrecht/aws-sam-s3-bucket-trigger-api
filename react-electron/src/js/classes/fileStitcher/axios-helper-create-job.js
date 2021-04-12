@@ -64,7 +64,7 @@ class AxiosHelperCreateJob extends AxiosHelper {
   AxiosThenFailure(reason) {
     let newAPICallStatus = super.AxiosThenFailure(reason) 
 
-    Logging.LogError(FILE_STITCHING_CONSTANTS.ERRORS.AXIOS_FAILURE_REASON, reason)
+    Logging.logError(FILE_STITCHING_CONSTANTS.ERRORS.AXIOS_FAILURE_REASON, reason)
 
     this.SaveValuesToAnotherObject(this.parentObject)
     store.dispatch(action(FILE_STITCHING_QUEUED, newAPICallStatus))

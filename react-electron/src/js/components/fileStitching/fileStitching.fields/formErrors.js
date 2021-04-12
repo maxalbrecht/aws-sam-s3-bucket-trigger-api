@@ -1,7 +1,6 @@
 import React from 'react'
-import { Form, Col } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import BlankfieldErrorDisplay from './../fileStitching.logic/blankFieldErrorDisplay'
-import Logging from './../../../utils/logging'
 
 function FormErrors() {
   let errors = []

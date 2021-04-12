@@ -4,7 +4,7 @@ import FileStitcher from "./../../../classes/fileStitcher/fileStitcher"
 import getConstructorState from './getConstructorState'
 const uuidv4 = window.require("uuid/v4")
 
-var convertToMpeg1 = true
+var convertToMpeg = true
 
 async function handleSubmit(event) {
   try {
@@ -34,7 +34,7 @@ async function handleSubmit(event) {
           storeState.user.contactEmail,
           storeState.user.contactPhone,
           currentFileId,
-          convertToMpeg1
+          convertToMpeg
         )
 
         this.props.addStitchedFile({
@@ -54,7 +54,7 @@ async function handleSubmit(event) {
       }
     }
     else {
-      Logging.error("File Stitching handleSubmit errorsPresent:", errorPresent)
+      Logging.error(null, "File Stitching handleSubmit errorsPresent:", errorPresent)
     }
   } 
   catch (error) {
@@ -64,7 +64,7 @@ async function handleSubmit(event) {
       errors:{ ...this.state.errors }
     })
 
-    Logging.LogError("Error Stitching File. error:", e)
+    Logging.logError("Error Stitching File. error:", e)
   }
 }
 

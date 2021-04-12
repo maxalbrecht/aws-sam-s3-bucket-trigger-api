@@ -23,8 +23,8 @@ function logicConstructor(props) {
 
   window.store.dispatch(action(ADD_SYNC_APP_TO_STORE, payload))
 
-  console.log(" App logicConstructor window.store.getState()");
-  console.log(window.store.getState());
+  //^^//console.log(" App logicConstructor window.store.getState()");
+  //^^//console.log(window.store.getState());
 
 
   // Binding imported logic functions

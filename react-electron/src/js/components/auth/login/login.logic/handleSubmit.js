@@ -4,7 +4,7 @@ import defined from '../../../../utils/defined';
 
 async function handleSubmit(event) {
   event.preventDefault();
-  console.log("Inside Log in handleSubmit()...")
+  //^^//console.log("Inside Log in handleSubmit()...")
 
   let newState = { ...this.state }
   newState.attemptingLogin = true;
@@ -20,8 +20,8 @@ async function handleSubmit(event) {
       try{
         await Auth.signOut({ global: true })
       } catch(error) {
-        console.log("Login handleSubmit() error signing out previous users. Error:")
-        console.log(error)
+        //^^//console.log("Login handleSubmit() error signing out previous users. Error:")
+        //^^//console.log(error)
       }
       
       // ATTEMPTING TO SIGN USER IN
@@ -60,8 +60,8 @@ async function handleSubmit(event) {
       }
     })
 
-    console.log("Error logging in user. error:");
-    console.log(e);
+    //^^//console.log("Error logging in user. error:");
+    //^^//console.log(e);
   }
 }
 

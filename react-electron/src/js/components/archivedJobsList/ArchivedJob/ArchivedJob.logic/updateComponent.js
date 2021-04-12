@@ -1,4 +1,3 @@
-import defined from './../../../../utils/defined'
 import ClearStateAction from './../../../../utils/clearStateAction'
 var store = window.store
 

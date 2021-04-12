@@ -1,4 +1,4 @@
-import Logging from './logging'
+//import Logging from './logging'
 import defined from './defined'
 
 export const Regex = {
@@ -15,7 +15,7 @@ export const Regex = {
           let argKey = key;
           let argValue = arg[argKey];
 
-          Logging.log("argKey:", argKey, "argValue:", argValue)
+          //Logging.log("argKey:", argKey, "argValue:", argValue)
 
           if(argValue != null){
             finishedTemplate = 
@@ -48,13 +48,18 @@ export const Regex = {
 
     return result
   },
-  defaultIfNotDefined(defaultValue, param, propertyPath) {
-    if(defined(param, propertyPath)) {
-      let currentObject = param
-      let properties = propertyPath.split('.')
+  defaultIfNotDefined(defaultValue, param, propertyPath = "") {
+    let propertyPathIsDefined = (defined(propertyPath) && propertyPath !== "")
 
-      for (let j = 0; j < properties.length; j++) {
-        currentObject = currentObject[properties[j]]
+    if( propertyPathIsDefined ? defined(param, propertyPath) : defined(param) ) {
+      let currentObject = param
+
+      if(propertyPathIsDefined) {
+        let properties = propertyPath.split('.')
+
+        for (let j = 0; j < properties.length; j++) {
+          currentObject = currentObject[properties[j]]
+        }
       }
 
       return currentObject

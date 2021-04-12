@@ -28,7 +28,7 @@ async function setDefaultPath(jobNumber) {
     }
     else if (checkIfDirectoryExists(devPath)) {
       let devTempPath = `${devPath}\\Users\\devops2\\Documents\\GitHub\\aws-sam-s3-bucket-trigger-api\\react-electron\\private\\test_jobs`;
-      console.log(`dev temp path: ${devTempPath}`);
+      //^^//console.log(`dev temp path: ${devTempPath}`);
       if (checkIfDirectoryExists(devTempPath)) {
         defaultPath = devTempPath;
       }
@@ -40,7 +40,7 @@ async function setDefaultPath(jobNumber) {
     }
   }
   catch (e) {
-    console.log(`Error setting browse window default window. Error: ${e}`);
+    //^^//console.log(`Error setting browse window default window. Error: ${e}`);
   }
 
   return defaultPath;
@@ -49,32 +49,32 @@ async function setDefaultPath(jobNumber) {
 function allowOpenDialog() {
 //TODO: Implement
 let allow = true;
-console.log("inside allowOpenDialog()");
-console.log("store.getState():");
-console.log(store.getState());
-console.log("store.getState().allowOpenDialog;");
-console.log(store.getState().allowOpenDialog)
+//^^//console.log("inside allowOpenDialog()");
+//^^//console.log("store.getState():");
+//^^//console.log(store.getState());
+//^^//console.log("store.getState().allowOpenDialog;");
+//^^//console.log(store.getState().allowOpenDialog)
 
 // If allowOpenDialog is not undefined or null in the store, use that value,
 // otherwise use the default of true
 if (store.getState().allowOpenDialog !== undefined && store.getState().allowOpenDialog !== null) {
  allow = store.getState().allowOpenDialog;
- console.log("allowOpenDialog was defined");
+ //^^//console.log("allowOpenDialog was defined");
 }
 else {
-  console.log("allowOpenDialog was undefined or null in the store");
+  //^^//console.log("allowOpenDialog was undefined or null in the store");
 }
 
-console.log("allowOpenDialog() allow:")
-console.log(allow);
+//^^//console.log("allowOpenDialog() allow:")
+//^^//console.log(allow);
 
 return allow;
 }
 
 // Open a window when the user clicks the Browse button for selecting source files
 async function handleClickBrowse() {
-  console.log("window.store.getState():")
-  console.log(window.store.getState())
+  //^^//console.log("window.store.getState():")
+  //^^//console.log(window.store.getState())
   let defaultPath = await setDefaultPath(this.state.jobNumber);
   
 
@@ -90,8 +90,8 @@ async function handleClickBrowse() {
           }
         );
       var selectedFiles = await browseButtonResponse.filePaths;
-      console.log("selectedFiles:");
-      console.log(selectedFiles);
+      //^^//console.log("selectedFiles:");
+      //^^//console.log(selectedFiles);
 
       store.dispatch(action(ALLOW_OPEN_DIALOG));
       // Get the maximum id of the files that are already on the list
@@ -113,7 +113,7 @@ async function handleClickBrowse() {
         newColumnOneDocIds = [...this.state.sourceFiles.columns["column-1"].docIds];
       } else {
         // empty
-        console.log("App.logic.js this.state.sourceFiles.columns[column-1].docIds is currently empty.");
+        //^^//console.log("App.logic.js this.state.sourceFiles.columns[column-1].docIds is currently empty.");
       }
 
       Object.values(selectedFiles).forEach((value) => {
@@ -141,21 +141,21 @@ async function handleClickBrowse() {
         },
       };
 
-      console.log("App.logic.js handleClickBrowse() newState:");
-      console.log(newState);
+      //^^//console.log("App.logic.js handleClickBrowse() newState:");
+      //^^//console.log(newState);
 
       this.setState(newState);
 
-      console.log("App.logic.js this.state")
-      console.log(this.state);
+      //^^//console.log("App.logic.js this.state")
+      //^^//console.log(this.state);
     }
     catch(err) {
       store.dispatch(action(ALLOW_OPEN_DIALOG));
-      console.log("Error in handleClickBrowse()");
+      //^^//console.log("Error in handleClickBrowse()");
     }
   }
   else {
-    console.log("Browse window already open");
+    //^^//console.log("Browse window already open");
   }
 }
 

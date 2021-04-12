@@ -14,8 +14,8 @@ class Register extends Component {
   }
   
   render() {
-    console.log("Register render() this:");
-    console.log(this);
+    //^^//console.log("Register render() this:");
+    //^^//console.log(this);
 
     return (
       <div className='main authMain'>

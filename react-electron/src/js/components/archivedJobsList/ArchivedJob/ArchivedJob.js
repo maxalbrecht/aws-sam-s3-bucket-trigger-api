@@ -10,24 +10,12 @@ import fieldBind from './ArchivedJob.fields/ArchivedJob.fields'
 import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
 import { ARCHIVING_JOB,  SUCCESS, ERROR } from './../../../constants/job_archiving_statuses'
 
-import defined from './../../../utils/defined'
-
-const uuidv4 = window.require("uuid/v4")
-
 class ConnectedArchivedJob extends Component {
   constructor(props){
     super(props)
     
     logicConstructor.bind(this)(props)
     fieldBind.bind(this)()
-
-    if(defined(this.ArchivedJobObject)){
-      console.log("ArchivedJobObject:")
-      console.log(this.ArchivedJobObject)
-    }
-    else {
-      console.log("ArchivedJobsObject is not defined...")
-    }
   }
 
   render() {

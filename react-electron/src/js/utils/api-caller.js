@@ -15,7 +15,7 @@ class ApiCaller {
       try {
         return await this.ReturnFetch(apiUrl, payload, method, headers, referer)
       } catch(error) {
-        Logging.LogAndThrowError("AxiosHelper.CallAPI() utilityToCallAPIWith === FETCH. ERROR", error)
+        Logging.logAndThrowError("AxiosHelper.CallAPI() utilityToCallAPIWith === FETCH. ERROR", error)
       }
     }
     else {
@@ -26,7 +26,7 @@ class ApiCaller {
         return await this.ReturnAxios(apiUrl, payload, method, headers)
       }
       catch(e) {
-        Logging.LogAndThrowError(FILE_STITCHING_CONSTANTS.ERRORS.ERROR_IN_FILE_STITCHER, e)
+        Logging.logAndThrowError(FILE_STITCHING_CONSTANTS.ERRORS.ERROR_IN_FILE_STITCHER, e)
       } 
     }
   }
@@ -40,8 +40,8 @@ class ApiCaller {
 
       return config
     }, function (error) {
-      Logging.LogError(AXIOS_CONSTANTS.ERRORS.ERROR_CALL_API_METHOD, error)
-      Logging.LogError(`${AXIOS_CONSTANTS.ERRORS.ERROR_CALL_API_METHOD} stringified:`, JSON.stringify(error))
+      Logging.logError(AXIOS_CONSTANTS.ERRORS.ERROR_CALL_API_METHOD, error)
+      Logging.logError(`${AXIOS_CONSTANTS.ERRORS.ERROR_CALL_API_METHOD} stringified:`, JSON.stringify(error))
       // Do something with request error
       return Promise.reject(error)
     })
@@ -93,7 +93,7 @@ class ApiCaller {
       }
     }
     catch (e) {
-      Logging.LogError(AXIOS_CONSTANTS.ERRORS.ERROR_RETURN_AXIOS_METHOD, e)
+      Logging.logError(AXIOS_CONSTANTS.ERRORS.ERROR_RETURN_AXIOS_METHOD, e)
       alert(AXIOS_CONSTANTS.ALERTS.ERROR_CALLING_API)
     }
   }
@@ -128,7 +128,7 @@ class ApiCaller {
       }
     }
     catch (e) {
-      Logging.LogError(AXIOS_CONSTANTS.ERRORS.ERROR_RETURN_AXIOS_METHOD, e)
+      Logging.logError(AXIOS_CONSTANTS.ERRORS.ERROR_RETURN_AXIOS_METHOD, e)
       alert(AXIOS_CONSTANTS.ALERTS.ERROR_CALLING_API)
     }
   }

@@ -7,7 +7,7 @@ import ConfirmButton from './confirmButton'
 import MFASetup from './mfaSetup'
 
 function fieldBind() {
-  console.log("inside register fieldBind()...")
+  //^^//console.log("inside register fieldBind()...")
   this.Username = Username.bind(this);
   this.Password = Password.bind(this);
   this.LoginButton= LoginButton.bind(this);

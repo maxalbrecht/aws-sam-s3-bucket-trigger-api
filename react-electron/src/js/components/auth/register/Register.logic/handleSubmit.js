@@ -4,7 +4,7 @@ var store = window.store;
 
 async function handleSubmit(event) {
   event.preventDefault();
-  console.log("Inside Register handleSubmit()...")
+  //^^//console.log("Inside Register handleSubmit()...")
 
   let newState = { ...this.state }
   newState.attemptingRegistration = true;
@@ -30,8 +30,8 @@ async function handleSubmit(event) {
         }
       })    
 
-      console.log("Register handleSubmit() signUpResponse:");
-      console.log(signUpResponse);
+      //^^//console.log("Register handleSubmit() signUpResponse:");
+      //^^//console.log(signUpResponse);
       alert("Registration Result: " + JSON.stringify(signUpResponse));
       */
 
@@ -41,13 +41,13 @@ async function handleSubmit(event) {
       this.setState(newState);
     }
     else {
-      console.log("Register handleSubmit errorsPresent:");
-      console.log(errorPresent);
+      //^^//console.log("Register handleSubmit errorsPresent:");
+      //^^//console.log(errorPresent);
     }
 
   } catch (error) {
-    console.log("Error registering user. error:");
-    console.log(JSON.stringify(error));
+    //^^//console.log("Error registering user. error:");
+    //^^//console.log(JSON.stringify(error));
     alert("There was an error during user registration. Please reach out to support with the following error: " + JSON.stringify(error));
   }
 

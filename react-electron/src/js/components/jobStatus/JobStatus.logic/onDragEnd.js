@@ -3,14 +3,14 @@ import getDroppableClass from './getDroppableClass'
 import moveTask from './moveTask'
 
 function onDragEnd(result) {
-  console.log("Inside JobStatus.logic.onDragEnd")
-  console.log("result:")
-  console.log(result)
-  const { destination, source, draggableId } = result
+  //^^//console.log("Inside JobStatus.logic.onDragEnd")
+  //^^//console.log("result:")
+  //^^//console.log(result)
+  const { destination, source } = result
   const typeOfItemBeingDragged = result.type
 
   if(!destination) {
-    console.log("item's destination is null...")
+    //^^//console.log("item's destination is null...")
     return
   }
 
@@ -18,14 +18,14 @@ function onDragEnd(result) {
     destination.droppableId === source.droppableId
     && destination.index === source.index
   ) {
-    console.log("item dropped in same position...")
+    //^^//console.log("item dropped in same position...")
     return
   }
 
   // DRAGGING A COLUMN
   if(typeOfItemBeingDragged === COLUMN) {
-    console.log(">>>typeOfItemBeingDragged === COLUMN. this.state:")
-    console.log(this.state)
+    //^^//console.log(">>>typeOfItemBeingDragged === COLUMN. this.state:")
+    //^^//console.log(this.state)
     // THE ORIGINAL FIRST COLUMN SHOULD REMAIN IN PLACE
     if(destination.index === 0){
       return
@@ -40,23 +40,23 @@ function onDragEnd(result) {
       ...this.state,
       columns: newColumns
     }
-    console.log("newState:")
-    console.log(newState)
+    //^^//console.log("newState:")
+    //^^//console.log(newState)
 
     this.setState(newState)
     return
   }
   // DRAGGING A TASK
   else if(typeOfItemBeingDragged === TASK) {
-    console.log(">>>typeOfItemBeingDragged === TASK")
+    //^^//console.log(">>>typeOfItemBeingDragged === TASK")
     let sourceClass = getDroppableClass(source.droppableId)
-    console.log("sourceClass:")
-    console.log(sourceClass)
+    //^^//console.log("sourceClass:")
+    //^^//console.log(sourceClass)
     //let destinationClass = getDroppableClass(destination.droppableId)
 
     // TASK IS BEING TAKEN FROM INSIDE ANOTHER TASK
     if(sourceClass === TASK) {
-      console.log("sourceClass === TASK")
+      //^^//console.log("sourceClass === TASK")
       
       const newState = {
         ...this.state,
@@ -69,7 +69,7 @@ function onDragEnd(result) {
     }
     // TASK IS TAKEN FROM A COLUMN
     else if(sourceClass === COLUMN) {
-      console.log("sourceClass ===COLUMN")
+      //^^//console.log("sourceClass ===COLUMN")
       // REMOVE TASK FROM THE SOURCE COLUMN
       let startColumn = {}
       let startColumnIndex = -1
@@ -78,6 +78,7 @@ function onDragEnd(result) {
           startColumn = column
           startColumnIndex = index
         }
+        return null
       })
 
       //[source.droppableId]
@@ -98,6 +99,7 @@ function onDragEnd(result) {
           finishColumn = column
           finishColumnIndex = index
         }
+        return null
       })
 
       let finishTasks = Array.from(finishColumn.tasks)

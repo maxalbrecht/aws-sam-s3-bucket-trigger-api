@@ -10,8 +10,8 @@ import {
   ADD_STITCHED_FILE,
   FILE_STITCHING_QUEUED,
 
-  ADD_MPEG1_CONVERSION_JOB,
-  MPEG1_CONVERSION_FINISHED
+  ADD_MPEG_CONVERSION_JOB,
+  MPEG_CONVERSION_FINISHED
 } from "../constants/action-types";
 
 const sleep = (milliseconds) => {
@@ -28,19 +28,19 @@ export function addStitchedFile(payload){
   return { type: ADD_STITCHED_FILE, payload }
 }
 
-export function addMpeg1ConversionJob(payload){
-  return { type: ADD_MPEG1_CONVERSION_JOB, payload }
+export function addMpegConversionJob(payload){
+  return { type: ADD_MPEG_CONVERSION_JOB, payload }
 }
 
 export function apiCallFinished(payload) {
-  console.log("executing updateStatus(payload) in the actions definitions file...");
+  //^^//console.log("executing updateStatus(payload) in the actions definitions file...");
   sleep(1000).then(() => {
     return { type: API_CALL_FINISHED, payload };
   })
 }
 
 export function fileStitchingQueued(payload) {
-  console.log("executing fileStitchingQueued(payload) in the actions definitions file...")
+  //^^//console.log("executing fileStitchingQueued(payload) in the actions definitions file...")
 
   sleep(1000).then(
     () => {
@@ -50,7 +50,7 @@ export function fileStitchingQueued(payload) {
 }
 
 export function jobArchivingFinished(payload) {
-  console.log(" executing jobArchivingFinished(payload) in the actions definitions file...")
+  //^^//console.log(" executing jobArchivingFinished(payload) in the actions definitions file...")
 
   sleep(1000).then(
     () => {
@@ -59,12 +59,12 @@ export function jobArchivingFinished(payload) {
   )
 }
 
-export function mpeg1ConversionFinished(payload) {
-  console.log("executing mpeg1ConversionFinished(payload) in the actions definitions file...")
+export function mpegConversionFinished(payload) {
+  //^^//console.log("executing mpegConversionFinished(payload) in the actions definitions file...")
 
   sleep(1000).then(
     () => {
-      return { type: MPEG1_CONVERSION_FINISHED, payload }
+      return { type: MPEG_CONVERSION_FINISHED, payload }
     }
   )
 }

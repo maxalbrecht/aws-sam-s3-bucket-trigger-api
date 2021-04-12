@@ -15,11 +15,11 @@ function CheckForEmptyFields() {
   let areThereEmptyFields = true
   const { jobNumber } = this.state
 
-  if(
-    Clean(jobNumber) !== ''
-  ) {
+  if(defined(jobNumber) && Clean(jobNumber) !== '') {
     areThereEmptyFields = false
   }
+
+  return areThereEmptyFields
 }
 
 export default CheckForEmptyFields

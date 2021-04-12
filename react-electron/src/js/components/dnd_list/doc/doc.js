@@ -9,8 +9,8 @@ class Doc extends React.Component {
     logicConstructor.bind(this)(props);
   }
   render() {
-    console.log("Doc.this.props:");
-    console.log(this.props);
+    //^^//console.log("Doc.this.props:");
+    //^^//console.log(this.props);
     return (
       <Draggable
         draggableId={this.props.doc.id}

@@ -24,24 +24,24 @@ function moveTask(state, dndResult) {
       targetTask
     )
     if(resultsChild.targetTaskInserted === true) {
-      console.log("targetTask inserted into columns")
+      //^^//console.log("targetTask inserted into columns")
       newColumnsInsert[i].tasks = resultsChild.updatedChildrenList
       break
     }
   }
 
-  console.log("---SUMMARY of moveTask()---") 
-  console.log("dndResult:")
-  console.log(dndResult)
-  console.log("dndResult.draggableId (i.e. targetTaskID):")
-  console.log(dndResult.draggableId)
-  console.log("moveTask targetTask:")
-  console.log(targetTask)
-  console.log("moveTask newColumns:")
-  console.log(newColumns)
-  console.log("moveTask newColumnsInsert")
-  console.log(newColumnsInsert)
-  console.log("---END OF SUMMARY of moveTask()---") 
+  //^^//console.log("---SUMMARY of moveTask()---") 
+  //^^//console.log("dndResult:")
+  //^^//console.log(dndResult)
+  //^^//console.log("dndResult.draggableId (i.e. targetTaskID):")
+  //^^//console.log(dndResult.draggableId)
+  //^^//console.log("moveTask targetTask:")
+  //^^//console.log(targetTask)
+  //^^//console.log("moveTask newColumns:")
+  //^^//console.log(newColumns)
+  //^^//console.log("moveTask newColumnsInsert")
+  //^^//console.log(newColumnsInsert)
+  //^^//console.log("---END OF SUMMARY of moveTask()---") 
 
   return newColumnsInsert
 }

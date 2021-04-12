@@ -22,17 +22,17 @@ class ConnectedArchivedJobsList extends Component {
  constructor(props){
    super(props)
    this.archivedJobs = props.archivedJobs
-   console.log("props.archivedJobs:")
-   console.log(props.archivedJobs)
+   //^^//console.log("props.archivedJobs:")
+   //^^//console.log(props.archivedJobs)
    this.render = this.render.bind(this)
    this.placeholder = this.placeholder.bind(this)
  }
 
  placeholder(archivedJobs) {
-   console.log("testing inside ArchivedJobsList.js...")
+   //^^//console.log("testing inside ArchivedJobsList.js...")
 
-   console.log("archivedJobs:")
-   console.log(archivedJobs)
+   //^^//console.log("archivedJobs:")
+   //^^//console.log(archivedJobs)
 
    if(!Array.isArray(archivedJobs) || archivedJobs.length < 1) {
     let paddingSides = '10px' 
@@ -65,7 +65,7 @@ class ConnectedArchivedJobsList extends Component {
  }
 
  render() {
-   console.log("rendering archived jobs list group...")
+   //^^//console.log("rendering archived jobs list group...")
 
    let jobOrdinalNumber = 0
 

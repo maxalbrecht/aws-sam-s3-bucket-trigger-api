@@ -22,7 +22,7 @@ function getClassNamesForColorCoding(status_stitching, status_conversion, ordina
 
     // CONVERSION SUCCESS OR FAILURE
     if(successOrFailure_stitching === SUCCESS) {
-      //let status = Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpeg1Converter.mpeg1ConversionStatus")
+      //let status = Regex.defaultIfNotDefined('', this.StitchedFileObject.fileStitcher, "mpegConverter.mpegConversionStatus")
 
       if(status_conversion === SUCCESS) {
         successOrFailure_conversion = SUCCESS

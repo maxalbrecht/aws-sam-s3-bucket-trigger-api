@@ -9,7 +9,7 @@ var store = window.store;
 
 async function handleConfirm(event) {
   event.preventDefault();
-  console.log("Inside Login handleConfirm()...")
+  //^^//console.log("Inside Login handleConfirm()...")
 
   let newState = { ...this.state }
   newState.attemptingConfirm = true;
@@ -69,8 +69,8 @@ async function handleConfirm(event) {
       }
     })
 
-    console.log("Error confirming user login. error:");
-    console.log(e);
+    //^^//console.log("Error confirming user login. error:");
+    //^^//console.log(e);
   }
 }
 

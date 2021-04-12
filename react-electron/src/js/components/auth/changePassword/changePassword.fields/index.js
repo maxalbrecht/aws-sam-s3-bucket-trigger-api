@@ -7,7 +7,7 @@ import ChangePasswordButton from './changePasswordButton'
 import FormErrors from './../../auth.fields/formErrors'
 
 function fieldBind() {
-  console.log("inside ChangePassword fieldBind()...");
+  //^^//console.log("inside ChangePassword fieldBind()...");
   this.Username = Username.bind(this);
   this.CurrentPassword = CurrentPassword.bind(this);
   this.Password = Password.bind(this);

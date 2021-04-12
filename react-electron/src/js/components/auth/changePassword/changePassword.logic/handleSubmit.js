@@ -2,7 +2,7 @@ import { Auth } from 'aws-amplify';
 
 async function handleSubmit(event) {
   event.preventDefault();
-  console.log("Inside ChangePassword handleSubmit()...")
+  //^^//console.log("Inside ChangePassword handleSubmit()...")
 
   let newState = { ...this.state }
   newState.attemptingChangePassword = true;
@@ -43,8 +43,8 @@ async function handleSubmit(event) {
       }
     })
 
-    console.log("Error changing passwords. error:");
-    console.log(e)
+    //^^//console.log("Error changing passwords. error:");
+    //^^//console.log(e)
   }
 }
 
