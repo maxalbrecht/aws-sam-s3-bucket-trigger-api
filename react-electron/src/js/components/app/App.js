@@ -30,7 +30,7 @@ class ConnectedApp extends Component {
           className="form" onSubmit={this.handleSubmit}>
           <Form.Row style={{height:'100%'}}>
             <Col xs={6} style={{paddingBottom:'20px', display:'flex', flexDirection:'column'}}>
-              <Form.Row style={{maxHeight:'35px', marginBottom:'10px'}}>{ SectionTitle('File Syncing - Production') }</Form.Row>
+              <Form.Row style={{maxHeight:'35px', marginBottom:'10px'}}>{ SectionTitle('File Syncing - QA') }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.JobNumber() }</Form.Row>
               <Form.Row>{ this.SourceFiles() }</Form.Row>
               <Form.Row style={{maxHeight:'80px'}}>{ this.OrderType() }{ this.Priority() }</Form.Row>

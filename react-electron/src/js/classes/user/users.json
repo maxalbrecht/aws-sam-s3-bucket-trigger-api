@@ -252,6 +252,27 @@
       "contactEmail": "cdelade@veritext.com",
       "contactPhone": "9734140403",
       "assignedUserEmail": "cdelade@veritext.com"
+    },
+    {
+      "username": "dmbrown",
+      "contactName": "david",
+      "contactEmail": "dmbrown@veritext.com",
+      "contactPhone": "9497779318",
+      "assignedUserEmail": "dmbrown@veritext.com"
+    },
+    {
+      "username": "cnelson",
+      "contactName": "Chicoral",
+      "contactEmail": "cnelson@veritext.com",
+      "contactPhone": "9497779334",
+      "assignedUserEmail": "cnelson@veritext.com"
+    },
+    {
+       "username": "gperez",
+      "contactName": "gabe",
+      "contactEmail": "gperez@veritext.com",
+      "contactPhone": "9497779650",
+      "assignedUserEmail": "gperez@veritext.com"
     }
   ]
 }
