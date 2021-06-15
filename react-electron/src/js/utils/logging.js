@@ -148,6 +148,7 @@ function stringifyError(error) {
   return alt;
 }
 
+/*
 function filterOutCircularReferences(key, value) {
   let cache = []
 
@@ -167,11 +168,25 @@ function filterOutCircularReferences(key, value) {
 
   return value;
 }
+*/
+
+ const replacerFunc = () => {
+    const visited = new WeakSet();
+    return (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (visited.has(value)) {
+          return;
+        }
+        visited.add(value);
+      }
+      return value;
+    };
+  };
 
 function stringifyObject(obj) {
   let space = 2
 
-  let result = JSON.stringify(obj, filterOutCircularReferences, space)
+  let result = JSON.stringify(obj, replacerFunc(), space)
 
   return result
 
