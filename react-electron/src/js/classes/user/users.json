@@ -273,6 +273,20 @@
       "contactEmail": "gperez@veritext.com",
       "contactPhone": "9497779650",
       "assignedUserEmail": "gperez@veritext.com"
+    },
+    {
+      "username": "jclements",
+      "contactName": "John",
+      "contactEmail": "jclements@veritext.com",
+      "contactPhone": "9735104091",
+      "assignedUserEmail": "jclements@veritext.com"
+    },
+    {
+      "username": "dbaker",
+      "contactName": "david",
+      "contactEmail": "dbaker@veritext.com",
+      "contactPhone": "8622053527",
+      "assignedUserEmail": "dbaker@veritext.com"
     }
   ]
 }
