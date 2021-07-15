@@ -1,4 +1,4 @@
-{
+ {
   "dev": [
     {
       "username": "max.albrecht",
@@ -268,7 +268,7 @@
       "assignedUserEmail": "cnelson@veritext.com"
     },
     {
-       "username": "gperez",
+      "username": "gperez",
       "contactName": "gabe",
       "contactEmail": "gperez@veritext.com",
       "contactPhone": "9497779650",
@@ -287,6 +287,139 @@
       "contactEmail": "dbaker@veritext.com",
       "contactPhone": "8622053527",
       "assignedUserEmail": "dbaker@veritext.com"
+    },
+    {
+     "username": "jtolson",
+     "contactName": "jace",
+     "contactEmail": "jtolson@veritext.com",
+     "contactPhone": "9497779335",
+     "assignedUserEmail": "jtolson@veritext.com"
+    },
+    {
+     "username": "atorres",
+     "contactName": "alfredo",
+     "contactEmail": "atorres@veritext.com",
+     "contactPhone": "9495700658",
+     "assignedUserEmail": "atorres@veritext.com"
+    },
+    {
+     "username": "sweber",
+     "contactName": "sean",
+     "contactEmail": "sweber@veritext.com",
+     "contactPhone": "9495193395",
+     "assignedUserEmail": "sweber@veritext.com"
+    },
+    {
+     "username": "jmatute",
+     "contactName": "joseph",
+     "contactEmail": "jmatute@veritext.com",
+     "contactPhone": "7472079738",
+     "assignedUserEmail": "jmatute@veritext.com"
+    },
+    {
+     "username": "emellor",
+     "contactName": "eli",
+     "contactEmail": "emellor@veritext.com",
+     "contactPhone": "2064283222",
+     "assignedUserEmail": "emellor@veritext.com"
+    },
+    {
+     "username": "cho",
+     "contactName": "christiana",
+     "contactEmail": "cho@veritext.com",
+     "contactPhone": "9497779332",
+     "assignedUserEmail": "cho@veritext.com"
+    },
+    {
+     "username": "nflorentino",
+     "contactName": "nicholas",
+     "contactEmail": "nflorentino@veritext.com",
+     "contactPhone": "9497779315",
+     "assignedUserEmail": "nflorentino@veritext.com"
+    },
+    {
+     "username": "martin.hernandez",
+     "contactName": "martin",
+     "contactEmail": "martin.hernandez@veritext.com",
+     "contactPhone": "9497779305",
+     "assignedUserEmail": "martin.hernandez@veritext.com"
+    },
+    {
+     "username": "pmagana",
+     "contactName": "phatima",
+     "contactEmail": "pmagana@veritext.com",
+     "contactPhone": "9496945092",
+     "assignedUserEmail": "pmagana@veritext.com"
+    },
+    {
+     "username": "ddunwoody",
+     "contactName": "dillon",
+     "contactEmail": "dillon.dunwoody@veritext.com",
+     "contactPhone": "9739056079",
+     "assignedUserEmail": "dillon.dunwoody@veritext.com"
+    },
+    {
+     "username": "rgowing",
+     "contactName": "ryan",
+     "contactEmail": "rgowing@veritext.com",
+     "contactPhone": "9737988621",
+     "assignedUserEmail": "rgowing@veritext.com"
+    },
+    {
+      "username": "nrouse",
+      "contactName": "nicole",
+      "contactEmail": "nrouse@veritext.com",
+      "contactPhone": "2154468840",
+      "assignedUserEmail": "nrouse@veritext.com"
+    },
+    {
+      "username": "jconques",
+      "contactName": "john",
+      "contactEmail": "jconques@veritext.com",
+      "contactPhone": "8622082170",
+      "assignedUserEmail": "jconques@veritext.com"
+    },
+    {
+      "username": "dcallahan",
+      "contactName": "daniel",
+      "contactEmail": "dcallahan@veritext.com",
+      "contactPhone": "9739249633",
+      "assignedUserEmail": "dcallahan@veritext.com"
+    },
+    {
+      "username": "ccetina",
+      "contactName": "cristian",
+      "contactEmail": "cristian.cetina@veritext.com",
+      "contactPhone": "9739056140",
+      "assignedUserEmail": "cristiancetina@veritext.com"
+    },
+    {
+      "username": "bnoojin",
+      "contactName": "brittany",
+      "contactEmail": "bnoojin@veritext.com",
+      "contactPhone": "2057098443",
+      "assignedUserEmail": "nrouse@veritext.com"
+    },
+    {
+     "username": "nrouse",
+     "contactName": "nicole",
+     "contactEmail": "nrouse@veritext.com",
+     "contactPhone": "2154468840",
+     "assignedUserEmail": "nrouse@veritext.com"
+    },
+    {
+      "username": "rgulino",
+      "contactName": "ryan",
+      "contactEmail": "rgulino@veritext.com",
+      "contactPhone": "2154468841",
+      "assignedUserEmail": "rgulino@veritext.com"
+    },
+    {
+      "username": "anyarko",
+      "contactName": "amanda",
+      "contactEmail": "anyarko@veritext.com",
+      "contactPhone": "973-261-6066",
+      "assignedUserEmail": "anyarko@veritext.com"
     }
   ]
 }
