@@ -33,8 +33,16 @@ class ConnectedStitchedFilesList extends Component {
 
     //^^//console.log("stitchedFiles:")
     //^^//console.log(stitchedFiles)
+    let componentVariantFileNumber = 0
+    this.props.stitchedFiles.map(
+      sf => {
+        if(sf.fileStitcher.componentVariant === this.props.componentVariant) {
+          componentVariantFileNumber++
+        }
+      }
+    )
 
-    if(!Array.isArray(stitchedFiles) || stitchedFiles.length < 1){
+    if(!Array.isArray(stitchedFiles) || stitchedFiles.length < 1 || componentVariantFileNumber < 1){
       let paddingSides = '10px'
       let paddingTop = paddingSides
 
@@ -78,10 +86,16 @@ class ConnectedStitchedFilesList extends Component {
             {
               this.props.stitchedFiles.map(
                 sf => {
-                  fileOrdinalNumber++
 
-                  //return null
-                  return ( <StitchedFile key={sf.id} StitchedFileObject={sf} fileOrdinalNumber={fileOrdinalNumber} />)
+                  if(sf.fileStitcher.componentVariant === this.props.componentVariant) {
+                    fileOrdinalNumber++
+
+                    //return null
+                    return ( <StitchedFile key={sf.id} StitchedFileObject={sf} fileOrdinalNumber={fileOrdinalNumber} />)
+                  }
+                  else {
+                    return null
+                  }
                 }
               )
             }

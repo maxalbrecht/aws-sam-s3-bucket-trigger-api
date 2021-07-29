@@ -11,7 +11,9 @@ import {
   FILE_STITCHING_QUEUED,
 
   ADD_MPEG_CONVERSION_JOB,
-  MPEG_CONVERSION_FINISHED
+  MPEG_CONVERSION_FINISHED,
+
+  ADD_LOCAL_DOWNLOAD_JOB
 } from "../constants/action-types";
 
 const sleep = (milliseconds) => {
@@ -30,6 +32,10 @@ export function addStitchedFile(payload){
 
 export function addMpegConversionJob(payload){
   return { type: ADD_MPEG_CONVERSION_JOB, payload }
+}
+
+export function addLocalDownloadJob(payload) {
+  return { type: ADD_LOCAL_DOWNLOAD_JOB, payload }
 }
 
 export function apiCallFinished(payload) {

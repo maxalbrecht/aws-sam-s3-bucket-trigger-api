@@ -22,6 +22,7 @@ class FileStitcher {
     contactPhone,
     fileId,
     convertToMpeg = false,
+    componentVariant = 'STANDARD',
     ...props
   ) {
     SaveParameters(this)
@@ -37,6 +38,10 @@ class FileStitcher {
         { [FILE_STITCHING_CONSTANTS.API.HEADER_NAMES.X_API_KEY]: that.APIKey },
         that
       )
+
+      console.log("fileStitcher:")
+      console.log(that)
+
       that.jobId = that.result.data.id
 
       that.PrintConstructorResults()
@@ -56,6 +61,7 @@ class FileStitcher {
       that.contactPhone = contactPhone 
       that.fileId = fileId
       that.convertToMpeg = convertToMpeg
+      that.componentVariant = componentVariant
   
       that.PrintInitialConstructorParameters();
     }
@@ -64,7 +70,9 @@ class FileStitcher {
     function Initialize(that){
       that.AxiosHelper = new AxiosHelperCreateJob()
       that.factoryId = FILE_STITCHING_CONSTANTS.FACTORY_ID
+      if(that.componentVariant === 'QA') { that.factoryId = FILE_STITCHING_CONSTANTS.FACTORY_ID_QA }
       that.apiUrl = FILE_STITCHING_CONSTANTS.API.URL
+      if(that.componentVariant === 'QA') { that.apiUrl = FILE_STITCHING_CONSTANTS.API_URL_QA }
       that.templateId = that.DetermineTemplateID(that.audioAdjustment)
       that.APIKey = that.GetAPIKey()
   

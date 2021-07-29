@@ -11,8 +11,12 @@ const JOB_ARCHIVING = 'Store'
 const JOB_ARCHIVING_ROUTE = '/jobarchiving'
 const FILE_STITCHING = 'Stitch' 
 const FILE_STITCHING_ROUTE = '/filestitching'
+const FILE_STITCHING_QA = 'Stitch QA' 
+const FILE_STITCHING_QA_ROUTE = '/filestitchingqa'
 const MPEG_CONVERSION = 'MPEG Conversion'
 const MPEG_CONVERSION_ROUTE = '/mpegconversion'
+const LOCAL_DOWNLOAD = 'Local Download'
+const LOCAL_DOWNLOAD_ROUTE = '/localdownload'
 const CONVERSION = 'conversion'
 const CONVERSION_ROUTE = '/conversion'
 const DRC = 'DRC'
@@ -25,9 +29,11 @@ dropdownRouteMappings[SYNCING] = SYNCING_ROUTE
 dropdownRouteMappings[JOB_STATUS] = JOB_STATUS_ROUTE
 dropdownRouteMappings[JOB_ARCHIVING] = JOB_ARCHIVING_ROUTE
 dropdownRouteMappings[FILE_STITCHING] = FILE_STITCHING_ROUTE
+dropdownRouteMappings[FILE_STITCHING_QA] = FILE_STITCHING_QA_ROUTE
 dropdownRouteMappings[DRC] = DRC_ROUTE
 dropdownRouteMappings[LOGIN] = LOGIN_ROUTE 
 dropdownRouteMappings[MPEG_CONVERSION] = MPEG_CONVERSION_ROUTE
+dropdownRouteMappings[LOCAL_DOWNLOAD] = LOCAL_DOWNLOAD_ROUTE
 dropdownRouteMappings[CONVERSION] = CONVERSION_ROUTE
 
 function handleSelect(that, eventKey) {
@@ -58,6 +64,8 @@ function NavDropdownComponent() {
         <NavDropdown.Item eventKey={FILE_STITCHING}>{FILE_STITCHING}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={MPEG_CONVERSION}>{MPEG_CONVERSION}</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item eventKey={LOCAL_DOWNLOAD}>{LOCAL_DOWNLOAD}</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item eventKey={SYNCING}>{SYNCING}</NavDropdown.Item>
         <NavDropdown.Divider />

@@ -3,9 +3,11 @@ import STRING_CONSTANTS from './string'
 const API_URL_BASE = "https://api.cloud.telestream.net/starfish/v1.0/factories/"   
 //const API_URL_BASE = "https://8071518d-4ff8-4328-8aec-9b95c45e70df.mock.pstmn.io/starfish/v1.0/factories/"   
 const  FACTORY_ID = "e725b4c22c6d5fc48085514fc114b23c"
+const  FACTORY_ID_QA = "f4e82f51b8fa5875acbcb063696bbe02"
 
 const FILE_STITCHING_CONSTANTS = {
   FACTORY_ID: FACTORY_ID,
+  FACTORY_ID_QA: FACTORY_ID_QA,
   DATE_DISPLAY_DEFAULT: "<<Date & Time>>",
   //SF_API_KEY_FILE:  ".//private/SF_API_KEY.txt",
   SF_API_KEY_FILE:`${STRING_CONSTANTS.USER_DATA_FOLDER}\\private\\SF_API_KEY.txt`,
@@ -21,6 +23,7 @@ const FILE_STITCHING_CONSTANTS = {
   },
   API: {
     URL: `${API_URL_BASE}${FACTORY_ID}/jobs`,
+    URL_QA: `${API_URL_BASE}${FACTORY_ID_QA}/jobs`,
     METHOD: 'post',
     HEADER_NAMES: {
       X_API_KEY: 'X-Api-Key'

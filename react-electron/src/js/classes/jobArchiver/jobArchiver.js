@@ -2,8 +2,21 @@ import { JOB_ARCHIVING_FINISHED } from './../../constants/action-types'
 import { action } from './../../utils/action'
 import { SUCCESS, ERROR, ARCHIVING_JOB } from './../../constants/job_archiving_statuses'
 import DateUtils from './../../utils/date-utils'
+import Logging from './../../utils/logging'
+import File from './../../utils/file'
+import JOB_ARCHIVING_CONSTANTS from './../../constants/job-archiving'
 
+const aws = require('aws-sdk')
+const ASYNC = require('async')
 var store = window.store
+
+var config
+try {
+  config = JSON.parse(File.getContent(JOB_ARCHIVING_CONSTANTS.CONFIG_FILE))
+}
+catch(error) {
+  Logging.logError("Error trying to initialize jobArchiver's config. Error:", error)
+}
 
 class JobArchiver {
   constructor({
@@ -14,7 +27,8 @@ class JobArchiver {
     contactName,
     contactEmail,
     contactPhone,
-    id
+    id,
+    env = JOB_ARCHIVING_CONSTANTS.ENVS.TEST_ENV
   }) {
     this.externalJobNumber = externalJobNumber
     this.year = year
@@ -24,6 +38,7 @@ class JobArchiver {
     this.contactEmail = contactEmail
     this.contactPhone = contactPhone
     this.id = id
+    this.env = env
     this.dateDisplay = "<<Date & Time>>";
     this.jobArchivingStatus = ARCHIVING_JOB;
     this.errorMsgList = [];
@@ -31,23 +46,171 @@ class JobArchiver {
     this.dateDisplay = DateUtils.GetDateDisplay() 
 
     try{
-      this.ArchiveJob(this.externalJobNumber, this.year, this.month)
+      this.archiveJob(this.externalJobNumber, this.year, this.month, this.env)
     }
     catch(e){
-      //^^//console.log(`Error in Job Archiver. Error: ${e}`)
-      throw e
+      Logging.logError("ERROR in constructor method of JobArchiver. Error:", e)
     }
   }
 
-  ArchiveJob(externalJobNumber, year, month){
+  removeNonFiles(originalFiles) {
+    return originalFiles.slice().filter( file => !file.Key.endsWith("/") )
+  }
+
+  async getS3FileList(
+    bucket,
+    parentFolder,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+    try {
+      const s3 = new aws.S3({
+        endpoint: `s3.${config.region}.amazonaws.com`,
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+        Bucket: bucket,
+        signatureVersion: signatureVersion,
+        region: region
+      })
+
+      let params = {
+        Bucket:bucket,
+        Prefix: parentFolder
+      }
+
+      const response = await s3.listObjectsV2(params).promise()
+
+      Logging.log("jobArchiver.getS3Files() response:", response)
+
+      let files = this.removeNonFiles(response.Contents)
+
+      return files
+    }
+    catch(error) {
+      Logging.logError("ERROR inside JobArchiver.getFileList():", error)
+    }
+  }
+
+  async deleteS3File(
+    bucket,
+    file,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+      try {
+        const s3 = new aws.S3({
+          endpoint: `s3.${config.region}.amazonaws.com`,
+          accessKeyId: accessKeyId,
+          secretAccessKey: secretAccessKey,
+          Bucket: bucket,
+          signatureVersion: signatureVersion,
+          region: region
+        })   
+
+        const params = {
+          Bucket: bucket,
+          Key: file.Key
+        }
+
+        s3.deleteObject(params, function(err, deleteData) {
+          if(err) {
+            Logging.logError("error inside jobArchiver.deleteS3File during s3.deleteObject. error:", err)
+          }
+          else {
+            Logging.info("Inside jobarchiver.deleteS3File during s3.deleteObject. copyData:", deleteData)
+            file.deleteData = deleteData
+          }
+        })
+      }
+      catch(error) {
+        Logging.logError("ERROR inside jobArchiver.deleteS3File. error:", error)
+      }
+  }
+
+  async moveS3Files(
+    sourceBucket,
+    files,
+    targetBucket,
+    //targetParentFolder,
+    year,
+    month,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+    try {
+      const s3 = new aws.S3({
+        endpoint: `s3.${config.region}.amazonaws.com`,
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+        Bucket: sourceBucket,
+        signatureVersion: signatureVersion,
+        region: region
+      })
+
+      if(files.length && files.length > 0) {
+        ASYNC.each(files, function(file, cb) {
+          let params = {
+            Bucket: targetBucket,
+            CopySource: `/${sourceBucket}/${file.Key}`,
+            Key: `${year}/${month}/${file.Key}`
+          }
+
+          s3.copyObject(params, function(copyErr, copyData) {
+            if(copyErr) {
+              Logging.logError("ERROR inside jobArchiver.moveS3Files during s3.copyObject. error:", copyErr)
+            }
+            else {
+              Logging.info("Inside jobarchiver.moveS3Files during s3.copyObject. copyData:", copyData)
+              cb()
+              file.copyData = copyData
+
+              this.deleteS3File(sourceBucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
+            }
+          })
+        })
+      }
+      else {
+        Logging.warn("Inside jobArchiver.moveS3Files(). files list was empty. files:", files)
+      }
+    }
+    catch(error) {
+      Logging.logError("error inside jobArchiver.moveS3Files:", error)
+    }
+  }
+
+  async setStatus(files) {
+
+    return SUCCESS
+  }
+
+  async archiveJob(externalJobNumber, year, month, env){
     let newJobArchivingStatus = ""
 
     try{
+      // GET LIST OF FILES TO BE MOVED
+      let files = await this.getS3FileList(JOB_ARCHIVING_CONSTANTS[env].SOURCE_BUCKET, externalJobNumber)
+
       //MOVE FILES
-      //TODO: IMPLEMENT MOVING FILES FROM vxtprod TO vxtarc
+      await this.moveS3Files(
+        JOB_ARCHIVING_CONSTANTS[env].SOURCE_BUCKET,
+        files,
+        JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
+        year,
+        month,
+        config.region,
+        config.accessKeyId,
+        config.secretAccessKey,
+        'v4'
+      )
 
       //SET STATUS
-      newJobArchivingStatus = SUCCESS
+      newJobArchivingStatus = await this.setStatus(files)
     }
     catch(e){
       newJobArchivingStatus = ERROR

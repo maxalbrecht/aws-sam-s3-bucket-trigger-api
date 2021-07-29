@@ -1,0 +1,17 @@
+import STRING_CONSTANTS from './string'
+
+const LOCAL_DOWNLOADING_CONSTANTS = {
+  CONFIG_FILE: `${STRING_CONSTANTS.USER_DATA_FOLDER}\\private\\MPEG1_CONVERSION_CONFIG.json`,
+  ENVS: {
+    TEST_ENV: "TEST_ENV",
+    PROD_ENV: "PROD_ENV"
+  },
+  TEST_ENV: {
+    SOURCE_BUCKET: "vxttest003"
+  },
+  PROD_ENV: {
+    SOURCE_BUCKET: "vxtprod"
+  }
+}
+
+export default LOCAL_DOWNLOADING_CONSTANTS

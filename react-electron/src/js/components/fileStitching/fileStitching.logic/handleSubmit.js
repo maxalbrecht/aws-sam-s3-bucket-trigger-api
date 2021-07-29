@@ -34,7 +34,8 @@ async function handleSubmit(event) {
           storeState.user.contactEmail,
           storeState.user.contactPhone,
           currentFileId,
-          convertToMpeg
+          convertToMpeg,
+          this.componentVariant
         )
 
         this.props.addStitchedFile({

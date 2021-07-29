@@ -13,6 +13,7 @@ import App from './../app/App'
 import JobStatus from './../jobStatus/JobStatus'
 import JobArchiving from './../jobArchiving/JobArchiving'
 import MpegConversion from './../mpegConversion/MpegConversion'
+import LocalDownload from './../localDownload/LocalDownload'
 import FileStitching from './../fileStitching/FileStitching'
 import About from './../../../pages/about'
 import Documentation from './../../../pages/documentation'
@@ -59,7 +60,9 @@ class ConnectedThemeWrapper extends Component {
         <Route exact path="/app" component={App} />
         <Route path="/jobarchiving" component={JobArchiving} />
         <Route path="/filestitching" component={FileStitching} />
+        <Route path="/filestitchingqa" component={FileStitching} />
         <Route path="/mpegconversion" component={MpegConversion} />
+        <Route path="/localdownload" component={LocalDownload} />
         <Route path="/drc" component={Login} />
         <FooterBar />
       </Container>
