@@ -134,15 +134,29 @@ const File = {
       closeStream = true
     }
 
-    stream.write(fileContent)
+    let writeResult = stream.write(fileContent)
 
     if(closeStream) { stream.end() }
+
+    return writeResult
   },
   makeDirIfItDoesNotExist(directory) {
     //var fs = window.require('fs');
-    if (defined(directory) && !fs.existsSync(directory)){
-      fs.mkdirSync(directory)
+    try{
+      if (defined(directory) && !fs.existsSync(directory)){
+        fs.mkdirSync(directory, { recursive: true }, (err) => {
+          if(err) {
+            throw err
+          }
+        })
+      }
     }
+    catch(error) { 
+      alert(`Failed to create directory "${directory}"`)
+      console.log(`ERROR when attempting to create directory "${directory}". Error is as follows:`)
+      console.log(error)
+    }
+
   },
   removeFileExtension(fileName) {
     return fileName.substr(0, fileName.lastIndexOf('.'))
