@@ -3,6 +3,7 @@ import { Form, Col } from 'react-bootstrap'
 import CognitoErrorDisplay from './../auth.logic/cognitoErrorDisplay'
 import BlankfieldErrorDisplay from './../auth.logic/blankfieldErrorDisplay'
 import PasswordMatchErrorDisplay from './../auth.logic/passwordMatchErrorDisplay'
+import Logging from './../../../utils/logging'
 
 function FormErrors() {
   let errors = [];
@@ -13,6 +14,8 @@ function FormErrors() {
     .concat(PasswordMatchErrorDisplay(this.state.errors.passwordmatch))
   ;
   let height='35px'
+
+  Logging.log("auth.fields.formErrors.js.FormErrors() errors: ", errors, "this.state.errors:", this.state.errors)
 
     return (
       <Form.Group as={Col}

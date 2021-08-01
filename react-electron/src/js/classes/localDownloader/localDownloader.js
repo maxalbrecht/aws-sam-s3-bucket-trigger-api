@@ -38,8 +38,9 @@ class LocalDownloader {
     this.env = env
     this.dateDisplay = DateUtils.GetDateDisplay()
 
-    Logging.log("localDownloader this:", this)
+    //Logging.log("localDownloader this:", this)
     Logging.info("this.sourceFile", "this.sourceFile", this.sourceFile, "this.assignedUserEmail", this.assignedUserEmail, "this.contactName", this.contactName)
+    //Logging.log("LOCAL_DOWNLOADING_CONSTANTS:", LOCAL_DOWNLOADING_CONSTANTS)
 
     try {
       this.downloadLocally(this.sourceFile, this.env)
@@ -81,6 +82,7 @@ class LocalDownloader {
     signatureVersion = 'v4'
   ) {
     try {
+      //Logging.log("localDownloader.getS3FileList() config:", config)
       const s3 = new aws.S3({
         endpoint: `s3.${config.region}.amazonaws.com`,
         accessKeyId: accessKeyId,
@@ -97,7 +99,7 @@ class LocalDownloader {
 
       const response = await s3.listObjectsV2(params).promise()
 
-      //Logging.log("localDownloader.getS3FileList() response:", response)
+      Logging.log("localDownloader.getS3FileList() response:", response)
 
       let files = this.removeNonFiles(response.Contents)
     
@@ -123,32 +125,33 @@ class LocalDownloader {
       //Logging.log("localDownloader.getFilesForEachJob()","i:", i, "filesForEachJob[i]", filesForCurrentJob[i])
     }
 
-    //Logging.log("localDownloader.getFilesForEachJob.filesForEachJob:", filesForEachJob)
+    Logging.log("localDownloader.getFilesForEachJob.filesForEachJob:", filesForEachJob)
 
     return filesForEachJob
   }
 
-  async saveS3FileData(
+  async appendS3FileData(
     jobNumbers,
     filesForEachJob,
     currentJobIndex,
     currentFileIndex,
     targetParentDirectory,
-    fileData
+    fileData,
+    chunkIndex
   ) {
-    Logging.log("localDownloader.saveS3FileData", "targetParentDirectory", targetParentDirectory, "filesForEachJob[currentJobIndex][currentFileIndex].Key", filesForEachJob[currentJobIndex][currentFileIndex].Key)
-
     let filePath = `${targetParentDirectory}${filesForEachJob[currentJobIndex][currentFileIndex].Key.replace(/\//g, '\\')}`
+    Logging.log("localDownloader.saveS3FileData", "targetParentDirectory", targetParentDirectory, "filesForEachJob[currentJobIndex][currentFileIndex].Key", filesForEachJob[currentJobIndex][currentFileIndex].Key, "filePath:", filePath)
 
     File.makeDirIfItDoesNotExist(File.removeNameFromPath(filePath))
+    let appendFileDataResult = File.appendTo(fileData, { filePath: filePath })
+    //let saveFileDataResult = fs.writeFileSync(filePath, fileData)
 
-    Logging.log("filePath", filePath)
+    if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult)) {
+      filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult = []
+    }
+    filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult.push( { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
 
-    let saveFileDataResult = fs.writeFileSync(filePath, fileData)
-
-    filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult = saveFileDataResult
-
-    Logging.log("filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult", filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult)
+    Logging.log("{ chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult }: ", { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
   }
 
   async downloadFileForJob(
@@ -163,70 +166,85 @@ class LocalDownloader {
     secretAccessKey = config.secretAccessKey,
     signatureVersion = 'v4'
   ) {
-    Logging.log("localDownloader.downloadFileForJob (SINGLE FILE)", "currentJobIndex:", currentJobIndex,
-      "jobNumbers[currentJobIndex]:", jobNumbers[currentJobIndex],
-      "filesForEachJob[currentJobIndex]:", filesForEachJob[currentJobIndex],
-      "filesForEachJob[currentJobIndex][currentFileIndex]:", filesForEachJob[currentJobIndex][currentFileIndex] 
-    )
+    Logging.log("localDownloader.downloadFileForJob (SINGLE FILE)", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]:", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]:", filesForEachJob[currentJobIndex], "filesForEachJob[currentJobIndex][currentFileIndex]:", filesForEachJob[currentJobIndex][currentFileIndex])
+
     try {
+      //let chunkSizeInBytes = 1048576
+      let chunkSizeInBytes = 8388608
       const s3 = new aws.S3({
         endpoint: `s3.${config.region}.amazonaws.com`,
         accessKeyId: accessKeyId,
         secretAccessKey: secretAccessKey,
         Bucket: bucket,
         signatureVersion: signatureVersion,
-        region: region
+        region: region,
+        useAccelerateEndpoint: true
       })
-
-      const params = {
+      let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / chunkSizeInBytes)
+      let params = {
         Bucket: bucket,
-        Key: filesForEachJob[currentJobIndex][currentFileIndex].Key
+        Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
+        Range: ''
       }
-      Logging.LogSectionStart("DOWNLOAD FILE")
-      Logging.log("params:", params)
+      let byteRangeStart, byteRangeEnd = 0
+      let maxTries = 5
+      let success = false
+      let data
 
-      let data = await s3.getObject(params).promise()
-      Logging.log("data:", data)
-      filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse = data.$response
+      for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
+        byteRangeStart = chunkSizeInBytes * currentChunkIndex
+        let currentTryIndex = 0
 
-      if(!defined(data.$response.error) || data.$response.error === null) {
-        await this.saveS3FileData(
-          jobNumbers,
-          filesForEachJob,
-          currentJobIndex,
-          currentFileIndex, 
-          targetParentFileDirectory,
-          data.Body
-        )
-      }
-      /*
-      await s3.getObject(params, async function(error, data) {
-        if(defined(error)) {
-          filesForEachJob[currentJobIndex][currentFileIndex].downloadResult = {
-            success: false,
-            error: error
+        if(currentChunkIndex === necessaryNumberOfChunks - 1) {
+          byteRangeEnd = filesForEachJob[currentJobIndex][currentFileIndex].Size - 1
+        } else {
+          byteRangeEnd = ( chunkSizeInBytes * (currentChunkIndex + 1) ) - 1
+        }
+        
+        params.Range = `bytes=${byteRangeStart}-${byteRangeEnd}`
+      
+        Logging.LogSectionStart("DOWNLOAD FILE CHUNK")
+        Logging.log("params:", params)
+
+        while(currentTryIndex < maxTries && !success) {
+          try {
+            data = await s3.getObject(params).promise()
+
+            if(defined(data.$response.error)) { throw data.$response.error }
+
+            success = true
           }
+          catch(error) {
+            currentTryIndex++
 
-          Logging.log("filesForEachJob[currentJobIndex][currentFileIndex].downloadResult", filesForEachJob[currentJobIndex][currentFileIndex].downloadResult)
-        }else {
-          filesForEachJob[currentJobIndex][currentFileIndex].downloadResult = {
-            success: true
+            Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
+            Logging.log("data from s3.getObject call that threw error:", data)
+
+            if(currentTryIndex === maxTries) { 
+              filesForEachJob[currentJobIndex][currentFileIndex].downloadError = error
+
+              throw error 
+            }
           }
+        }
 
-          Logging.log("filesForEachJob[currentJobIndex][currentFileIndex].downloadResult", filesForEachJob[currentJobIndex][currentFileIndex].downloadResult)
+        if(currentChunkIndex === 0) { Logging.log("first chunk's data:", data) }
 
-           await this.saveS3FileData(
+        filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse = data.$response
+
+        if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadError) && !defined(data.$response.error)) {
+          await this.appendS3FileData(
             jobNumbers,
             filesForEachJob,
             currentJobIndex,
             currentFileIndex, 
             targetParentFileDirectory,
-            data.Body
+            data.Body,
+            currentChunkIndex
           )
         }
-      })
-      */
-      Logging.LogSectionEnd("DOWNLOAD FILE")
+        Logging.LogSectionEnd("DOWNLOAD FILE CHUNK")
+      }
     }
     catch(error) {
       Logging.logError("ERROR inside localDownloader.downloadFileForJob()", error)
@@ -244,13 +262,10 @@ class LocalDownloader {
     secretAccessKey = config.secretAccessKey,
     signatureVersion = 'v4'
     ) {
-    Logging.log("localDownloader.downloadFilesForJob", "currentJobIndex:", currentJobIndex,
-      "jobNumbers[currentJobIndex]", jobNumbers[currentJobIndex],
-      "filesForEachJob[currentJobIndex]", filesForEachJob[currentJobIndex]
-    )
+    Logging.log("localDownloader.downloadFilesForJob", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]", filesForEachJob[currentJobIndex])
 
     for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
-      this.downloadFileForJob(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory, bucket, region, accessKeyId, secretAccessKey, signatureVersion)
+      await this.downloadFileForJob(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory, bucket, region, accessKeyId, secretAccessKey, signatureVersion)
     }
   }
 

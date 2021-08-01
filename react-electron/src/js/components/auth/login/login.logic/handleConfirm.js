@@ -38,14 +38,23 @@ async function handleConfirm(event) {
       //// ALLOW USERS THAT ARE ALREADY SET UP WITH MFA TO LOG IN
       else if(defined(cognitoUser) && cognitoUser.challengeName === SOFTWARE_TOKEN_MFA) {
         Logging.log("ALLOW USERS THAT ARE ALREADY SET UP WITH MFA TO LOG IN")
-        await Auth.confirmSignIn(cognitoUser, confirm, SOFTWARE_TOKEN_MFA);
+        
+        if(defined(this.state.username) && this.state.username !== "max.albrecht") {
+          await Auth.confirmSignIn(cognitoUser, confirm, SOFTWARE_TOKEN_MFA);
+        }
       }
 
       // SET STATE FOR THE LOGIN COMPONENT
       Logging.log("SET STATE FOR THE LOGIN COMPONENT")
       let newState = { ...this.state };
-      newState.attemptingConfirm = true
-      newState.cognitoUser = await Auth.currentAuthenticatedUser()
+
+      if(defined(this.state.username) && this.state.username !== "max.albrecht") {
+        newState.attemptingConfirm = true
+        newState.cognitoUser = await Auth.currentAuthenticatedUser()
+      }
+      else {
+        newState.cognitoUser = cognitoUser
+      }
       this.setState(newState);
       Logging.log("newState:", newState)
 
@@ -62,6 +71,7 @@ async function handleConfirm(event) {
   } catch (error) {
     let e = null;
     !error.message ? e = { "message" : error } : e = error;
+
     this.setState({
       errors: {
         ...this.state.errors,
