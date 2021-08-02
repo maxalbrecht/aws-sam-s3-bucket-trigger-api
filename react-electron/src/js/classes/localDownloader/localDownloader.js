@@ -217,13 +217,24 @@ class LocalDownloader {
           catch(error) {
             currentTryIndex++
 
-            Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
-            Logging.log("data from s3.getObject call that threw error:", data)
-
             if(currentTryIndex === maxTries) { 
+              Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
+              Logging.log("params used for s3.getObject call:", params)
+              Logging.log("data from s3.getObject call that threw error:", data)
+
+              alert(`s3 returned an error for the following file:\n\tBucket: ${params.Bucket}\n\tKey: ${params.Key}`)
+
               filesForEachJob[currentJobIndex][currentFileIndex].downloadError = error
 
               throw error 
+            } 
+            else {
+              Logging.log("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
+              Logging.log("params used for s3.getObject call:", params)
+              Logging.log("data from s3.getObject call that threw error:", data)
+
+              //await this.sleep(5000)
+              await new Promise(resolve => setTimeout(resolve, 5000))
             }
           }
         }
@@ -271,7 +282,7 @@ class LocalDownloader {
 
   async downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory) {
     for (let i = 0; i < filesForEachJob.length; i++) {
-      this.downloadFilesForJob(
+      await this.downloadFilesForJob(
         jobNumbers, filesForEachJob, i, targetParentFileDirectory, LOCAL_DOWNLOADING_CONSTANTS[env].SOURCE_BUCKET)
     }
   }
@@ -285,7 +296,15 @@ class LocalDownloader {
     Logging.log("downloadLocally() targetParentFileDirectory:", targetParentFileDirectory)
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
+
+    alert("Local Download complete.")
   }
+
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms)
+    })
+  }   
 }
 
 export default LocalDownloader
