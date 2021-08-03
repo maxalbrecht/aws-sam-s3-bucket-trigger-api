@@ -96,14 +96,26 @@ class LocalDownloader {
         Bucket:bucket,
         Prefix: `${parentFolder}/`
       }
-
+      //GET LIST OF FILES
       const response = await s3.listObjectsV2(params).promise()
+      let files = this.removeNonFiles(response.Contents)
 
       Logging.log("localDownloader.getS3FileList() response:", response)
 
-      let files = this.removeNonFiles(response.Contents)
-    
-      //Logging.log("localDownloader.getS3FileList()...", "files:", files)
+      // GET FILE TYPE FOR EACH FILE
+      let headObjectParams = { Bucket: bucket }
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        headObjectParams["Key"] = file.Key
+
+        let headObjectResponse = await s3.headObject(headObjectParams).promise()
+
+        Logging.log("headObjectResponse:", headObjectResponse)
+
+        if(defined(headObjectResponse, "ContentType")) { file.ContentType = headObjectResponse.ContentType }
+      }
+      Logging.log("localDownloader.getS3FileList()...", "files after getting Content-Type:", files)
 
       return files
     }
@@ -140,7 +152,7 @@ class LocalDownloader {
     chunkIndex
   ) {
     let filePath = `${targetParentDirectory}${filesForEachJob[currentJobIndex][currentFileIndex].Key.replace(/\//g, '\\')}`
-    Logging.log("localDownloader.saveS3FileData", "targetParentDirectory", targetParentDirectory, "filesForEachJob[currentJobIndex][currentFileIndex].Key", filesForEachJob[currentJobIndex][currentFileIndex].Key, "filePath:", filePath)
+    //Logging.log("localDownloader.saveS3FileData", "targetParentDirectory", targetParentDirectory, "filesForEachJob[currentJobIndex][currentFileIndex].Key", filesForEachJob[currentJobIndex][currentFileIndex].Key, "filePath:", filePath)
 
     File.makeDirIfItDoesNotExist(File.removeNameFromPath(filePath))
     let appendFileDataResult = File.appendTo(fileData, { filePath: filePath })
@@ -151,7 +163,7 @@ class LocalDownloader {
     }
     filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult.push( { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
 
-    Logging.log("{ chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult }: ", { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
+    //Logging.log("{ chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult }: ", { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
   }
 
   async downloadFileForJob(
@@ -166,52 +178,58 @@ class LocalDownloader {
     secretAccessKey = config.secretAccessKey,
     signatureVersion = 'v4'
   ) {
-    Logging.log("localDownloader.downloadFileForJob (SINGLE FILE)", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]:", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]:", filesForEachJob[currentJobIndex], "filesForEachJob[currentJobIndex][currentFileIndex]:", filesForEachJob[currentJobIndex][currentFileIndex])
-
     try {
-      //let chunkSizeInBytes = 1048576
-      let chunkSizeInBytes = 8388608
+      // INITIALIZE VARIABLES
+      let chunkSizeInBytes = LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
       const s3 = new aws.S3({
-        endpoint: `s3.${config.region}.amazonaws.com`,
+        endpoint: new aws.Endpoint(`${bucket}.s3-accelerate.amazonaws.com`),
+        useAccelerateEndpoint: true,
         accessKeyId: accessKeyId,
         secretAccessKey: secretAccessKey,
         Bucket: bucket,
         signatureVersion: signatureVersion,
-        region: region,
-        useAccelerateEndpoint: true
+        region: region
       })
       let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / chunkSizeInBytes)
-      let params = {
-        Bucket: bucket,
-        Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
-        Range: ''
-      }
+      let contentType = (
+        defined(filesForEachJob[currentJobIndex][currentFileIndex].ContentType) ?
+          filesForEachJob[currentJobIndex][currentFileIndex].ContentType
+          : LOCAL_DOWNLOADING_CONSTANTS.CONTENT_TYPE_DEFAULT
+      )
       let byteRangeStart, byteRangeEnd = 0
-      let maxTries = 5
-      let success = false
-      let data
+      let maxTries = LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_MAX_TRIES
 
+      Logging.log("currentFile:", filesForEachJob[currentJobIndex][currentFileIndex], "necessaryNumberOfChunks", necessaryNumberOfChunks, "contentType", contentType, "maxTries", maxTries)
+
+      // DOWNLOAD THE FILE'S DATA IN CHUNKS
       for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
-        byteRangeStart = chunkSizeInBytes * currentChunkIndex
+        let data
         let currentTryIndex = 0
+        let success = false
+        byteRangeStart = chunkSizeInBytes * currentChunkIndex
 
         if(currentChunkIndex === necessaryNumberOfChunks - 1) {
           byteRangeEnd = filesForEachJob[currentJobIndex][currentFileIndex].Size - 1
         } else {
           byteRangeEnd = ( chunkSizeInBytes * (currentChunkIndex + 1) ) - 1
         }
-        
-        params.Range = `bytes=${byteRangeStart}-${byteRangeEnd}`
-      
-        Logging.LogSectionStart("DOWNLOAD FILE CHUNK")
-        Logging.log("params:", params)
 
+        let params = {
+          Bucket: bucket,
+          Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
+          ResponseContentType: contentType,
+          Range: `bytes=${byteRangeStart}-${byteRangeEnd}`
+        }
+      
+        //Logging.LogSectionStart("DOWNLOAD FILE CHUNK")
+        if(currentChunkIndex === 0) { Logging.log(" first chunk params:", params) }
+        if(currentChunkIndex === necessaryNumberOfChunks - 1) { Logging.log("last chunk params:", params, "byteRangeStart:", byteRangeStart, "byteRangeEnd", byteRangeEnd) }
+
+        // DOWNLOAD CHUNK DATA
         while(currentTryIndex < maxTries && !success) {
           try {
             data = await s3.getObject(params).promise()
-
             if(defined(data.$response.error)) { throw data.$response.error }
-
             success = true
           }
           catch(error) {
@@ -219,8 +237,7 @@ class LocalDownloader {
 
             if(currentTryIndex === maxTries) { 
               Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
-              Logging.log("params used for s3.getObject call:", params)
-              Logging.log("data from s3.getObject call that threw error:", data)
+              Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
 
               alert(`s3 returned an error for the following file:\n\tBucket: ${params.Bucket}\n\tKey: ${params.Key}`)
 
@@ -230,19 +247,23 @@ class LocalDownloader {
             } 
             else {
               Logging.log("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
-              Logging.log("params used for s3.getObject call:", params)
-              Logging.log("data from s3.getObject call that threw error:", data)
+              Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
 
-              //await this.sleep(5000)
-              await new Promise(resolve => setTimeout(resolve, 5000))
+              await new Promise(resolve => setTimeout(resolve, LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_RETRY_TIMEOUT))
             }
           }
         }
 
-        if(currentChunkIndex === 0) { Logging.log("first chunk's data:", data) }
+        // SAVE CHUNK'S DOWNLOAD RESPONSE
+        if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse)) {
+          filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse = []
+        }
+        filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse.push({
+          chunkIndex: currentChunkIndex, error: data.$response.error,
+          statusCode: data.$response.statusCode, statusMessage: data.$response.statusMessage
+        })
 
-        filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse = data.$response
-
+        // APPEND CHUNK DATA TO FILE
         if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadError) && !defined(data.$response.error)) {
           await this.appendS3FileData(
             jobNumbers,
@@ -254,7 +275,7 @@ class LocalDownloader {
             currentChunkIndex
           )
         }
-        Logging.LogSectionEnd("DOWNLOAD FILE CHUNK")
+        //Logging.LogSectionEnd("DOWNLOAD FILE CHUNK")
       }
     }
     catch(error) {
