@@ -18,6 +18,21 @@ catch(error) {
   Logging.logError("Error trying to initialize localDownloader's config", error)
 }
 
+const FILE_STATUSES = {
+  DOWNLOAD_FILE_FUNCTION_NOT_YET_CALLED: "DOWNLOAD_FILE_FUNCTION_NOT_YET_CALLED",
+  DOWNLOADING_AND_SAVING_TO_DISK: "DOWNLOADING_AND_SAVING_TO_DISK",
+  COMPLETE: "COMPLETE",
+  ERROR: "ERROR"
+}
+
+const CHUNK_STATUSES = {
+  DOWNLOAD_CHUNK_FUNCTION_NOT_YET_CALLED: "DOWNLOAD_CHUNK_FUNCTION_NOT_YET_CALLED",
+  SENDING_REQUEST: "SENDING_REQUEST",
+  SAVING_TO_DISK: "SAVING_TO_DISK",
+  COMPLETE: "COMPLETE",
+  ERROR: "ERROR"
+}
+
 class LocalDownloader {
   constructor(
     sourceFile,
@@ -37,10 +52,6 @@ class LocalDownloader {
     this.veriSuiteJobId = veriSuiteJobId
     this.env = env
     this.dateDisplay = DateUtils.GetDateDisplay()
-
-    //Logging.log("localDownloader this:", this)
-    Logging.info("this.sourceFile", "this.sourceFile", this.sourceFile, "this.assignedUserEmail", this.assignedUserEmail, "this.contactName", this.contactName)
-    //Logging.log("LOCAL_DOWNLOADING_CONSTANTS:", LOCAL_DOWNLOADING_CONSTANTS)
 
     try {
       this.downloadLocally(this.sourceFile, this.env)
@@ -100,7 +111,7 @@ class LocalDownloader {
       const response = await s3.listObjectsV2(params).promise()
       let files = this.removeNonFiles(response.Contents)
 
-      Logging.log("localDownloader.getS3FileList() response:", response)
+      //Logging.log("localDownloader.getS3FileList() response:", response)
 
       // GET FILE TYPE FOR EACH FILE
       let headObjectParams = { Bucket: bucket }
@@ -111,7 +122,7 @@ class LocalDownloader {
 
         let headObjectResponse = await s3.headObject(headObjectParams).promise()
 
-        Logging.log("headObjectResponse:", headObjectResponse)
+        //Logging.log("headObjectResponse:", headObjectResponse)
 
         if(defined(headObjectResponse, "ContentType")) { file.ContentType = headObjectResponse.ContentType }
       }
@@ -148,22 +159,208 @@ class LocalDownloader {
     currentJobIndex,
     currentFileIndex,
     targetParentDirectory,
-    fileData,
-    chunkIndex
+    //fileData,
+    //chunkIndex,
+    necessaryNumberOfChunks,
+    fileAppendStream,
+    verisuiteJobLevelSemaphoreForChunks
   ) {
     let filePath = `${targetParentDirectory}${filesForEachJob[currentJobIndex][currentFileIndex].Key.replace(/\//g, '\\')}`
-    //Logging.log("localDownloader.saveS3FileData", "targetParentDirectory", targetParentDirectory, "filesForEachJob[currentJobIndex][currentFileIndex].Key", filesForEachJob[currentJobIndex][currentFileIndex].Key, "filePath:", filePath)
+    let stream = await fs.createWriteStream(filePath, { flags: 'a' })
+    //let done = false
+    let appendedFinalChunk = false
+    let experiencedAppendingError = false
+    let currentChunkIndex = 0
 
-    File.makeDirIfItDoesNotExist(File.removeNameFromPath(filePath))
-    let appendFileDataResult = File.appendTo(fileData, { filePath: filePath })
-    //let saveFileDataResult = fs.writeFileSync(filePath, fileData)
+    while(!appendedFinalChunk && !experiencedAppendingError) {
+      let appendedCurrentChunk = false
 
-    if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult)) {
-      filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult = []
+      //Logging.log(`ABOUT TO (RE)START WHILE LOOP in appendS3FileData. currentChunkIndex: ${currentChunkIndex}`)      
+      //this.printFileAndChunkStatuses(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+
+      try {
+        if(defined(filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].s3Response)) {
+          //Logging.log(`ABOUT TO APPEND CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
+          //this.printFileAndChunkStatuses(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+
+          let currentChunkData = filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].s3Response.Body
+
+          let appendChunkDataResult = await stream.write(currentChunkData)
+
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].appendChunkDataResult = appendChunkDataResult  
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.COMPLETE
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].s3Response = null
+          appendedCurrentChunk = true
+          verisuiteJobLevelSemaphoreForChunks.leave()
+
+          if(currentChunkIndex === necessaryNumberOfChunks - 1) {
+            filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.COMPLETE
+            appendedFinalChunk = true
+          }
+
+          //Logging.log(`DONE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
+          //this.printFileAndChunkStatuses(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+          currentChunkIndex++
+        }
+      }
+      catch(error) {
+          filesForEachJob[currentJobIndex][currentFileIndex].appendFileDataError = { chunkIndex: currentChunkIndex, error: error }
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].appendFileDataError = error
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.ERROR
+          filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.ERROR
+
+          experiencedAppendingError = true
+
+          Logging.log(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
+          alert(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
+      }
+
+      if(!appendedCurrentChunk && !experiencedAppendingError) { await this.sleep(100) }
     }
-    filesForEachJob[currentJobIndex][currentFileIndex].saveFileDataResult.push( { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
 
-    //Logging.log("{ chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult }: ", { chunkIndex: chunkIndex, appendFileDataResult: appendFileDataResult })
+    stream.end()
+
+    //Logging.log(`FINISHED APPENDING FOR FILE WITH INDEX ${currentFileIndex}`, "filesForEachJob:", filesForEachJob)
+  }
+
+  printFileAndChunkStatuses(
+    jobNumbers,
+    filesForEachJob,
+    currentJobIndex,
+    currentFileIndex
+  ) {
+    Logging.log(`Current File Status: ${filesForEachJob[currentJobIndex][currentFileIndex].fileStatus}`)
+
+    for (let currentChunkIndex = 0; currentChunkIndex < filesForEachJob[currentJobIndex][currentFileIndex].chunks.length; currentChunkIndex++) {
+      let chunk = filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex]
+      Logging.log(`\tchunk index ${currentChunkIndex}:\n\t\tchunk status: ${chunk.chunkStatus}\n\t\tis s3Reponse defined: ${defined(chunk.s3Response)}`)
+    }
+  }
+
+  async downloadChunkForFile(
+    jobNumbers,
+    filesForEachJob,
+    currentJobIndex,
+    currentFileIndex, 
+    targetParentFileDirectory,
+    bucket,
+    verisuiteJobLevelSemaphoreForChunks,
+    currentChunkIndex,
+    byteRangeStart,
+    byteRangeEnd,
+    necessaryNumberOfChunks,
+    fileContentType,
+    fileAppendStream,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+    //filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SENDING_REQUEST
+    let s3 = new aws.S3({
+      endpoint: new aws.Endpoint(`${bucket}.s3-accelerate.amazonaws.com`),
+      useAccelerateEndpoint: true,
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+      Bucket: bucket,
+      signatureVersion: signatureVersion,
+      region: region
+    })
+    let params = {
+      Bucket: bucket,
+      Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
+      Range: `bytes=${byteRangeStart}-${byteRangeEnd}`,
+      //ResponseCacheControl: 'STRING_VALUE',
+      //ResponseContentDisposition: 'STRING_VALUE',
+      //ResponseContentEncoding: 'STRING_VALUE',
+      ResponseContentLanguage: 'en-US',
+      ResponseContentType: fileContentType,
+    }
+    let data
+    let currentTryIndex = 0
+    let maxTries = LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_MAX_TRIES
+    let success = false
+  
+    filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].s3GetObjectParams = params
+    //if(currentChunkIndex === 0) { Logging.log(" first chunk params:", params) }
+    //if(currentChunkIndex === necessaryNumberOfChunks - 1) { Logging.log("last chunk params:", params, "byteRangeStart:", byteRangeStart, "byteRangeEnd", byteRangeEnd) }
+
+    while(currentTryIndex < maxTries && !success) {
+      try {
+        //Logging.log("about to make call to s3")
+        data = await s3.getObject(params).promise()
+        //Logging.log("Response received")
+        if(defined(data.$response.error)) {throw data.$response.error }
+        //filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SAVING_TO_DISK
+        success = true
+      }
+      catch(error) {
+        currentTryIndex++
+
+        if(currentTryIndex === maxTries) { 
+          Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
+          Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
+
+          alert(`s3 returned an error for the following file chunk:\n\tBucket: ${params.Bucket}\n\tKey: ${params.Key}\n\tCurrent Chunk Index: ${currentChunkIndex}`)
+
+          filesForEachJob[currentJobIndex][currentFileIndex].downloadError = {chunkIndex: currentChunkIndex, error: error }
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].downloadError = error
+          filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.ERROR
+          filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.ERROR
+
+          throw error 
+        } 
+        else {
+          Logging.log("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
+          Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
+
+          //await new Promise(resolve => setTimeout(resolve, LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_RETRY_TIMEOUT))
+          await this.sleep(LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_RETRY_TIMEOUT)
+        }
+      }
+    }
+
+    // SAVE CHUNK'S DOWNLOAD RESPONSE
+    //Logging.log("about to save chunk-download response")
+    filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].downloadResponse = {
+      error: data.$response.error,
+      statusCode: data.$response.statusCode,
+      statusMessage: data.$response.statusMessage
+    }
+
+    // APPEND CHUNK DATA TO FILE
+
+    if(
+      !defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadError) 
+      && !defined(data.$response.error)
+      && defined(filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus)
+      && filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus !== CHUNK_STATUSES.ERROR
+      //&& (currentChunkIndex === 0 || filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex - 1].chunkStatus === CHUNK_STATUSES.COMPLETE)
+    ) {
+      //if(currentChunkIndex ===1) { Logging.log("about to save SECOND chunk data to disk") }
+
+      filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].s3Response = data // data.Body
+
+      //Logging.log(`JUST SAVED S3 RESPONSE FOR CHUNK WITH INDEX ${currentChunkIndex}`)
+      //this.printFileAndChunkStatuses(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+
+      if(currentChunkIndex === 0) {
+        await this.appendS3FileData(
+          jobNumbers,
+          filesForEachJob,
+          currentJobIndex,
+          currentFileIndex, 
+          targetParentFileDirectory,
+          //data.Body,
+          //currentChunkIndex,
+          necessaryNumberOfChunks,
+          fileAppendStream,
+          verisuiteJobLevelSemaphoreForChunks
+        )
+      }
+    }
+
+    //verisuiteJobLevelSemaphoreForChunks.leave()
   }
 
   async downloadFileForJob(
@@ -173,6 +370,7 @@ class LocalDownloader {
     currentFileIndex, 
     targetParentFileDirectory,
     bucket,
+    verisuiteJobLevelSemaphoreForChunks,
     region = config.region,
     accessKeyId = config.accessKeyId,
     secretAccessKey = config.secretAccessKey,
@@ -180,102 +378,81 @@ class LocalDownloader {
   ) {
     try {
       // INITIALIZE VARIABLES
+      //filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.DOWNLOADING_AND_SAVING_TO_DISK
       let chunkSizeInBytes = LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
-      const s3 = new aws.S3({
-        endpoint: new aws.Endpoint(`${bucket}.s3-accelerate.amazonaws.com`),
-        useAccelerateEndpoint: true,
-        accessKeyId: accessKeyId,
-        secretAccessKey: secretAccessKey,
-        Bucket: bucket,
-        signatureVersion: signatureVersion,
-        region: region
-      })
-      let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / chunkSizeInBytes)
+      
+      let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES)
+      filesForEachJob[currentJobIndex][currentFileIndex].chunks = [] //new Array(necessaryNumberOfChunks)
+      
+      for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
+        let newChunk = { chunkStatus: CHUNK_STATUSES.DOWNLOAD_CHUNK_FUNCTION_NOT_YET_CALLED }
+
+        filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex] = newChunk 
+      }
+
       let contentType = (
         defined(filesForEachJob[currentJobIndex][currentFileIndex].ContentType) ?
           filesForEachJob[currentJobIndex][currentFileIndex].ContentType
           : LOCAL_DOWNLOADING_CONSTANTS.CONTENT_TYPE_DEFAULT
       )
       let byteRangeStart, byteRangeEnd = 0
-      let maxTries = LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_MAX_TRIES
 
-      Logging.log("currentFile:", filesForEachJob[currentJobIndex][currentFileIndex], "necessaryNumberOfChunks", necessaryNumberOfChunks, "contentType", contentType, "maxTries", maxTries)
+      //Logging.log("currentFile:", filesForEachJob[currentJobIndex][currentFileIndex], "necessaryNumberOfChunks", necessaryNumberOfChunks, "contentType", contentType)
+
+      let filePath = `${targetParentFileDirectory}${filesForEachJob[currentJobIndex][currentFileIndex].Key.replace(/\//g, '\\')}`
+      File.makeDirIfItDoesNotExist(File.removeNameFromPath(filePath))
+      //let fileAppendStream = File.createAppendStream(filePath)
+      let fileAppendStream = "" //File.createAppendStream(filePath)
 
       // DOWNLOAD THE FILE'S DATA IN CHUNKS
-      for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
-        let data
-        let currentTryIndex = 0
-        let success = false
+      for (let currentChunkIndex = 0;
+        currentChunkIndex < necessaryNumberOfChunks
+          && filesForEachJob[currentJobIndex][currentFileIndex].fileStatus !== FILE_STATUSES.ERROR;
+        currentChunkIndex++
+      ) {
+        let calledDownloadChunkFunction = false
         byteRangeStart = chunkSizeInBytes * currentChunkIndex
-
         if(currentChunkIndex === necessaryNumberOfChunks - 1) {
           byteRangeEnd = filesForEachJob[currentJobIndex][currentFileIndex].Size - 1
         } else {
           byteRangeEnd = ( chunkSizeInBytes * (currentChunkIndex + 1) ) - 1
         }
 
-        let params = {
-          Bucket: bucket,
-          Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
-          ResponseContentType: contentType,
-          Range: `bytes=${byteRangeStart}-${byteRangeEnd}`
-        }
-      
-        //Logging.LogSectionStart("DOWNLOAD FILE CHUNK")
-        if(currentChunkIndex === 0) { Logging.log(" first chunk params:", params) }
-        if(currentChunkIndex === necessaryNumberOfChunks - 1) { Logging.log("last chunk params:", params, "byteRangeStart:", byteRangeStart, "byteRangeEnd", byteRangeEnd) }
+        //console.log("SEMAPHORE:")
+        //console.log(verisuiteJobLevelSemaphoreForChunks)
 
-        // DOWNLOAD CHUNK DATA
-        while(currentTryIndex < maxTries && !success) {
-          try {
-            data = await s3.getObject(params).promise()
-            if(defined(data.$response.error)) { throw data.$response.error }
-            success = true
+        while(!calledDownloadChunkFunction) {
+          if(verisuiteJobLevelSemaphoreForChunks.available()) {
+            //console.log("DEBUG 0")
+            await verisuiteJobLevelSemaphoreForChunks.take(() => {})
+            //console.log("DEBUG 1")
+
+            //Logging.log(`about to call download-chunk function for chunk with index ${currentChunkIndex}`)
+
+            this.downloadChunkForFile(
+              jobNumbers,
+              filesForEachJob,
+              currentJobIndex,
+              currentFileIndex, 
+              targetParentFileDirectory,
+              bucket,
+              verisuiteJobLevelSemaphoreForChunks,
+              currentChunkIndex,
+              byteRangeStart,
+              byteRangeEnd,
+              necessaryNumberOfChunks,
+              contentType,
+              fileAppendStream,
+              region,
+              accessKeyId,
+              secretAccessKey,
+              signatureVersion
+            )
+
+            calledDownloadChunkFunction = true
           }
-          catch(error) {
-            currentTryIndex++
-
-            if(currentTryIndex === maxTries) { 
-              Logging.logError("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
-              Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
-
-              alert(`s3 returned an error for the following file:\n\tBucket: ${params.Bucket}\n\tKey: ${params.Key}`)
-
-              filesForEachJob[currentJobIndex][currentFileIndex].downloadError = error
-
-              throw error 
-            } 
-            else {
-              Logging.log("ERROR in localDownloader.downloadFileForJob() at s3.getObject", error)
-              Logging.log("params used for s3.getObject call:", params, "data from s3.getObject call that threw error:", data)
-
-              await new Promise(resolve => setTimeout(resolve, LOCAL_DOWNLOADING_CONSTANTS.DOWNLOAD_RETRY_TIMEOUT))
-            }
-          }
+          if(!calledDownloadChunkFunction) { await this.sleep(100) }
         }
-
-        // SAVE CHUNK'S DOWNLOAD RESPONSE
-        if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse)) {
-          filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse = []
-        }
-        filesForEachJob[currentJobIndex][currentFileIndex].downloadResponse.push({
-          chunkIndex: currentChunkIndex, error: data.$response.error,
-          statusCode: data.$response.statusCode, statusMessage: data.$response.statusMessage
-        })
-
-        // APPEND CHUNK DATA TO FILE
-        if(!defined(filesForEachJob[currentJobIndex][currentFileIndex].downloadError) && !defined(data.$response.error)) {
-          await this.appendS3FileData(
-            jobNumbers,
-            filesForEachJob,
-            currentJobIndex,
-            currentFileIndex, 
-            targetParentFileDirectory,
-            data.Body,
-            currentChunkIndex
-          )
-        }
-        //Logging.LogSectionEnd("DOWNLOAD FILE CHUNK")
       }
     }
     catch(error) {
@@ -289,6 +466,7 @@ class LocalDownloader {
     currentJobIndex,
     targetParentFileDirectory,
     bucket,
+    verisuiteJobLevelSemaphoreForChunks,
     region = config.region,
     accessKeyId = config.accessKeyId,
     secretAccessKey = config.secretAccessKey,
@@ -297,18 +475,58 @@ class LocalDownloader {
     Logging.log("localDownloader.downloadFilesForJob", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]", filesForEachJob[currentJobIndex])
 
     for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
-      await this.downloadFileForJob(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory, bucket, region, accessKeyId, secretAccessKey, signatureVersion)
+      let calledDownloadFileFunction = false
+
+      while(!calledDownloadFileFunction) {
+        if(verisuiteJobLevelSemaphoreForChunks.available(10)) {
+          //await this.downloadFileForJob(
+          this.downloadFileForJob(
+            jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory,
+            bucket, verisuiteJobLevelSemaphoreForChunks, region, accessKeyId, secretAccessKey, signatureVersion
+          )
+
+          calledDownloadFileFunction = true
+        }
+        //else { this.sleep(100) }
+
+        if(!calledDownloadFileFunction) { await this.sleep(100) }
+      }
+   }
+  }
+
+  deleteExistingJobFolders(jobNumbers, targetParentFileDirectory) {
+    for (let jobNumberIndex = 0; jobNumberIndex < jobNumbers.length; jobNumberIndex++) {
+      File.deleteDirIfItExists(`${targetParentFileDirectory}${jobNumbers[jobNumberIndex]}\\`)
     }
   }
 
   async downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory) {
+    let maxNumberOfChunksCurrentlyBeingDownloadedPerVerisuiteJob = 100
+    let verisuiteJobLevelSemaphoreForChunks = require('semaphore')(maxNumberOfChunksCurrentlyBeingDownloadedPerVerisuiteJob)
+
+    this.deleteExistingJobFolders(jobNumbers, targetParentFileDirectory)
+
     for (let i = 0; i < filesForEachJob.length; i++) {
-      await this.downloadFilesForJob(
-        jobNumbers, filesForEachJob, i, targetParentFileDirectory, LOCAL_DOWNLOADING_CONSTANTS[env].SOURCE_BUCKET)
+      let calledDownloadFilesFunction = false
+
+      while(!calledDownloadFilesFunction) {
+        if(verisuiteJobLevelSemaphoreForChunks.available(10)) {
+          //await this.downloadFilesForJob(
+          this.downloadFilesForJob(
+            jobNumbers, filesForEachJob, i, targetParentFileDirectory,
+            LOCAL_DOWNLOADING_CONSTANTS[env].SOURCE_BUCKET, verisuiteJobLevelSemaphoreForChunks)
+
+          calledDownloadFilesFunction = true
+        }
+
+        //else { this.sleep(1000) }
+        if(!calledDownloadFilesFunction) { await this.sleep(1000) }
+      }
     }
   }
 
   async downloadLocally(sourceFile, env) {
+    let startTimeOfOverallDownload = Date.now()
     let jobNumbers = this.getJobNumbersFromFile(sourceFile)
 
     let filesForEachJob = await this.getFilesForEachJob(jobNumbers, env)
@@ -318,13 +536,69 @@ class LocalDownloader {
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
 
-    alert("Local Download complete.")
+    this.pollToSeeIfDownloadsAreComplete(filesForEachJob, startTimeOfOverallDownload)
+  }
+
+  async pollToSeeIfDownloadsAreComplete(filesForEachJob, startTimeOfOverallDownload) {
+    let allDownloadsComplete = false 
+
+    while(!allDownloadsComplete) {
+      let breakOut = false
+
+      for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
+        for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
+          if(
+            !defined(filesForEachJob[currentJobIndex][currentFileIndex].fileStatus)
+            || (
+              defined(filesForEachJob[currentJobIndex][currentFileIndex].fileStatus)
+              && filesForEachJob[currentJobIndex][currentFileIndex].fileStatus !== FILE_STATUSES.COMPLETE
+              && filesForEachJob[currentJobIndex][currentFileIndex].fileStatus !== FILE_STATUSES.ERROR
+            )
+          ) { breakOut = true }
+
+          if(breakOut) { break }
+        }
+
+        if(breakOut) { break }
+      }
+
+      if(!breakOut) { allDownloadsComplete = true }
+      else { await this.sleep(1000) }
+    }
+
+    let endTimeOfOverallDownload = Date.now()
+    this.printFinalReport(filesForEachJob, startTimeOfOverallDownload, endTimeOfOverallDownload)
+  }
+
+  numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+  }
+
+  printFinalReport(filesForEachJob, startTimeOfOverallDownload, endTimeOfOverallDownload) {
+    let timeElapsed = endTimeOfOverallDownload - startTimeOfOverallDownload
+    let totalBytesDownloaded = 0
+    for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
+      for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
+        totalBytesDownloaded += filesForEachJob[currentJobIndex][currentFileIndex].Size
+      }  
+    }
+    let rawSpeedMbps = ((totalBytesDownloaded*8)/1000000)/(timeElapsed/1000.0)
+
+    let report = `Total Bytes Downloaded: ${this.numberWithCommas(totalBytesDownloaded)}\nTime Elapsed (ms): ${this.numberWithCommas(timeElapsed)}\nRaw Speed (Mbps): ${this.round(rawSpeedMbps, 1)}`
+
+    Logging.log("Local Download complete.", "filesForEachJob:", filesForEachJob, `Final Report:\n${report}`)
+
+    alert(`Local Download complete.\n\nFinal Report\n${report}`)
   }
 
   sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms)
-    })
+    return new Promise((resolve) => { setTimeout(resolve, ms) })
+    //Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
   }   
 }
 

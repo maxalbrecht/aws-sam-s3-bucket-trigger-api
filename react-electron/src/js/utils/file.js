@@ -44,7 +44,28 @@ const UNITS = {
 
     return size * Math.pow(UNITS_BASE2.conversionFactorForOneLevel, power)
   }
-}  
+} 
+
+function removeDir(path) {
+  if (fs.existsSync(path)) {
+    const files = fs.readdirSync(path)
+
+    if (files.length > 0) {
+      files.forEach(function(filename) {
+        if (fs.statSync(path + "/" + filename).isDirectory()) {
+          removeDir(path + "/" + filename)
+        } else {
+          fs.unlinkSync(path + "/" + filename)
+        }
+      })
+      fs.rmdirSync(path)
+    } else {
+      fs.rmdirSync(path)
+    }
+  } else {
+    console.log("Directory path not found.")
+  }
+}
 
 const File = {
   UNITS: {...UNITS, testing: "testing"} ,
@@ -121,12 +142,17 @@ const File = {
     //var fs = window.require('fs');
     try { 
       fs.writeFileSync(filePath, fileContent, 'utf-8'); 
-    } 
+    }
     catch(e) { alert('Failed to save to file!');
       return console.log(e);
     }
   },
-  appendTo(fileContent, filePathOrStream, closeStream = false) {
+  createAppendStream(filePath) {
+    let stream = fs.createWriteStream(filePath, { flags: 'a' })
+
+    return stream
+  },
+  async appendTo(fileContent, filePathOrStream, closeStream = false) {
     let { filePath, stream } = filePathOrStream
 
     if(!defined(stream)) {
@@ -134,9 +160,9 @@ const File = {
       closeStream = true
     }
 
-    let writeResult = stream.write(fileContent)
+    let writeResult = await stream.write(fileContent)
 
-    if(closeStream) { stream.end() }
+    if(closeStream) { await stream.end() }
 
     return writeResult
   },
@@ -152,12 +178,31 @@ const File = {
       }
     }
     catch(error) { 
-      alert(`Failed to create directory "${directory}"`)
+      //alert(`Failed to create directory "${directory}"`)
       console.log(`ERROR when attempting to create directory "${directory}". Error is as follows:`)
       console.log(error)
     }
 
   },
+  deleteDirIfItExists: removeDir,
+  /*
+  async deleteDirIfItExists(directory) 
+  {
+    console.log(`DIRECTORY TO BE DELETED: ${directory}`)
+    try {
+      if(defined(directory && fs.existsSync(directory))) {
+        var rimraf = require("rimraf")
+        //let result = await rimraf(directory, function() { console.log(`deleteDirIfItExists: deleted the following directory: ${directory}`)})
+        return rimraf.sync(directory)
+        //return result
+      }
+    }
+    catch(error) {
+      console.log(`ERROR when attempting to delete directory "${directory}". Error is as follows:`)
+      console.log(error)
+    }
+  },
+  */
   removeFileExtension(fileName) {
     return fileName.substr(0, fileName.lastIndexOf('.'))
   },

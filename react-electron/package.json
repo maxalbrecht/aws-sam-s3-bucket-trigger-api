@@ -1,6 +1,6 @@
 {
   "name": "VeriSuite",
-  "version": "1.7.60",
+  "version": "1.7.61",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
@@ -49,6 +49,8 @@
     "react-dropzone": "^10.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
+    "rimraf": "^3.0.2",
+    "semaphore": "^1.1.0",
     "storybook": "^5.3.19",
     "stringify": "^5.2.0",
     "styled-components": "^4.4.1",
