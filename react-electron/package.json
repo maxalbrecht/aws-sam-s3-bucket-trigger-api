@@ -54,6 +54,7 @@
     "storybook": "^5.3.19",
     "stringify": "^5.2.0",
     "styled-components": "^4.4.1",
+    "tinctured": "^1.0.0",
     "username": "^5.1.0",
     "yarn": "^1.22.4"
   },

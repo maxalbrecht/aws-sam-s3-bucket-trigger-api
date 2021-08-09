@@ -5,6 +5,15 @@ import LOCAL_DOWNLOADING_CONSTANTS from '../../constants/local-downloading'
 import { Config } from 'aws-sdk'
 import defined from '../../utils/defined'
 
+const { 
+  tinctured: tint, 
+  options: {
+    red, white, blue, green, yellow,
+    black, bgGreen, bgRed, bgCyan,
+    underscore, bgMagenta, bright,
+    cyan, reset, reverse, magenta 
+  } 
+} = require('tinctured')
 const aws = require('aws-sdk')
 //const ASYNC = require('async')
 //var store = window.store
@@ -256,7 +265,7 @@ class LocalDownloader {
     secretAccessKey = config.secretAccessKey,
     signatureVersion = 'v4'
   ) {
-    //filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SENDING_REQUEST
+    filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SENDING_REQUEST
     let s3 = new aws.S3({
       endpoint: new aws.Endpoint(`${bucket}.s3-accelerate.amazonaws.com`),
       useAccelerateEndpoint: true,
@@ -291,7 +300,7 @@ class LocalDownloader {
         data = await s3.getObject(params).promise()
         //Logging.log("Response received")
         if(defined(data.$response.error)) {throw data.$response.error }
-        //filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SAVING_TO_DISK
+        filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex].chunkStatus = CHUNK_STATUSES.SAVING_TO_DISK
         success = true
       }
       catch(error) {
@@ -378,7 +387,7 @@ class LocalDownloader {
   ) {
     try {
       // INITIALIZE VARIABLES
-      //filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.DOWNLOADING_AND_SAVING_TO_DISK
+      filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.DOWNLOADING_AND_SAVING_TO_DISK
       let chunkSizeInBytes = LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
       
       let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES)
@@ -532,11 +541,67 @@ class LocalDownloader {
     let filesForEachJob = await this.getFilesForEachJob(jobNumbers, env)
     let targetParentFileDirectory = File.removeNameFromPath(sourceFile)
 
+    this.printStatusUpdate(filesForEachJob, jobNumbers)
     Logging.log("downloadLocally() targetParentFileDirectory:", targetParentFileDirectory)
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
 
     this.pollToSeeIfDownloadsAreComplete(filesForEachJob, startTimeOfOverallDownload)
+  }
+
+  spacer(indentLvl) {
+    let spacer = "\n"
+
+    for (let i = 1; i <= indentLvl; i++) {
+      spacer += "  "
+    }
+
+    return spacer
+  }
+
+  async printStatusUpdate(filesForEachJob, jobNumbers, includeChunks = true) {
+    while(true) {
+
+      let report = `${tint("CURRENT STATUS", { cyan, bright })}${tint("", { white })}`
+      report += `${this.spacer(1)}${tint("Current Time: ", { reset })}${DateUtils.GetDateDisplay()}`
+      report += `${this.spacer(1)}Veritext Jobs (by index):`
+
+      for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
+        const currentJob = filesForEachJob[currentJobIndex];
+        report += `${this.spacer(2)}${tint(`job ${currentJobIndex}:`, { magenta })}${tint("", { white })}`
+        report += `${this.spacer(3)}Job Number: ${jobNumbers[currentJobIndex]}`
+        report += `${this.spacer(3)}Files (by index):`
+
+        for (let currentFileIndex = 0; currentFileIndex < currentJob.length; currentFileIndex++) {
+          const currentFile = currentJob[currentFileIndex];
+          
+          report += `${this.spacer(4)}${tint(`file ${currentFileIndex}:`, { cyan })}${tint("", { white })}`
+          report += `${this.spacer(5)}Key:\t\t  ${currentFile.Key}`
+          report += `${this.spacer(5)}fileStatus: ${defined(currentFile.fileStatus) ? (currentFile.fileStatus.replace(FILE_STATUSES.COMPLETE, tint(FILE_STATUSES.COMPLETE, { bgGreen })).replace(FILE_STATUSES.ERROR, tint(FILE_STATUSES.ERROR, { bgRed }))) : tint("NOT defined", { yellow })}${tint("", { white })}`
+          report += `${this.spacer(5)}Size:\t\t  ${currentFile.Size}`
+
+          if(includeChunks && defined(currentFile.chunks)) {
+            report += `${this.spacer(5)}Chunks (by index):`
+
+            for (let currentChunkIndex = 0; currentChunkIndex < currentFile.chunks.length; currentChunkIndex++) {
+              const currentChunk = currentFile.chunks[currentChunkIndex];
+
+              report += `${this.spacer(6)}chunk ${currentChunkIndex}:`
+              report += `${this.spacer(7)}chunkStatus: ${defined(currentChunk.chunkStatus) ? (currentChunk.chunkStatus.replace(CHUNK_STATUSES.COMPLETE, tint(CHUNK_STATUSES.COMPLETE, { green })).replace(CHUNK_STATUSES.ERROR, tint(CHUNK_STATUSES.ERROR, { red }))) : tint("NOT defined", { yellow })}${tint("", { white })}`
+            }
+          }
+          else {
+            report += `${this.spacer(5)}Chunks defined: ${defined(currentFile.chunks) ? "defined" : tint("NOT defined", { yellow })}${tint("", { white })}`
+          }
+        }
+      }
+
+      report += "\n"
+
+      Logging.log(report)
+
+      await this.sleep(10000)
+    }
   }
 
   async pollToSeeIfDownloadsAreComplete(filesForEachJob, startTimeOfOverallDownload) {
