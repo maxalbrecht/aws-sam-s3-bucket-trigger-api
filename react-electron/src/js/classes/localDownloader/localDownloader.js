@@ -541,7 +541,7 @@ class LocalDownloader {
     let filesForEachJob = await this.getFilesForEachJob(jobNumbers, env)
     let targetParentFileDirectory = File.removeNameFromPath(sourceFile)
 
-    this.printStatusUpdate(filesForEachJob, jobNumbers)
+    //this.printStatusUpdate(filesForEachJob, jobNumbers)
     Logging.log("downloadLocally() targetParentFileDirectory:", targetParentFileDirectory)
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
