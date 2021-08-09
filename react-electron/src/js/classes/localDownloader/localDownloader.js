@@ -27,6 +27,12 @@ catch(error) {
   Logging.logError("Error trying to initialize localDownloader's config", error)
 }
 
+const VERITEXT_JOB_STATUSES = {
+  DOWNLOAD_JOB_FILES_FUNCTION_NOT_YET_CALLED: "DOWNLOAD_JOB_FILES_FUNCTION_NOT_YET_CALLED",
+  DOWNLOADING_AND_SAVING_TO_DISK: "DOWNLOADING_AND_SAVING_TO_DISK",
+  COMPLETE: "COMPLETE",
+  ERROR: "ERROR"
+}
 const FILE_STATUSES = {
   DOWNLOAD_FILE_FUNCTION_NOT_YET_CALLED: "DOWNLOAD_FILE_FUNCTION_NOT_YET_CALLED",
   DOWNLOADING_AND_SAVING_TO_DISK: "DOWNLOADING_AND_SAVING_TO_DISK",
@@ -541,7 +547,7 @@ class LocalDownloader {
     let filesForEachJob = await this.getFilesForEachJob(jobNumbers, env)
     let targetParentFileDirectory = File.removeNameFromPath(sourceFile)
 
-    //this.printStatusUpdate(filesForEachJob, jobNumbers)
+    this.printStatusUpdate(filesForEachJob, jobNumbers)
     Logging.log("downloadLocally() targetParentFileDirectory:", targetParentFileDirectory)
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
