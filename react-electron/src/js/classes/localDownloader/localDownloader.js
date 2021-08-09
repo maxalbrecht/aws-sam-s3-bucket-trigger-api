@@ -279,9 +279,9 @@ class LocalDownloader {
       Bucket: bucket,
       Key: filesForEachJob[currentJobIndex][currentFileIndex].Key,
       Range: `bytes=${byteRangeStart}-${byteRangeEnd}`,
-      //ResponseCacheControl: 'STRING_VALUE',
-      //ResponseContentDisposition: 'STRING_VALUE',
-      //ResponseContentEncoding: 'STRING_VALUE',
+      ResponseCacheControl: 'STRING_VALUE',
+      ResponseContentDisposition: 'STRING_VALUE',
+      ResponseContentEncoding: 'STRING_VALUE',
       ResponseContentLanguage: 'en-US',
       ResponseContentType: fileContentType,
     }
@@ -600,7 +600,7 @@ class LocalDownloader {
 
       Logging.log(report)
 
-      await this.sleep(10000)
+      await this.sleep(180000)
     }
   }
 
