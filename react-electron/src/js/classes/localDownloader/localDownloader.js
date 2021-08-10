@@ -178,7 +178,8 @@ class LocalDownloader {
     //chunkIndex,
     necessaryNumberOfChunks,
     fileAppendStream,
-    verisuiteJobLevelSemaphoreForChunks
+    verisuiteJobLevelSemaphoreForChunks,
+    fileSemaphore
   ) {
     let filePath = `${targetParentDirectory}${filesForEachJob[currentJobIndex][currentFileIndex].Key.replace(/\//g, '\\')}`
     let stream = await fs.createWriteStream(filePath, { flags: 'a' })
@@ -211,6 +212,9 @@ class LocalDownloader {
           if(currentChunkIndex === necessaryNumberOfChunks - 1) {
             filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.COMPLETE
             appendedFinalChunk = true
+
+            //let filePointsForCurrentFile = this.getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+            fileSemaphore.leave(this.getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex))
           }
 
           //Logging.log(`DONE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
@@ -260,6 +264,7 @@ class LocalDownloader {
     targetParentFileDirectory,
     bucket,
     verisuiteJobLevelSemaphoreForChunks,
+    fileSemaphore,
     currentChunkIndex,
     byteRangeStart,
     byteRangeEnd,
@@ -370,7 +375,8 @@ class LocalDownloader {
           //currentChunkIndex,
           necessaryNumberOfChunks,
           fileAppendStream,
-          verisuiteJobLevelSemaphoreForChunks
+          verisuiteJobLevelSemaphoreForChunks,
+          fileSemaphore
         )
       }
     }
@@ -386,6 +392,7 @@ class LocalDownloader {
     targetParentFileDirectory,
     bucket,
     verisuiteJobLevelSemaphoreForChunks,
+    fileSemaphore,
     region = config.region,
     accessKeyId = config.accessKeyId,
     secretAccessKey = config.secretAccessKey,
@@ -396,7 +403,8 @@ class LocalDownloader {
       filesForEachJob[currentJobIndex][currentFileIndex].fileStatus = FILE_STATUSES.DOWNLOADING_AND_SAVING_TO_DISK
       let chunkSizeInBytes = LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
       
-      let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES)
+      //let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES)
+      let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
       filesForEachJob[currentJobIndex][currentFileIndex].chunks = [] //new Array(necessaryNumberOfChunks)
       
       for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
@@ -433,36 +441,54 @@ class LocalDownloader {
           byteRangeEnd = ( chunkSizeInBytes * (currentChunkIndex + 1) ) - 1
         }
 
-        //console.log("SEMAPHORE:")
-        //console.log(verisuiteJobLevelSemaphoreForChunks)
-
         while(!calledDownloadChunkFunction) {
           if(verisuiteJobLevelSemaphoreForChunks.available()) {
-            //console.log("DEBUG 0")
-            await verisuiteJobLevelSemaphoreForChunks.take(() => {})
-            //console.log("DEBUG 1")
-
-            //Logging.log(`about to call download-chunk function for chunk with index ${currentChunkIndex}`)
-
-            this.downloadChunkForFile(
-              jobNumbers,
-              filesForEachJob,
-              currentJobIndex,
-              currentFileIndex, 
-              targetParentFileDirectory,
-              bucket,
-              verisuiteJobLevelSemaphoreForChunks,
-              currentChunkIndex,
-              byteRangeStart,
-              byteRangeEnd,
-              necessaryNumberOfChunks,
-              contentType,
-              fileAppendStream,
-              region,
-              accessKeyId,
-              secretAccessKey,
-              signatureVersion
-            )
+            if(currentChunkIndex > 0) {
+              await verisuiteJobLevelSemaphoreForChunks.take(() => {
+                this.downloadChunkForFile(
+                  jobNumbers,
+                  filesForEachJob,
+                  currentJobIndex,
+                  currentFileIndex, 
+                  targetParentFileDirectory,
+                  bucket,
+                  verisuiteJobLevelSemaphoreForChunks,
+                  fileSemaphore,
+                  currentChunkIndex,
+                  byteRangeStart,
+                  byteRangeEnd,
+                  necessaryNumberOfChunks,
+                  contentType,
+                  fileAppendStream,
+                  region,
+                  accessKeyId,
+                  secretAccessKey,
+                  signatureVersion
+                )
+              })
+            }
+            else {
+              this.downloadChunkForFile(
+                jobNumbers,
+                filesForEachJob,
+                currentJobIndex,
+                currentFileIndex, 
+                targetParentFileDirectory,
+                bucket,
+                verisuiteJobLevelSemaphoreForChunks,
+                fileSemaphore,
+                currentChunkIndex,
+                byteRangeStart,
+                byteRangeEnd,
+                necessaryNumberOfChunks,
+                contentType,
+                fileAppendStream,
+                region,
+                accessKeyId,
+                secretAccessKey,
+                signatureVersion
+              )
+            }
 
             calledDownloadChunkFunction = true
           }
@@ -482,31 +508,37 @@ class LocalDownloader {
     targetParentFileDirectory,
     bucket,
     verisuiteJobLevelSemaphoreForChunks,
+    fileSemaphore,
     region = config.region,
     accessKeyId = config.accessKeyId,
     secretAccessKey = config.secretAccessKey,
     signatureVersion = 'v4'
     ) {
-    Logging.log("localDownloader.downloadFilesForJob", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]", filesForEachJob[currentJobIndex])
+    //Logging.log("localDownloader.downloadFilesForJob", "currentJobIndex:", currentJobIndex, "jobNumbers[currentJobIndex]:", jobNumbers[currentJobIndex], "filesForEachJob[currentJobIndex]:", filesForEachJob[currentJobIndex])
 
     for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
       let calledDownloadFileFunction = false
+      let filePointsForCurrentFile = this.getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
 
       while(!calledDownloadFileFunction) {
         if(verisuiteJobLevelSemaphoreForChunks.available(10)) {
-          //await this.downloadFileForJob(
-          this.downloadFileForJob(
-            jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory,
-            bucket, verisuiteJobLevelSemaphoreForChunks, region, accessKeyId, secretAccessKey, signatureVersion
+          await fileSemaphore.take(filePointsForCurrentFile,
+            async () => {
+              await verisuiteJobLevelSemaphoreForChunks.take(() => {
+                this.downloadFileForJob(
+                  jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentFileDirectory,
+                  bucket, verisuiteJobLevelSemaphoreForChunks, fileSemaphore, region, accessKeyId, secretAccessKey, signatureVersion
+                )}
+              )
+            }
           )
 
           calledDownloadFileFunction = true
         }
-        //else { this.sleep(100) }
 
         if(!calledDownloadFileFunction) { await this.sleep(100) }
       }
-   }
+    }
   }
 
   deleteExistingJobFolders(jobNumbers, targetParentFileDirectory) {
@@ -515,26 +547,43 @@ class LocalDownloader {
     }
   }
 
+  getNecessaryNumberOfChunksForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex) {
+    let necessaryNumberOfChunks = Math.ceil(filesForEachJob[currentJobIndex][currentFileIndex].Size / LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES)
+
+    return necessaryNumberOfChunks
+  }
+
+  getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex) {
+    let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
+
+    let result = Math.min(10, necessaryNumberOfChunks)
+
+    return result
+  }
+
   async downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory) {
     let maxNumberOfChunksCurrentlyBeingDownloadedPerVerisuiteJob = 100
+    let maxNumberOfFilePoints = 100
     let verisuiteJobLevelSemaphoreForChunks = require('semaphore')(maxNumberOfChunksCurrentlyBeingDownloadedPerVerisuiteJob)
+    let fileSemaphore = require('semaphore')(maxNumberOfFilePoints)
+    this.printSemaphoreStatusUpdate(verisuiteJobLevelSemaphoreForChunks, fileSemaphore)
 
     this.deleteExistingJobFolders(jobNumbers, targetParentFileDirectory)
 
-    for (let i = 0; i < filesForEachJob.length; i++) {
+    for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
       let calledDownloadFilesFunction = false
 
       while(!calledDownloadFilesFunction) {
-        if(verisuiteJobLevelSemaphoreForChunks.available(10)) {
+        if(verisuiteJobLevelSemaphoreForChunks.available(10) && fileSemaphore.available(10)) {
           //await this.downloadFilesForJob(
           this.downloadFilesForJob(
-            jobNumbers, filesForEachJob, i, targetParentFileDirectory,
-            LOCAL_DOWNLOADING_CONSTANTS[env].SOURCE_BUCKET, verisuiteJobLevelSemaphoreForChunks)
+            jobNumbers, filesForEachJob, currentJobIndex, targetParentFileDirectory,
+            LOCAL_DOWNLOADING_CONSTANTS[env].SOURCE_BUCKET, verisuiteJobLevelSemaphoreForChunks, fileSemaphore)
 
           calledDownloadFilesFunction = true
         }
 
-        //else { this.sleep(1000) }
+        //else { sleep(1000) }
         if(!calledDownloadFilesFunction) { await this.sleep(1000) }
       }
     }
@@ -565,6 +614,14 @@ class LocalDownloader {
     return spacer
   }
 
+  async printSemaphoreStatusUpdate(verisuiteJobLevelSemaphoreForChunks, fileSemaphore) {
+    while(true) {
+      Logging.log(`CURRENT TIME: ${DateUtils.GetDateDisplay()} `, "verisuiteJobLevelSemaphoreForChunks:", verisuiteJobLevelSemaphoreForChunks, "fileSemaphore:", fileSemaphore)
+      
+      await this.sleep(180000)
+    }
+  }
+
   async printStatusUpdate(filesForEachJob, jobNumbers, includeChunks = true) {
     while(true) {
 
@@ -586,7 +643,14 @@ class LocalDownloader {
           report += `${this.spacer(5)}fileStatus: ${defined(currentFile.fileStatus) ? (currentFile.fileStatus.replace(FILE_STATUSES.COMPLETE, tint(FILE_STATUSES.COMPLETE, { bgGreen })).replace(FILE_STATUSES.ERROR, tint(FILE_STATUSES.ERROR, { bgRed }))) : tint("NOT defined", { yellow })}${tint("", { white })}`
           report += `${this.spacer(5)}Size:\t\t  ${currentFile.Size}`
 
-          if(includeChunks && defined(currentFile.chunks)) {
+          if(
+            includeChunks
+            && defined(currentFile.chunks)
+            && (
+              !defined(currentFile.fileStatus)
+              || currentFile.fileStatus !== FILE_STATUSES.COMPLETE
+            )
+          ) {
             report += `${this.spacer(5)}Chunks (by index):`
 
             for (let currentChunkIndex = 0; currentChunkIndex < currentFile.chunks.length; currentChunkIndex++) {
@@ -596,7 +660,13 @@ class LocalDownloader {
               report += `${this.spacer(7)}chunkStatus: ${defined(currentChunk.chunkStatus) ? (currentChunk.chunkStatus.replace(CHUNK_STATUSES.COMPLETE, tint(CHUNK_STATUSES.COMPLETE, { green })).replace(CHUNK_STATUSES.ERROR, tint(CHUNK_STATUSES.ERROR, { red }))) : tint("NOT defined", { yellow })}${tint("", { white })}`
             }
           }
-          else {
+          else if(
+            includeChunks
+            && (
+              !defined(currentFile.fileStatus)
+              || currentFile.fileStatus !== FILE_STATUSES.COMPLETE
+            )
+          ) {
             report += `${this.spacer(5)}Chunks defined: ${defined(currentFile.chunks) ? "defined" : tint("NOT defined", { yellow })}${tint("", { white })}`
           }
         }
