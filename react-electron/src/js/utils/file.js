@@ -1,14 +1,148 @@
 //import Logging from './logging'
 import defined from './defined'
 import Logging from './logging'
+import { convertUnits } from './conversionFunctions'
 
 const fs = window.require('fs')
+const b = "b"
+const B = "B"
+const KB = "KB"
+const MB = "MB"
+const GB = "GB"
+const TB = "TB"
+
+const Kb = "Kb"
+const Mb = "Mb"
+const Gb = "Gb"
+const Tb = "Tb"
+
+function getByteUnitConversions() {
+  const byteUnitConversions = {}
+  let   ordinalNumber = 0
+
+  byteUnitConversions[b] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: B,
+    conversionToNextUnit: 8
+  }
+  byteUnitConversions[B] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: KB,
+    conversionToNextUnit: 1000
+  }
+  byteUnitConversions[KB] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: MB,
+    conversionToNextUnit: 1000
+  }
+  byteUnitConversions[MB] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: GB,
+    conversionToNextUnit: 1000
+  }
+  byteUnitConversions[GB] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: TB,
+    conversionToNextUnit: 1000
+  }
+  byteUnitConversions[TB] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: null,
+    conversionToNextUnit: null
+  }
+
+  return byteUnitConversions
+}
+
+function getBitUnitConversions() {
+  const bitUnitConversions = {}
+  let   ordinalNumber = 0
+  
+  bitUnitConversions[b] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: Kb,
+    conversionToNextUnit: 1000
+  }
+  bitUnitConversions[Kb] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: Mb,
+    conversionToNextUnit: 1000
+  }
+  bitUnitConversions[Mb] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: Gb,
+    conversionToNextUnit: 1000
+  }
+  bitUnitConversions[Gb] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: Tb,
+    conversionToNextUnit: 1000
+  }
+  bitUnitConversions[Tb] = {
+    ordinalNumber: ordinalNumber++,
+    nextUnit: null,
+    conversionToNextUnit: null
+  }
+
+  return bitUnitConversions
+}
+
+/*
+function convertUnits(amount, sourceUnit, targetUnit, unitConversions) {
+  let result = amount
+
+  if(unitConversions[sourceUnit].ordinalNumber <= unitConversions[targetUnit].ordinalNumber) {
+    while(sourceUnit !== targetUnit) {
+      result /= (unitConversions[sourceUnit].conversionToNextUnit * 1.0) 
+
+      sourceUnit = unitConversions[sourceUnit].nextUnit
+    }
+  }
+  else {
+    while(targetUnit !== sourceUnit) {
+      result *= unitConversions[targetUnit].conversionToNextUnit
+
+      targetUnit = unitConversions[targetUnit].nextUnit
+    }
+  }
+
+  return result
+}
+*/
+
+function convertDataUnits(amount, sourceUnit, targetUnit) {
+  if(
+    (sourceUnit[sourceUnit.length - 1] === B || sourceUnit === b)
+    && (targetUnit[targetUnit.length - 1] === B || targetUnit === b)
+  ) {
+    return convertUnits(amount, sourceUnit, targetUnit, getByteUnitConversions())
+  }
+  else if(sourceUnit[sourceUnit.length - 1] === b && targetUnit[targetUnit.length - 1] === b){
+    return convertUnits(amount, sourceUnit, targetUnit, getBitUnitConversions())
+  }
+  else if(sourceUnit[sourceUnit.length - 1] === B && targetUnit[targetUnit.length - 1] === b){
+    let amountInBits = convertUnits(amount, sourceUnit, b, getByteUnitConversions())
+
+    return convertUnits(amountInBits, b, targetUnit, getBitUnitConversions())
+  }
+  else if(sourceUnit[sourceUnit.length - 1] === b && targetUnit[targetUnit.length - 1] === B){
+    let amountInBits = convertUnits(amount, sourceUnit, b, getBitUnitConversions())
+
+    return convertUnits(amountInBits, b, targetUnit, getByteUnitConversions())
+  }
+}
+
 const UNITS_BASE1 = {
-  B: "B",
-  KB: "KB",
-  MB: "MB",
-  GB: "GB",
-  TB: "TB",
+  b,
+  B,
+  KB,
+  MB,
+  GB,
+  TB,
+  Kb,
+  Mb,
+  Gb,
+  Tb,
   conversionFactorForOneLevel: 1000,
 }
 const UNITS_BASE2 = {
@@ -18,6 +152,7 @@ const UNITS_BASE2 = {
 
 const UNITS = {
   ...UNITS_BASE2,
+  convertDataUnits,
   convert(size, sourceUnit, targetUnit) {
     let power = UNITS_BASE2.order.indexOf(sourceUnit) - UNITS_BASE2.order.indexOf(targetUnit)
 
@@ -91,6 +226,18 @@ const File = {
     }
 
     return fileContent
+  },
+  getSizeInBytes(filePath) {
+    try {
+    let stats = fs.statSync(filePath)
+    let fileSizeInBytes = stats["size"]
+
+    return fileSizeInBytes
+    }
+    catch(err) {
+      //^^//console.log("Error getting file size. Error: " + err);
+      alert("Error getting file size. Please check that the file exists.");
+    }
   },
   getSize(filePath) {
     //let fs = window.require("fs"); //Load the filesystem module
@@ -212,6 +359,64 @@ const File = {
   },
   removeNameFromPath(filePath) {
     return `${filePath.substr(0, filePath.lastIndexOf('\\'))}\\`
+  },
+  async getMd5Hash(filePath) {
+    let md5 = require('md5')
+    let buffer = fs.readFileSync(filePath)
+    let hexSync = md5(buffer)
+
+    console.log("MD5 SYNC HEX:")
+    console.log(hexSync)
+
+    let hex
+    
+    await fs.readFile(filePath, function(err, buf) {
+      let hex = md5(buf)
+      console.log("MD5 ASYNC HEX:")
+      console.log(hex);
+    });
+
+    return hex
+    /*
+    const crypto = require('crypto');
+    //const fs = require('fs');
+
+    console.log(`### getMd5Hash filePath: ${filePath}`)
+
+    const fileBuffer = await fs.readFileSync(filePath);
+    const hashSum = crypto.createHash('md5');
+    hashSum.update(fileBuffer);
+
+    const hex = hashSum.digest('hex');
+
+    console.log(hex);
+
+    return hex
+
+    */
+
+    /*
+    let crypto = require('crypto')
+    const fileBuffer = fs.readFileSync(filePath)
+    const hashSum = crypto.createHash('md5')
+
+    await hashSum.update(fileBuffer)
+    const hex = hashSum.digest('hex')
+
+    return hex
+    */
+    /*
+    let hashOfFile = crypto.createHash('md5')
+    let stream = fs.createReadStream(filePath)
+
+    stream.on('data', function (data) {
+      hashOfFile.update(data, 'utf8')
+    })
+
+    await stream.on('end', function () {
+      hashOfFile.digest('hex') // 34f7a3113803f8ed3b8fd7ce5656ebec
+    })
+    */
   }
 }
 

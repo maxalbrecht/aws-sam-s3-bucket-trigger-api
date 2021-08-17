@@ -12,3 +12,32 @@ function decimalToHex(d, padding) {
 export function rgbToHex(red, green, blue) {
   return `#${decimalToHex(red)}${decimalToHex(green)}${decimalToHex(blue)}`
 }
+
+export function convertUnits(amount, sourceUnit, targetUnit, unitConversions) {
+  let result = amount
+
+  if(unitConversions[sourceUnit].ordinalNumber <= unitConversions[targetUnit].ordinalNumber) {
+    while(sourceUnit !== targetUnit) {
+      result /= (unitConversions[sourceUnit].conversionToNextUnit * 1.0) 
+
+      sourceUnit = unitConversions[sourceUnit].nextUnit
+    }
+  }
+  else {
+    while(targetUnit !== sourceUnit) {
+      result *= unitConversions[targetUnit].conversionToNextUnit
+
+      targetUnit = unitConversions[targetUnit].nextUnit
+    }
+  }
+
+  return result
+}
+
+const Convert = {
+  convertUnits,
+  rgbToHex,
+  decimalToHex
+}
+
+export default Convert

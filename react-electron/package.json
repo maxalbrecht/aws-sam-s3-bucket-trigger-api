@@ -38,6 +38,7 @@
     "email-prop-type": "^3.0.1",
     "file-sizeof": "^1.0.4",
     "jquery": "^3.5.1",
+    "md5": "^2.3.0",
     "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.0",
     "react": "^16.13.1",
