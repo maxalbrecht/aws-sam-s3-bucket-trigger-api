@@ -202,6 +202,37 @@ function removeDir(path) {
   }
 }
 
+function removeNameFromPath(filePath) {
+    return `${filePath.substr(0, filePath.lastIndexOf('\\'))}\\`
+  }
+
+function makeDirIfItDoesNotExist(directory) {
+  //var fs = window.require('fs');
+  try{
+    if (defined(directory) && !fs.existsSync(directory)){
+      fs.mkdirSync(directory, { recursive: true }, (err) => {
+        if(err) {
+          throw err
+        }
+      })
+    }
+  }
+  catch(error) { 
+    //alert(`Failed to create directory "${directory}"`)
+    console.log(`ERROR when attempting to create directory "${directory}". Error is as follows:`)
+    console.log(error)
+  }
+}
+function saveTo(fileContent, filePath) {
+  //var fs = window.require('fs');
+  try { 
+    fs.writeFileSync(filePath, fileContent, 'utf-8'); 
+  }
+  catch(e) { alert('Failed to save to file!');
+    return console.log(e);
+  }
+}
+
 const File = {
   UNITS: {...UNITS, testing: "testing"} ,
   getContent(filePath) {
@@ -285,15 +316,7 @@ const File = {
 
     return result
   },
-  saveTo(fileContent, filePath) {
-    //var fs = window.require('fs');
-    try { 
-      fs.writeFileSync(filePath, fileContent, 'utf-8'); 
-    }
-    catch(e) { alert('Failed to save to file!');
-      return console.log(e);
-    }
-  },
+  saveTo,
   createAppendStream(filePath) {
     let stream = fs.createWriteStream(filePath, { flags: 'a' })
 
@@ -313,23 +336,18 @@ const File = {
 
     return writeResult
   },
-  makeDirIfItDoesNotExist(directory) {
-    //var fs = window.require('fs');
-    try{
-      if (defined(directory) && !fs.existsSync(directory)){
-        fs.mkdirSync(directory, { recursive: true }, (err) => {
-          if(err) {
-            throw err
-          }
-        })
+  makeDirIfItDoesNotExist,
+  makeFileIfItDoesNotExist(filePath, defaultContent = '') {
+    try {
+      makeDirIfItDoesNotExist(removeNameFromPath(filePath))
+
+      if(!fs.existsSync(filePath)) {
+        saveTo(defaultContent, filePath)
       }
     }
-    catch(error) { 
-      //alert(`Failed to create directory "${directory}"`)
-      console.log(`ERROR when attempting to create directory "${directory}". Error is as follows:`)
-      console.log(error)
+    catch(error) {
+      console.log("error in File.makeFileIfItDoesNotExist()")
     }
-
   },
   deleteDirIfItExists: removeDir,
   /*
@@ -357,9 +375,7 @@ const File = {
     let filePathSplit = filePath.split('\\')
     return filePathSplit[filePathSplit.length - 1]
   },
-  removeNameFromPath(filePath) {
-    return `${filePath.substr(0, filePath.lastIndexOf('\\'))}\\`
-  },
+  removeNameFromPath,
   async getMd5Hash(filePath) {
     let md5 = require('md5')
     let buffer = fs.readFileSync(filePath)
