@@ -13,6 +13,7 @@ import firstEqualsOneOfTheOthers from '../../utils/first-equals-one-of-the-other
 const aws = require('aws-sdk')
 const crypto = require('crypto')
 const fs = window.require('fs')
+const uuidv4 = window.require('uuid/v4');
 const { FILE_STATUSES, CHUNK_STATUSES } = LOCAL_DOWNLOADING_CONSTANTS
 const { SECONDS, MILLISECONDS } = DateUtils.TIME_UNITS
 const { indent, addIndent } = Text
@@ -194,80 +195,102 @@ class LocalDownloader {
     targetParentDirectory,
     necessaryNumberOfChunks,
     chunkSemaphore,
-    fileSemaphore
+    fileSemaphore,
+    stream = null,
+    currentChunkIndex = 0,
+    parentFunctionId = 0
   ) {
     let currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
-    let filePath = `${targetParentDirectory}${currentFile.Key.replace(/\//g, '\\')}`
-    let stream = await fs.createWriteStream(filePath, { flags: 'a' })
-    let appendedFinalChunk = false
-    let experiencedAppendingError = false
-    let currentChunkIndex = 0
+    let currentChunk = currentFile.chunks[currentChunkIndex]
+    let currentFunctionId = uuidv4()
 
-    while(!appendedFinalChunk && !experiencedAppendingError) {
-      let currentChunk = currentFile.chunks[currentChunkIndex]
-      let appendedCurrentChunk = false
+    Logging.log(`start of function appendS3FileData with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
 
-      try {
-        if(defined(currentChunk.s3Response) && defaultToNotDefined(currentChunk.ChunkStatus) !== CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK) {
-          let currentChunkData = currentChunk.s3Response.Body
+    currentChunk.editChunkLock.acquire()
 
-          let appendChunkDataResult = await stream.write(currentChunkData)
+    if(!defined(currentChunk.appendedData) || !currentChunk.appendedData) {
+      currentChunk.appendedData = true
+      currentChunk.editChunkLock.release()
 
-          currentChunk.appendChunkDataResult = appendChunkDataResult  
-          currentChunk.s3Response = null
-          appendedCurrentChunk = true
+      Logging.log(`starting to append S3 File Data, with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
+      let filePath = `${targetParentDirectory}${currentFile.Key.replace(/\//g, '\\')}`
+      let calledThroughCallback = false
+      if(defined(stream)) { 
+        calledThroughCallback = true
+        stream.on('drain', () => {} )
+      }
+      else { stream = await fs.createWriteStream(filePath, { flags: 'a' }) }
+      let appendedFinalChunk = false
+      let experiencedAppendingError = false
+      currentChunk.calledThroughCallback = calledThroughCallback
+      let appendChunkDataResult = true
 
-          await currentFile.lockToReleaseFileResources.acquire()
+      while(appendChunkDataResult && !appendedFinalChunk && !experiencedAppendingError && currentChunkIndex < currentFile.chunks.length) {
+        let appendedCurrentChunk = false
 
-          try {
-            let chunkHadBeenAlreadyBeenCancelled = (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK ? true : false)
-            currentChunk.chunkStatus = CHUNK_STATUSES.COMPLETE
+        try {
+          if(defined(currentChunk.s3Response) && defaultToNotDefined(currentChunk.ChunkStatus) !== CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK) {
+            Logging.log(`about to add callback function. currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
+            let chunkIndexForCallback = currentChunkIndex + 1
+            stream.on('drain', () => { this.appendS3FileData(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentDirectory, necessaryNumberOfChunks, chunkSemaphore, fileSemaphore, stream, chunkIndexForCallback, currentFunctionId) })
+            appendChunkDataResult = await stream.write(currentChunk.s3Response.Body)
 
-            if(currentChunkIndex === necessaryNumberOfChunks - 1) {
-              //currentFile.fileStatus = FILE_STATUSES.CHECKING_DATA_INTEGRITY
-              currentFile.fileStatus = FILE_STATUSES.COMPLETE
-              appendedFinalChunk = true
-            }
+            currentChunk.appendChunkDataResult = appendChunkDataResult
+            delete currentChunk.s3Response
+            currentChunk.s3Response = null
+            appendedCurrentChunk = true
 
-            if(!chunkHadBeenAlreadyBeenCancelled) {
-              chunkSemaphore.leave()
+            await currentFile.lockToReleaseFileResources.acquire()
+
+            try {
+              let chunkHadBeenAlreadyBeenCancelled = (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK ? true : false)
+              currentChunk.chunkStatus = CHUNK_STATUSES.COMPLETE
 
               if(currentChunkIndex === necessaryNumberOfChunks - 1) {
-                fileSemaphore.leave(this.getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex))
+                //currentFile.fileStatus = FILE_STATUSES.CHECKING_DATA_INTEGRITY
+                currentFile.fileStatus = FILE_STATUSES.COMPLETE
+                appendedFinalChunk = true
+                stream.end()
+              }
+
+              if(!chunkHadBeenAlreadyBeenCancelled) {
+                chunkSemaphore.leave()
+
+                if(currentChunkIndex === necessaryNumberOfChunks - 1) {
+                  fileSemaphore.leave(this.getNumberOfFilePointsForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex))
+                }
               }
             }
+            finally { currentFile.lockToReleaseFileResources.release() }
+
+            if(appendedCurrentChunk) { currentChunkIndex++ }
+
+            if(!appendChunkDataResult && !appendedFinalChunk) { appendedFinalChunk = true } // to break out of the while loop that is iterating through each chunk
           }
-          finally {
-            currentFile.lockToReleaseFileResources.release()
+          else if (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK) {
+            if(defined(stream)) { stream.end() }
+            throw `chunk with index ${currentChunkIndex} had status of ${CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK}`
           }
-
-          currentChunkIndex++
         }
-        else if (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK) {
-          throw `chunk with index ${currentChunkIndex} had status of ${CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK}`
+        catch(error) {
+            experiencedAppendingError = true
+            currentChunk.s3Response = null
+            currentFile.appendFileDataError = { chunkIndex: currentChunkIndex, error: error }
+            currentChunk.appendFileDataError = error
+
+            await this.releaseResourcesAfterChunkError(
+              jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex,
+              currentChunkIndex, chunkSemaphore, fileSemaphore
+            )
+
+            stream.end()
+
+            Logging.log(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
         }
+
+        if(!appendedCurrentChunk && !experiencedAppendingError) { await sleep(LOCAL_DOWNLOADING_CONSTANTS.TIMEOUT_IF_UNABLE_TO_START_APPENDING_CHUNK_DATA_MILLISECONDS) }
       }
-      catch(error) {
-          experiencedAppendingError = true
-          currentChunk.s3Response = null
-          currentFile.appendFileDataError = { chunkIndex: currentChunkIndex, error: error }
-          currentChunk.appendFileDataError = error
-
-          this.releaseResourcesAfterChunkError(
-            jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex,
-            currentChunkIndex, chunkSemaphore, fileSemaphore
-          )
-
-          Logging.log(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
-          //#alert(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
-      }
-
-      if(!appendedCurrentChunk && !experiencedAppendingError) { await sleep(LOCAL_DOWNLOADING_CONSTANTS.TIMEOUT_IF_UNABLE_TO_START_APPENDING_CHUNK_DATA_MILLISECONDS) }
     }
-
-    stream.end()
-
-    //this.checkIntegrityOfFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, filePath)
   }
 
   printFileAndChunkStatuses(
@@ -427,6 +450,7 @@ class LocalDownloader {
       )
     ) {
       currentChunk.s3Response = data // data.Body
+      data = null
 
       if(currentChunkIndex === 0) {
         await this.appendS3FileData(
@@ -461,7 +485,7 @@ class LocalDownloader {
       let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex)
       
       for (let currentChunkIndex = 0; currentChunkIndex < necessaryNumberOfChunks; currentChunkIndex++) {
-        let newChunk = { chunkStatus: CHUNK_STATUSES.DOWNLOAD_CHUNK_FUNCTION_NOT_YET_CALLED }
+        let newChunk = { chunkStatus: CHUNK_STATUSES.DOWNLOAD_CHUNK_FUNCTION_NOT_YET_CALLED, editChunkLock: new Lock() }
 
         currentFile.chunks[currentChunkIndex] = newChunk 
       }

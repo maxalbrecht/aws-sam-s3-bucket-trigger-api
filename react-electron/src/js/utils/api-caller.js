@@ -93,7 +93,7 @@ class ApiCaller {
       }
     }
     catch (e) {
-      Logging.logError(AXIOS_CONSTANTS.ERRORS.ERROR_RETURN_AXIOS_METHOD, e)
+      Logging.logError("Error in AxiosHelper.ReturnFetch()", e)
       alert(AXIOS_CONSTANTS.ALERTS.ERROR_CALLING_API)
     }
   }
