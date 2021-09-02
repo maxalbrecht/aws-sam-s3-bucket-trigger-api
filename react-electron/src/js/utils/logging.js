@@ -277,25 +277,27 @@ function rollLogFilesIfOverSizeLimit() {
 
 function logToFile(level, ...messages) {
   try {
-    rollLogFilesIfOverSizeLimit()
-    let stream = getLogFileStream()
-    let concatenatedMessages =""
-    let length = messages.length
+    if( !(defined(LOG, "settings.logToFile") && !LOG.settings.logToFile) ) {
+      rollLogFilesIfOverSizeLimit()
+      let stream = getLogFileStream()
+      let concatenatedMessages =""
+      let length = messages.length
 
-    try {
-      for (let i = 0; i < length; i++) {
-        let header = `${(length > 1 ? `\n\t` : "")}message${(length > 1 ? ` ${i + 1}` : "")}: `
-        let body = `${formatLogMessage(messages[i])}${(length > 1 && i + 1 === length ? "\n " : "")}`
-        concatenatedMessages += `${header}${body}`
+      try {
+        for (let i = 0; i < length; i++) {
+          let header = `${(length > 1 ? `\n\t` : "")}message${(length > 1 ? ` ${i + 1}` : "")}: `
+          let body = `${formatLogMessage(messages[i])}${(length > 1 && i + 1 === length ? "\n " : "")}`
+          concatenatedMessages += `${header}${body}`
+        }
+
+        File.appendTo(addOtherFieldsToLogRecord(concatenatedMessages, level), { stream: stream })
+      }
+      catch(error) {
+        console.error("error in logToFile() when appending to log file", error)
       }
 
-      File.appendTo(addOtherFieldsToLogRecord(concatenatedMessages, level), { stream: stream })
+      stream.end()
     }
-    catch(error) {
-      console.error("error in logToFile() when appending to log file", error)
-    }
-
-    stream.end()
   } 
   catch(error){
     console.error("error in logToFile()", error)
