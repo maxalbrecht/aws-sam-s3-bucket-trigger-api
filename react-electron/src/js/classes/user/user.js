@@ -1,5 +1,6 @@
 import defined from './../../utils/defined'
 import users from './users'
+import isDev from './../../utils/is-dev'
 import { DEV, PROD } from './../../constants/environments'
 
 class User {
@@ -64,7 +65,7 @@ class User {
   }
   */
   chooseEnvironment() {
-    const isDev = window.require("electron-is-dev");
+    //const isDev = window.require("electron-is-dev");
     //^^//console.log("chooseEnvironment isDev:")
     //^^//console.log(isDev);
 

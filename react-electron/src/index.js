@@ -10,8 +10,9 @@ import theStore from "./js/store/index";
 import Amplify from 'aws-amplify'
 import config from './config'
 import ThemeWrapper from './js/components/themeWrapper/ThemeWrapper'
+import isDev from './js/utils/is-dev'
 
-const isDev = window.require('electron-is-dev');
+//const isDev = window.require('electron-is-dev');
 let environment = ''
 
 if(isDev) {

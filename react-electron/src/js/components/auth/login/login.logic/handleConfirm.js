@@ -8,7 +8,7 @@ import defined from './../../../../utils/defined'
 var store = window.store;
 
 async function handleConfirm(event) {
-  event.preventDefault();
+  if(defined(event)) { event.preventDefault() }
   //^^//console.log("Inside Login handleConfirm()...")
 
   let newState = { ...this.state }

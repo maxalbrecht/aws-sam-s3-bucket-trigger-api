@@ -3,7 +3,7 @@ import { NEW_PASSWORD_REQUIRED, MFA_SETUP } from './../../../../constants/cognit
 import defined from '../../../../utils/defined';
 
 async function handleSubmit(event) {
-  event.preventDefault();
+  if(defined(event)) { event.preventDefault() }
   //^^//console.log("Inside Log in handleSubmit()...")
 
   let newState = { ...this.state }
