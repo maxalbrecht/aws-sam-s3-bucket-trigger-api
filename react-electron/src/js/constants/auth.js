@@ -1,0 +1,7 @@
+import STRING_CONSTANTS from "./string";
+
+const AUTH_CONSTANTS = {
+  DEV_CREDENTIALS: `${STRING_CONSTANTS.USER_DATA_FOLDER}\\private\\DEV_CREDENTIALS.json`
+}
+
+export default AUTH_CONSTANTS
