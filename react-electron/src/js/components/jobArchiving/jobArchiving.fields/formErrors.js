@@ -6,7 +6,7 @@ import Logging from './../../../utils/logging'
 function FormErrors() {
   let errors = [];
 
-  Logging.LogSectionStart()
+  Logging.LogSectionStart("src.js.components.jobArchiving.jobArchiving.fields.formErrors.js FormErrors() about to display this.state")
   Logging.log("Inside FormErrors(). this.state:", this.state)
   Logging.LogSectionEnd()
 

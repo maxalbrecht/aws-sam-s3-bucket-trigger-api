@@ -15,7 +15,7 @@ class ConnectedApp extends Component {
   }
 
   render() {
-    Logging.LogSectionStart()
+    Logging.LogSectionStart("App.js render() display process.env")
     Logging.log("process.env", process.env)
     Logging.LogSectionEnd()
     

@@ -25,7 +25,7 @@ class ApiCallerGetStatusUpdate extends ApiCaller {
   SuccessDetermineAPICallStatus(result) {
     let newAPICallStatus = ""
     let errorMsgList = []
-    Logging.LogSectionStart()
+    Logging.LogSectionStart("log AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result")
     Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 
@@ -71,7 +71,7 @@ class ApiCallerGetStatusUpdate extends ApiCaller {
   }
 
   AxiosThenFailure(reason) {
-    Logging.LogSectionStart()
+    Logging.LogSectionStart("display AxiosHelperGetStatusUpdate.AxiosDetermineAPICallStatus.reason")
     Logging.log("AxiosHelperGetStatusUpdate.AxiosDetermineAPICallStatus.reason:", reason)
     Logging.LogSectionEnd()
 
@@ -86,8 +86,7 @@ class ApiCallerGetStatusUpdate extends ApiCaller {
   }
 
   SaveValuesToAnotherObject(otherObject){
-    Logging.LogSectionStart()
-    Logging.log("AxiosHelperGetStatusUpdate.SaveValuesToAnotherObject")
+    Logging.LogSectionStart("AxiosHelperGetStatusUpdate.SaveValuesToAnotherObject")
 
     otherObject.jobStatusUpdate = this.result
     otherObject.fileStitchingStatus = this.APICallStatus

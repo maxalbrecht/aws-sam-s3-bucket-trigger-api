@@ -26,7 +26,7 @@ class ApiCallerGetTeleStreamJobStatusUpdate extends ApiCaller {
   SuccessDetermineAPICallStatus(result) {
     let newAPICallStatus = ""
     let errorMsgList = []
-    Logging.LogSectionStart()
+    Logging.LogSectionStart("display AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:")
     Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 

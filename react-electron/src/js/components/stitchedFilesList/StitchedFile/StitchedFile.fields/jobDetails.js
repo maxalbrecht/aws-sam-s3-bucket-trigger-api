@@ -6,8 +6,8 @@ import Collapse from '@kunukn/react-collapse'
 
 function JobDetails() {
   //let docs = this.StitchedFileObject.sourceFiles.docs;
-  Logging.LogSectionStart()
-  Logging.log("Inside StitchedFile.JobDetails()", "this.StitchedFileObject:", this.StitchedFileObject)
+  Logging.LogSectionStart("Inside StitchedFile.JobDetails()")
+  Logging.log("this.StitchedFileObject:", this.StitchedFileObject)
   Logging.LogSectionEnd()
 
   let docs = this.StitchedFileObject.fileStitcher.fileList_raw.docs

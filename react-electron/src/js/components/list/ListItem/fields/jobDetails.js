@@ -8,8 +8,8 @@ import Collapse from '@kunukn/react-collapse'
 function JobDetails() {
   let docs = this.ListItemObject.sourceFiles.docs;
   let docsParsed = []
-  Logging.LogSectionStart()
-  Logging.log("Inside ListItem.JobDetails()", "this.ListItemObject:", this.ListItemObject)
+  Logging.LogSectionStart("Inside ListItem.JobDetails()")
+  Logging.log("this.ListItemObject:", this.ListItemObject)
   Logging.LogSectionEnd()
   
   for (var prop in docs) {

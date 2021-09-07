@@ -18,8 +18,7 @@ async function handleConfirm(event) {
   let errorPresent = this.ValidateLoginFields();
 
   try{
-    Logging.LogSectionStart()
-    Logging.log("auth.login.login.logic.handleConfirm() about to try to either check or set up MFA")
+    Logging.LogSectionStart("auth.login.login.logic.handleConfirm() about to try to either check or set up MFA")
     Logging.log("this.state:", this.state)
 
     if (errorPresent === false && defined(this.state.cognitoUser)) {
