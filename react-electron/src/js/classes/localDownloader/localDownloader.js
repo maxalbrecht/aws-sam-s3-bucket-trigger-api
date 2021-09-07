@@ -13,6 +13,7 @@ import firstEqualsOneOfTheOthers from '../../utils/first-equals-one-of-the-other
 const aws = require('aws-sdk')
 const crypto = require('crypto')
 const fs = window.require('fs')
+const { webFrame } = window.require('electron')
 const uuidv4 = window.require('uuid/v4');
 const { FILE_STATUSES, CHUNK_STATUSES } = LOCAL_DOWNLOADING_CONSTANTS
 const { SECONDS, MILLISECONDS } = DateUtils.TIME_UNITS
@@ -187,6 +188,21 @@ class LocalDownloader {
     Logging.log("currentFile after saving results of hash check:", currentFile)
   }
 
+  getMemory() {
+    function logMemDetails(x) {
+      Logging.log(
+        "MEMORY DETAILS:",
+        `\tobject:\t\t\t${x[0]}`,
+        `\tcount:\t\t\t${x[1].count}`,
+        `\tsize:\t\t\t${x[1].size}`,
+        `\tliveSize:\t\t${x[1].liveSize}` 
+      )
+    }
+    
+    Object.entries(webFrame.getResourceUsage()).map(logMemDetails)
+    Logging.log('------')
+  }
+
   async appendS3FileData(
     jobNumbers,
     filesForEachJob,
@@ -237,7 +253,8 @@ class LocalDownloader {
 
             currentChunk.appendChunkDataResult = appendChunkDataResult
             delete currentChunk.s3Response.Body
-            currentChunk.s3Response.Body = null
+            delete currentChunk.s3Response.$response.data
+            //delete currentChunk.s3Response.$response
             delete currentChunk.s3Response
             currentChunk.s3Response = null
             appendedCurrentChunk = true
@@ -253,7 +270,13 @@ class LocalDownloader {
               if(currentChunkIndex === necessaryNumberOfChunks - 1) {
                 //currentFile.fileStatus = FILE_STATUSES.CHECKING_DATA_INTEGRITY
                 currentFile.fileStatus = FILE_STATUSES.COMPLETE
+                currentFile.chunks = null
                 appendedFinalChunk = true
+                Logging.LogSectionStart("CLEARING CACHE")
+                //this.getMemory()
+                webFrame.clearCache()
+                Logging.LogSectionEnd()
+
                 stream.end()
               }
 
@@ -292,7 +315,7 @@ class LocalDownloader {
 
             stream.end()
 
-            Logging.log(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`)
+            Logging.logError(`ERROR WHILE APPENDING FOR CHUNK WITH INDEX ${currentChunkIndex} FROM A TOTAL OF ${necessaryNumberOfChunks} NECESSARY CHUNKS`, error)
         }
 
         if(!appendedCurrentChunk && !experiencedAppendingError) { await sleep(LOCAL_DOWNLOADING_CONSTANTS.TIMEOUT_IF_UNABLE_TO_START_APPENDING_CHUNK_DATA_MILLISECONDS) }
@@ -645,7 +668,7 @@ class LocalDownloader {
     let filesForEachJob = await this.getFilesForEachJob(jobNumbers, env)
     let targetParentFileDirectory = File.removeNameFromPath(sourceFile)
 
-    this.printStatusUpdate(filesForEachJob, jobNumbers)
+    //this.printStatusUpdate(filesForEachJob, jobNumbers)
     Logging.log("downloadLocally() targetParentFileDirectory:", targetParentFileDirectory)
 
     await this.downloadFilesForEachJob(jobNumbers, filesForEachJob, env, targetParentFileDirectory)
@@ -916,7 +939,7 @@ class LocalDownloader {
           if((defined(currentFile.fileStatus) && currentFile.fileStatus === FILE_STATUSES.COMPLETE) || !defined(currentFile.fileStatus)) {
             if(defined(currentFile.fileStatus)) {
               totalBytesDownloaded += currentFile.Size
-              chunksPerState[CHUNK_STATUSES.COMPLETE].totalChunkCount += currentFile.chunks.length
+              //chunksPerState[CHUNK_STATUSES.COMPLETE].totalChunkCount += currentFile.chunks.length
             }
 
             let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile([], filesForEachJob, currentJobIndex, currentFileIndex)
@@ -936,7 +959,7 @@ class LocalDownloader {
             let listOfChunksPerStatusForCurrentFile = this.initializeListOfChunksPerStatusForFile(currentFileIndex)
 
               Logging.debug("debug0Min1")
-            for (let currentChunkIndex = 0; currentChunkIndex < filesForEachJob[currentJobIndex][currentFileIndex].chunks.length; currentChunkIndex++) {
+            for (let currentChunkIndex = 0; defined(filesForEachJob[currentJobIndex][currentFileIndex].chunks, "length") && currentChunkIndex < filesForEachJob[currentJobIndex][currentFileIndex].chunks.length; currentChunkIndex++) {
               Logging.debug("debug0")
               const currentChunk = filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex]
 
@@ -1007,6 +1030,8 @@ class LocalDownloader {
     }
     catch(error) {
       Logging.logError("error in LocalDownloader.printFinalReport:", error)
+      Logging.log("error:", error)
+      alert('Local Download complete.')
     }
   }
 }
