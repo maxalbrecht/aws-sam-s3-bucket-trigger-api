@@ -204,7 +204,7 @@ class LocalDownloader {
     let currentChunk = currentFile.chunks[currentChunkIndex]
     let currentFunctionId = uuidv4()
 
-    Logging.log(`start of function appendS3FileData with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
+    //Logging.log(`start of function appendS3FileData with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
 
     currentChunk.editChunkLock.acquire()
 
@@ -212,7 +212,7 @@ class LocalDownloader {
       currentChunk.appendedData = true
       currentChunk.editChunkLock.release()
 
-      Logging.log(`starting to append S3 File Data, with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
+      //Logging.log(`starting to append S3 File Data, with currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
       let filePath = `${targetParentDirectory}${currentFile.Key.replace(/\//g, '\\')}`
       let calledThroughCallback = false
       if(defined(stream)) { 
@@ -230,20 +230,24 @@ class LocalDownloader {
 
         try {
           if(defined(currentChunk.s3Response) && defaultToNotDefined(currentChunk.ChunkStatus) !== CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK) {
-            Logging.log(`about to add callback function. currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
+            //Logging.log(`about to add callback function. currentChunkIndex = ${currentChunkIndex}; currentFunctionId: ${currentFunctionId}; parentFunctionId: ${parentFunctionId}`)
             let chunkIndexForCallback = currentChunkIndex + 1
             stream.on('drain', () => { this.appendS3FileData(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex, targetParentDirectory, necessaryNumberOfChunks, chunkSemaphore, fileSemaphore, stream, chunkIndexForCallback, currentFunctionId) })
             appendChunkDataResult = await stream.write(currentChunk.s3Response.Body)
 
             currentChunk.appendChunkDataResult = appendChunkDataResult
+            delete currentChunk.s3Response.Body
+            currentChunk.s3Response.Body = null
             delete currentChunk.s3Response
             currentChunk.s3Response = null
             appendedCurrentChunk = true
 
+            //Logging.log(`appendS3FileData(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; currentChunkIndex: ${currentChunkIndex}; about to ACQUIRE lock. currentFile: `, currentFile, "currentChunk:", currentChunk)
             await currentFile.lockToReleaseFileResources.acquire()
+            //Logging.log(`appendS3FileData(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; currentChunkIndex: ${currentChunkIndex}; just ACQUIRED lock. currentFile: `, currentFile, "currentChunk:", currentChunk)
 
             try {
-              let chunkHadBeenAlreadyBeenCancelled = (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK ? true : false)
+              let chunkHadAlreadyBeenCancelled = (defaultToNotDefined(currentChunk.ChunkStatus) === CHUNK_STATUSES.CANCELLED_BY_ERROR_IN_OTHER_CHUNK ? true : false)
               currentChunk.chunkStatus = CHUNK_STATUSES.COMPLETE
 
               if(currentChunkIndex === necessaryNumberOfChunks - 1) {
@@ -253,7 +257,7 @@ class LocalDownloader {
                 stream.end()
               }
 
-              if(!chunkHadBeenAlreadyBeenCancelled) {
+              if(!chunkHadAlreadyBeenCancelled) {
                 chunkSemaphore.leave()
 
                 if(currentChunkIndex === necessaryNumberOfChunks - 1) {
@@ -261,7 +265,10 @@ class LocalDownloader {
                 }
               }
             }
-            finally { currentFile.lockToReleaseFileResources.release() }
+            finally { 
+              //Logging.log(`appendS3FileData(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; currentChunkIndex: ${currentChunkIndex}; about to RELEASE lock. currentFile: `, currentFile, "currentChunk:", currentChunk)
+              currentFile.lockToReleaseFileResources.release() }
+              //Logging.log(`appendS3FileData(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; currentChunkIndex: ${currentChunkIndex}; just RELEASED lock. currentFile: `, currentFile, "currentChunk:", currentChunk)
 
             if(appendedCurrentChunk) { currentChunkIndex++ }
 
@@ -291,6 +298,9 @@ class LocalDownloader {
         if(!appendedCurrentChunk && !experiencedAppendingError) { await sleep(LOCAL_DOWNLOADING_CONSTANTS.TIMEOUT_IF_UNABLE_TO_START_APPENDING_CHUNK_DATA_MILLISECONDS) }
       }
     }
+    else {
+      currentChunk.editChunkLock.release()
+    }
   }
 
   printFileAndChunkStatuses(
@@ -315,7 +325,9 @@ class LocalDownloader {
     let currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
     let errorChunk = currentFile.chunks[errorChunkIndex]
 
+    //Logging.log(`releaseResourcesAfterChunkError(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; errorChunkIndex: ${errorChunkIndex}; about to ACQUIRE lock. currentFile: `, currentFile)
     await currentFile.lockToReleaseFileResources.acquire()
+    //Logging.log(`releaseResourcesAfterChunkError(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; errorChunkIndex: ${errorChunkIndex}; just ACQUIRED lock. currentFile: `, currentFile)
 
     try {
       let anotherChunkAlreadyHadAnError = (defaultToNotDefined(currentFile.fileStatus) === FILE_STATUSES.ERROR ? true : false)
@@ -340,7 +352,9 @@ class LocalDownloader {
       }
     }
     finally {
+      //Logging.log(`releaseResourcesAfterChunkError(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; errorChunkIndex: ${errorChunkIndex}; about to RELEASE lock. currentFile: `, currentFile)
       currentFile.lockToReleaseFileResources.release()
+      //Logging.log(`releaseResourcesAfterChunkError(): currentJobIndex: ${currentJobIndex}; currentFileIndex: ${currentFileIndex}; errorChunkIndex: ${errorChunkIndex}; just RELEASED lock. currentFile: `, currentFile)
     }
   }
 
@@ -880,104 +894,120 @@ class LocalDownloader {
   }
 
   printFinalReport(jobNumbers, filesForEachJob, startTimeOfOverallDownload, endTimeOfOverallDownload) {
-    let filesPerState = this.initializeListOfFilesPerStatus()
-    let chunksPerState = this.initializeListOfChunksPerStatus()
-    let timeElapsed = 0
-    if(defined(endTimeOfOverallDownload) && defined(startTimeOfOverallDownload)) {
-      timeElapsed = endTimeOfOverallDownload - startTimeOfOverallDownload
-    }
-    let totalNumberOfFiles = 0
-    let totalPossibleBytesToDownload = 0
-    let totalBytesDownloaded = 0
-
-    for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
-      const currentJob = filesForEachJob[currentJobIndex];
-      totalNumberOfFiles += currentJob.length
-      
-      for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
-        const currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
-        totalPossibleBytesToDownload += currentFile.Size
-
-        if((defined(currentFile.fileStatus) && currentFile.fileStatus === FILE_STATUSES.COMPLETE) || !defined(currentFile.fileStatus)) {
-          if(defined(currentFile.fileStatus)) {
-            totalBytesDownloaded += currentFile.Size
-            chunksPerState[CHUNK_STATUSES.COMPLETE].totalChunkCount += currentFile.chunks.length
-          }
-
-          let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile([], filesForEachJob, currentJobIndex, currentFileIndex)
-
-          filesPerState[defaultToNotDefined(currentFile.fileStatus)].array.push({ jobIndex: currentJobIndex, fileIndex: currentFileIndex })
-          chunksPerState[defaultToNotDefined(CHUNK_STATUSES.COMPLETE)].array.push({
-            jobIndex: currentJobIndex, 
-            fileIndex: currentFileIndex,
-            includesEveryChunkOfFile: true,
-            necessaryNumberOfChunks: necessaryNumberOfChunks
-          })
-        }
-        else if (defined(currentFile.fileStatus)) {
-          filesPerState[currentFile.fileStatus].array.push({ fileIndex: currentFileIndex })
-          let listOfChunksPerStatusForCurrentFile = this.initializeListOfChunksPerStatusForFile(currentFileIndex)
-
-          for (let currentChunkIndex = 0; currentChunkIndex < filesForEachJob[currentJobIndex][currentFileIndex].chunks.length; currentChunkIndex++) {
-            const currentChunk = filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex]
-
-            if(currentChunk.chunkState === CHUNK_STATUSES.COMPLETE) {
-              totalBytesDownloaded += LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
-            }
-          
-            listOfChunksPerStatusForCurrentFile[defaultToNotDefined(currentChunk.chunkStatus)].array.push( { chunkIndex: currentChunkIndex } )
-          }
-
-          this.addChunksForCurrentFileToChunksPerStateList(listOfChunksPerStatusForCurrentFile, chunksPerState)
-        }
-      } 
-    }
-
-    let rawSpeedMbps = (File.UNITS.convertDataUnits(totalBytesDownloaded, File.UNITS.B, File.UNITS.Mb)/(DateUtils.convertTimeUnits(timeElapsed, MILLISECONDS, SECONDS)))
-    //let fileIntegrityCheck = this.checkIntegrityOfFilesDownloaded(filesForEachJob, jobNumbers)
-    let report = ""
-    
-    report += `\nPercentage of Files Successfully Downloaded: ${Nums.percentage(defaultToZero(filesPerState[FILE_STATUSES.COMPLETE].array.length), totalNumberOfFiles, 2)}%`
-    report += `\nNumber of Files Successfully Downloaded: ${Nums.withCommas(defaultToZero(filesPerState[FILE_STATUSES.COMPLETE].array.length))}`
-    report += `\nNumber of Files Requested: ${Nums.withCommas(totalNumberOfFiles)}`
-    report += "\n---------"
-    report += `\nPercentage of Bytes Successfully Downloaded: ${Nums.percentage(totalBytesDownloaded, totalPossibleBytesToDownload, 2)}%`
-    report += `\nTotal Bytes Downloaded: ${Nums.withCommas(totalBytesDownloaded)}`
-    report += `\nTotal Bytes in Files Requested: ${Nums.withCommas(totalPossibleBytesToDownload)}` 
-    report += "\n---------"
-    //report += `\nFile Integrity Check Passed: ${fileIntegrityCheck}`
-   // report += "\n---------"
-    report += `\nTime Elapsed: ${DateUtils.msToTime(timeElapsed)}`
-    report += `\nRaw Speed (Mbps): ${Nums.round(rawSpeedMbps, 1)}`
-
-    if(filesPerState[FILE_STATUSES.ERROR].array.length > 0) {
-      report += "\nFILES WITH ERRORS:"
-
-      let lastJobIndex = -1
-
-      for (let currentErroredOutFileIndex = 0; currentErroredOutFileIndex < filesPerState[FILE_STATUSES.ERROR].array.length; currentErroredOutFileIndex++) {
-        const currentJobIndex = filesPerState[FILE_STATUSES.ERROR].array[currentErroredOutFileIndex].jobIndex;
-        const currentFileIndex = filesPerState[FILE_STATUSES.ERROR].array[currentErroredOutFileIndex].fileIndex;
-        const currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
-
-        if(currentJobIndex !== lastJobIndex) {
-          report += `${indent(1)}Job # ${jobNumbers[currentJobIndex]}`
-        }
-
-        report += `${indent(2)}File: ${currentFile.Key}`
-        report += `${indent(3)}State: ${currentFile.fileState}`
-        report += `${indent(3)}Error(s):`
-        report += `\n${addIndent(this.stringifyFileErrors(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex), 4)}`
-
-        lastJobIndex = currentJobIndex
+    try {
+      let filesPerState = this.initializeListOfFilesPerStatus()
+      let chunksPerState = this.initializeListOfChunksPerStatus()
+      let timeElapsed = 0
+      if(defined(endTimeOfOverallDownload) && defined(startTimeOfOverallDownload)) {
+        timeElapsed = endTimeOfOverallDownload - startTimeOfOverallDownload
       }
+      let totalNumberOfFiles = 0
+      let totalPossibleBytesToDownload = 0
+      let totalBytesDownloaded = 0
+
+      for (let currentJobIndex = 0; currentJobIndex < filesForEachJob.length; currentJobIndex++) {
+        const currentJob = filesForEachJob[currentJobIndex];
+        totalNumberOfFiles += currentJob.length
+        
+        for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
+          const currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
+          totalPossibleBytesToDownload += currentFile.Size
+
+          if((defined(currentFile.fileStatus) && currentFile.fileStatus === FILE_STATUSES.COMPLETE) || !defined(currentFile.fileStatus)) {
+            if(defined(currentFile.fileStatus)) {
+              totalBytesDownloaded += currentFile.Size
+              chunksPerState[CHUNK_STATUSES.COMPLETE].totalChunkCount += currentFile.chunks.length
+            }
+
+            let necessaryNumberOfChunks = this.getNecessaryNumberOfChunksForFile([], filesForEachJob, currentJobIndex, currentFileIndex)
+
+            filesPerState[defaultToNotDefined(currentFile.fileStatus)].array.push({ jobIndex: currentJobIndex, fileIndex: currentFileIndex })
+            chunksPerState[defaultToNotDefined(CHUNK_STATUSES.COMPLETE)].array.push({
+              jobIndex: currentJobIndex, 
+              fileIndex: currentFileIndex,
+              includesEveryChunkOfFile: true,
+              necessaryNumberOfChunks: necessaryNumberOfChunks
+            })
+          }
+          else if (defined(currentFile.fileStatus)) {
+            Logging.debug("debug0Min3")
+            filesPerState[currentFile.fileStatus].array.push({ fileIndex: currentFileIndex })
+            Logging.debug("debug0Min2")
+            let listOfChunksPerStatusForCurrentFile = this.initializeListOfChunksPerStatusForFile(currentFileIndex)
+
+              Logging.debug("debug0Min1")
+            for (let currentChunkIndex = 0; currentChunkIndex < filesForEachJob[currentJobIndex][currentFileIndex].chunks.length; currentChunkIndex++) {
+              Logging.debug("debug0")
+              const currentChunk = filesForEachJob[currentJobIndex][currentFileIndex].chunks[currentChunkIndex]
+
+              Logging.debug("debug1")
+              if(currentChunk.chunkState === CHUNK_STATUSES.COMPLETE) {
+                Logging.debug("debug2")
+                totalBytesDownloaded += LOCAL_DOWNLOADING_CONSTANTS.CHUNK_SIZE_IN_BYTES
+                Logging.debug("debug3")
+              }
+              Logging.debug("debug4")
+            
+              listOfChunksPerStatusForCurrentFile[defaultToNotDefined(currentChunk.chunkStatus)].array.push( { chunkIndex: currentChunkIndex } )
+              Logging.debug("debug5")
+            }
+
+            Logging.debug("debug6")
+            this.addChunksForCurrentFileToChunksPerStateList(listOfChunksPerStatusForCurrentFile, chunksPerState)
+            Logging.debug("debug7")
+          }
+        } 
+      }
+
+      let rawSpeedMbps = (File.UNITS.convertDataUnits(totalBytesDownloaded, File.UNITS.B, File.UNITS.Mb)/(DateUtils.convertTimeUnits(timeElapsed, MILLISECONDS, SECONDS)))
+      //let fileIntegrityCheck = this.checkIntegrityOfFilesDownloaded(filesForEachJob, jobNumbers)
+      let report = ""
+      
+      report += `\nPercentage of Files Successfully Downloaded: ${Nums.percentage(defaultToZero(filesPerState[FILE_STATUSES.COMPLETE].array.length), totalNumberOfFiles, 2)}%`
+      report += `\nNumber of Files Successfully Downloaded: ${Nums.withCommas(defaultToZero(filesPerState[FILE_STATUSES.COMPLETE].array.length))}`
+      report += `\nNumber of Files Requested: ${Nums.withCommas(totalNumberOfFiles)}`
+      report += "\n---------"
+      report += `\nPercentage of Bytes Successfully Downloaded: ${Nums.percentage(totalBytesDownloaded, totalPossibleBytesToDownload, 2)}%`
+      report += `\nTotal Bytes Downloaded: ${Nums.withCommas(totalBytesDownloaded)}`
+      report += `\nTotal Bytes in Files Requested: ${Nums.withCommas(totalPossibleBytesToDownload)}` 
+      report += "\n---------"
+      //report += `\nFile Integrity Check Passed: ${fileIntegrityCheck}`
+    // report += "\n---------"
+      report += `\nTime Elapsed: ${DateUtils.msToTime(timeElapsed)}`
+      report += `\nRaw Speed (Mbps): ${Nums.round(rawSpeedMbps, 1)}`
+
+      if(filesPerState[FILE_STATUSES.ERROR].array.length > 0) {
+        report += "\nFILES WITH ERRORS:"
+
+        let lastJobIndex = -1
+
+        for (let currentErroredOutFileIndex = 0; currentErroredOutFileIndex < filesPerState[FILE_STATUSES.ERROR].array.length; currentErroredOutFileIndex++) {
+          const currentJobIndex = filesPerState[FILE_STATUSES.ERROR].array[currentErroredOutFileIndex].jobIndex;
+          const currentFileIndex = filesPerState[FILE_STATUSES.ERROR].array[currentErroredOutFileIndex].fileIndex;
+          const currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
+
+          if(currentJobIndex !== lastJobIndex) {
+            report += `${indent(1)}Job # ${jobNumbers[currentJobIndex]}`
+          }
+
+          report += `${indent(2)}File: ${currentFile.Key}`
+          report += `${indent(3)}State: ${currentFile.fileState}`
+          report += `${indent(3)}Error(s):`
+          report += `\n${addIndent(this.stringifyFileErrors(jobNumbers, filesForEachJob, currentJobIndex, currentFileIndex), 4)}`
+
+          lastJobIndex = currentJobIndex
+        }
+      }
+
+      report += `\n\n`
+
+      Logging.log("filesForEachJob:", filesForEachJob, `Summary Status Report:\n${report}`, "filesPerState:", filesPerState, "chunksPerState:", chunksPerState)
+
+      alert(`Local Download complete.\n\nFinal Report${report}`) 
     }
-
-    report += `\n\n`
-
-    Logging.log("filesForEachJob:", filesForEachJob, `Summary Status Report:\n${report}`, "filesPerState:", filesPerState, "chunksPerState:", chunksPerState)
-
-    alert(`Local Download complete.\n\nFinal Report${report}`) 
+    catch(error) {
+      Logging.logError("error in LocalDownloader.printFinalReport:", error)
+    }
   }
 }
 
