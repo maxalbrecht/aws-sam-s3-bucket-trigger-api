@@ -365,7 +365,7 @@ export const Logging = {
     logWithLevel(level, `${LOG.dividers.sectionStart}${defined(sectionHeader) ? `\n>>> ${sectionHeader} <<<\n` : ""}`)
   },
   LogSectionEnd(sectionHeader, level = LOG.msgTypes.verbose){
-    logWithLevel(level, `${defined(sectionHeader) ? `\n>>> ${sectionHeader} <<<\n` : ""}${LOG.dividers.sectionStart}`)
+    logWithLevel(level, `${defined(sectionHeader) ? `\n>>> ${sectionHeader} <<<\n` : ""}${LOG.dividers.sectionEnd}`)
   },
   logError: logError,
   logAndThrowError(errorMessage, error){

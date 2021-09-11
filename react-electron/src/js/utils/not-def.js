@@ -7,6 +7,7 @@ function defaultTo(someParam, defaultVal) {
 }
 
 const NotDef = {
+  NOT_DEFINED,
   defined,
   defaultTo,
   defaultToNotDefined(someParam) {
