@@ -3,8 +3,9 @@ import DateUtils from './../../utils/date-utils'
 import File from './../../utils/file'
 import Nums from './../../utils/nums'
 import Time from './../../utils/time'
-import Logging from './../../utils/logging'
+import Logging from './../../utils/logging' 
 import NotDef from './../../utils/not-def'
+import LOG from './../../constants/log'
 import LOCAL_DOWNLOADING_CONSTANTS from './../../constants/local-downloading'
 import STRING_CONSTANTS from './../../constants/string'
 import firstEqualsOneOfTheOthers from '../../utils/first-equals-one-of-the-others'
@@ -23,7 +24,11 @@ function tint(text) {
 }
 
 async function printStatusUpdate(filesForEachJob, jobNumbers, includeChunks = true) {
-  let loopAgain = true
+  let loopAgain = false
+
+  if(defined(LOG, "settings.logToFile") && LOG.settings.logToFile) {
+    loopAgain = true
+  }
 
   while(loopAgain) {
     let report = `${tint("CURRENT STATUS", { cyan, bright })}${tint("", { white })}`
@@ -93,7 +98,8 @@ async function printStatusUpdate(filesForEachJob, jobNumbers, includeChunks = tr
       //report +=`${indent(0)}--STOPPING STATUS UPDATES--\n`
     }
 
-    let filePath = `${STRING_CONSTANTS.USER_DATA_FOLDER}\\LocalDownloading\\statusUpdate_${DateUtils.GetDateDisplay().replace(/\//g, "-").replace(/:/g, "-").replace(/ /g, "_")}.log`
+    //let filePath = `${STRING_CONSTANTS.USER_DATA_FOLDER}\\logging\\localDownloading\\statusUpdate_${DateUtils.GetDateDisplay().replace(/\//g, "-").replace(/:/g, "-").replace(/ /g, "_")}.log`
+    let filePath = `${LOCAL_DOWNLOADING_CONSTANTS.STATUS_UPDATE_LOGGING_DIR}\\${DateUtils.GetDateDisplay().replace(/\//g, "-").replace(/:/g, "-").replace(/ /g, "_")}.log`
 
     File.makeOrOverwriteFile(filePath, report)
     //Logging.log(report)
