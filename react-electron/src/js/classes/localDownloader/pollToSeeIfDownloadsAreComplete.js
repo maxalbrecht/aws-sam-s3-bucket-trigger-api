@@ -9,11 +9,11 @@ const { VERISUITE_JOB_STATUSES, VERITEXT_JOB_STATUSES, FILE_STATUSES } = LOCAL_D
 const { sleep } = Time
 const { defined, defaultToNotDefined } = NotDef
 
-function updateVeritextJobStatus(filesForEachJob, currentJobIndex, currentFileIndex) {
+function updateVeritextJobStatus(filesForEachJob, currentJobIndex, currentFileIndex, allFilesForCurrentVeritextJobEqualToEitherCompleteOrError) {
   Logging.LogSectionStart(`ABOUT TO UPDATE VERITEXT JOB STATUS. currentJobIndex = ${currentJobIndex} and currentFileIndex = ${currentFileIndex}`)
   let currentVeritextJob = filesForEachJob[currentJobIndex]
   let currentFile = filesForEachJob[currentJobIndex][currentFileIndex]
-  let allFilesForCurrentVeritextJobEqualToEitherCompleteOrError  = true
+  //let allFilesForCurrentVeritextJobEqualToEitherCompleteOrError  = true
 
   Logging.log(
     `19: currentFile.fileStatus: ${currentFile.fileStatus}`,
@@ -60,16 +60,19 @@ function updateVeritextJobStatus(filesForEachJob, currentJobIndex, currentFileIn
     }
   } Logging.log(`61: currentVeritextJob.veritextJobStatus: ${currentVeritextJob.veritextJobStatus}`)
   Logging.LogSectionEnd()
+
+  return allFilesForCurrentVeritextJobEqualToEitherCompleteOrError
 }
 
 function updateVeriSuiteJobStatus(filesForEachJob, currentJobIndex) {
   let currentVeriSuiteJob = filesForEachJob
   let currentVeritextJob = filesForEachJob[currentJobIndex]
   let allVeritextJobsForCurrentVeriSuiteJobEqualToEitherCompleteOrErrorAndComplete = true
+  let allFilesForCurrentVeritextJobEqualToEitherCompleteOrError  = true
 
   for (let currentFileIndex = 0; currentFileIndex < filesForEachJob[currentJobIndex].length; currentFileIndex++) {
     Logging.LogSectionStart(`ABOUT TO UPDATE VERITEXT JOB STATUS --AND-- THEN UPDATE VERISUITE JOB STATUS. currentJobIndex = ${currentJobIndex} and currentFileIndex = ${currentFileIndex}`)
-    updateVeritextJobStatus(filesForEachJob, currentJobIndex, currentFileIndex)
+    allFilesForCurrentVeritextJobEqualToEitherCompleteOrError = updateVeritextJobStatus(filesForEachJob, currentJobIndex, currentFileIndex, allFilesForCurrentVeritextJobEqualToEitherCompleteOrError)
     Logging.log(`73: veritextJobStatus after updating it: ${currentVeritextJob.veritextJobStatus}`, `\tcurrent veriSuiteJobStatus: ${filesForEachJob.veriSuiteJobStatus}`)
 
     if(!defined(currentVeritextJob.veritextJobStatus)
