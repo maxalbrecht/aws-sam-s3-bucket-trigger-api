@@ -179,7 +179,16 @@ const UNITS = {
 
     return size * Math.pow(UNITS_BASE2.conversionFactorForOneLevel, power)
   }
-} 
+}
+
+function deleteFileIfItExists(filePath) {
+  if(fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+  }
+  else {
+    console.log("deleteFileIfItExists(): File does not exist.")
+  }
+}
 
 function removeDir(path) {
   if (fs.existsSync(path)) {
@@ -232,6 +241,26 @@ function saveTo(fileContent, filePath) {
     return console.log(e);
   }
 }
+
+function makeFileIfItDoesNotExist(filePath, defaultContent = '') {
+  try {
+    makeDirIfItDoesNotExist(removeNameFromPath(filePath))
+
+    if(!fs.existsSync(filePath)) {
+      saveTo(defaultContent, filePath)
+    }
+  }
+  catch(error) {
+    console.log("error in File.makeFileIfItDoesNotExist()")
+  }
+}
+
+function makeOrOverwriteFile(filePath, fileContent = '') {
+  //deleteDirIfItExists(filePath)
+  deleteFileIfItExists(filePath)
+  makeFileIfItDoesNotExist(filePath, fileContent)
+}
+
 
 const File = {
   UNITS: {...UNITS, testing: "testing"} ,
@@ -337,19 +366,10 @@ const File = {
     return writeResult
   },
   makeDirIfItDoesNotExist,
-  makeFileIfItDoesNotExist(filePath, defaultContent = '') {
-    try {
-      makeDirIfItDoesNotExist(removeNameFromPath(filePath))
-
-      if(!fs.existsSync(filePath)) {
-        saveTo(defaultContent, filePath)
-      }
-    }
-    catch(error) {
-      console.log("error in File.makeFileIfItDoesNotExist()")
-    }
-  },
+  makeFileIfItDoesNotExist,
+  deleteFileIfItExists,
   deleteDirIfItExists: removeDir,
+  makeOrOverwriteFile,
   /*
   async deleteDirIfItExists(directory) 
   {
