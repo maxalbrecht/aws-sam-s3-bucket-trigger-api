@@ -104,7 +104,7 @@ async function deleteS3File(
         Logging.info("Inside jobarchiver.deleteS3File during s3.deleteObject. copyData:", deleteData)
         file.deleteData = deleteData
 
-        deleteParentFolderIfEmpty(bucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
+        //deleteParentFolderIfEmpty(bucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
       }
     })
   }
