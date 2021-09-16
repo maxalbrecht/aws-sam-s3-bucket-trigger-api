@@ -9,6 +9,9 @@ import fieldBind from './ArchivedJob.fields/ArchivedJob.fields'
 
 import { ODD, EVEN, FAILURE } from './../../../constants/cssClassNames'
 import { ARCHIVING_JOB,  SUCCESS, ERROR } from './../../../constants/job_archiving_statuses'
+import JOB_ARCHIVING_CONSTANTS from '../../../constants/job-archiving'
+
+const { SOURCE_BUCKETS, sourceToTargetBucketMappings, getDestinationParentDirectory } = JOB_ARCHIVING_CONSTANTS
 
 class ConnectedArchivedJob extends Component {
   constructor(props){
@@ -41,6 +44,8 @@ class ConnectedArchivedJob extends Component {
     if(successOrFailure !== ''){
       jobClasses = successOrFailure + '_' + oddOrEven
     }
+
+    let { jobArchiver } = this.ArchivedJobObject
     
     return (
       <ListGroup.Item
@@ -59,25 +64,25 @@ class ConnectedArchivedJob extends Component {
 
         <Row className="JobNumber">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Source:</u></Col>
-          <Col style={{padingLeft:'10px'}}>vxtprod/{this.ArchivedJobObject.jobNumber}</Col>
+          <Col style={{padingLeft:'10px'}}>{jobArchiver.sourceBucket}/{this.ArchivedJobObject.jobNumber}</Col>
         </Row>
 
         <Row className="JobNumber">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Destination:</u></Col>
           <Col style={{padingLeft:'10px'}}>
-            vxtarc/{this.ArchivedJobObject.jobArchiver.year}/{this.ArchivedJobObject.jobArchiver.month}/{this.ArchivedJobObject.jobNumber}
+            {sourceToTargetBucketMappings[jobArchiver.sourceBucket]}/{getDestinationParentDirectory(jobArchiver.sourceBucket, jobArchiver.year, jobArchiver.month)}{this.ArchivedJobObject.jobNumber}
           </Col>
         </Row>
 
         <Row className="TimeSubmitted">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Time Submitted:</u></Col>
-          <Col style={{paddingLeft: '10px'}}>{this.ArchivedJobObject.jobArchiver.dateDisplay}</Col>
+          <Col style={{paddingLeft: '10px'}}>{jobArchiver.dateDisplay}</Col>
         </Row>
 
         <Row className="SubmissionResponse">
           <Col style={{maxWidth:'140px', padding:'0px'}}><u>Submission Response:</u></Col>
           <Col style={{paddingLeft:'10px'}}>
-            <Row style={{margin:'0 0'}}>{this.ArchivedJobObject.jobArchiver.jobArchivingStatus}</Row>
+            <Row style={{margin:'0 0'}}>{jobArchiver.jobArchivingStatus}</Row>
           </Col>
         </Row>
 

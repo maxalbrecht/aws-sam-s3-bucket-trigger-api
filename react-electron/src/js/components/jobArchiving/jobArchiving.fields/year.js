@@ -11,6 +11,7 @@ function Year() {
         value={this.state.year}
         onChange={this.handleChange}
       >
+        <option></option>
         <option>2005</option>
         <option>2006</option>
         <option>2007</option>

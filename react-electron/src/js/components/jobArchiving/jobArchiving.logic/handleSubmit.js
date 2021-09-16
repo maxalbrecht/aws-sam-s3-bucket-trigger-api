@@ -26,6 +26,7 @@ async function handleSubmit(event) {
         let currentId = uuidv4()
 
         let jobArchiver = new JobArchiver({
+          sourceBucket: this.state.sourceBucket,
           externalJobNumber: this.state.jobNumber,
           year: this.state.year,
           month: this.state.month,

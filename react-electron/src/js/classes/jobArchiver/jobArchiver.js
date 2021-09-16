@@ -4,6 +4,7 @@ import { SUCCESS, ERROR, ARCHIVING_JOB } from './../../constants/job_archiving_s
 import DateUtils from './../../utils/date-utils'
 import Logging from './../../utils/logging'
 import File from './../../utils/file'
+import defined from './../../utils/defined'
 import JOB_ARCHIVING_CONSTANTS from './../../constants/job-archiving'
 
 const aws = require('aws-sdk')
@@ -18,8 +19,103 @@ catch(error) {
   Logging.logError("Error trying to initialize jobArchiver's config. Error:", error)
 }
 
+function getParentFolder(fileKey) {
+  if(fileKey[fileKey.length - 1] === "/") {
+    fileKey = fileKey.slice(0, -1)
+  }
+
+  let result = `${fileKey.substr(0, fileKey.lastIndexOf('/'))}/`
+
+  return result
+}
+
+async function deleteParentFolderIfEmpty(
+  bucket,
+  file,
+  region = config.region,
+  accessKeyId = config.accessKeyId,
+  secretAccessKey = config.secretAccessKey,
+  signatureVersion = 'v4'
+) {
+  try {
+    const s3 = new aws.S3({
+      endpoint: `s3.${config.region}.amazonaws.com`,
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+      Bucket: bucket,
+      signatureVersion: signatureVersion,
+      region: region
+    })   
+
+    let parentFolder = getParentFolder(file.Key)
+
+    const params = {
+      Bucket: bucket,
+      Prefix: parentFolder
+    }
+
+    s3.listObjectsV2(params, function(err, data) {
+      if(err) {
+        Logging.logError("error inside jobArchiver.deleteParentFolderIfEmpty during s3.deleteObject. error:", err)
+      }
+      else {
+        Logging.info("Inside jobArchiver.deleteS3File during s3.deleteObject. copyData:", data)
+
+        if(defined(data, "Contents.length") && data.Contents.length === 1) {
+          deleteS3File(bucket, parentFolder, region, accessKeyId, secretAccessKey, signatureVersion)
+        }
+
+      }
+    })
+  }
+  catch(error) {
+    Logging.logError("ERROR inside jobArchiver.deleteS3File. error:", error)
+  }
+}
+
+async function deleteS3File(
+  bucket,
+  file,
+  region = config.region,
+  accessKeyId = config.accessKeyId,
+  secretAccessKey = config.secretAccessKey,
+  signatureVersion = 'v4'
+) {
+  try {
+    const s3 = new aws.S3({
+      endpoint: `s3.${config.region}.amazonaws.com`,
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey,
+      Bucket: bucket,
+      signatureVersion: signatureVersion,
+      region: region
+    })   
+
+    const params = {
+      Bucket: bucket,
+      Key: file.Key
+    }
+
+    s3.deleteObject(params, function(err, deleteData) {
+      if(err) {
+        Logging.logError("error inside jobArchiver.deleteS3File during s3.deleteObject. error:", err)
+      }
+      else {
+        Logging.info("Inside jobarchiver.deleteS3File during s3.deleteObject. copyData:", deleteData)
+        file.deleteData = deleteData
+
+        deleteParentFolderIfEmpty(bucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
+      }
+    })
+  }
+  catch(error) {
+    Logging.logError("ERROR inside jobArchiver.deleteS3File. error:", error)
+  }
+}
+
 class JobArchiver {
   constructor({
+    sourceBucket,
     externalJobNumber,
     year,
     month,
@@ -30,6 +126,7 @@ class JobArchiver {
     id,
     env = JOB_ARCHIVING_CONSTANTS.ENVS.TEST_ENV
   }) {
+    this.sourceBucket = sourceBucket
     this.externalJobNumber = externalJobNumber
     this.year = year
     this.month = month
@@ -46,7 +143,7 @@ class JobArchiver {
     this.dateDisplay = DateUtils.GetDateDisplay() 
 
     try{
-      this.archiveJob(this.externalJobNumber, this.year, this.month, this.env)
+      this.archiveJob(this.sourceBucket, this.externalJobNumber, this.year, this.month, this.env)
     }
     catch(e){
       Logging.logError("ERROR in constructor method of JobArchiver. Error:", e)
@@ -93,44 +190,6 @@ class JobArchiver {
     }
   }
 
-  async deleteS3File(
-    bucket,
-    file,
-    region = config.region,
-    accessKeyId = config.accessKeyId,
-    secretAccessKey = config.secretAccessKey,
-    signatureVersion = 'v4'
-  ) {
-      try {
-        const s3 = new aws.S3({
-          endpoint: `s3.${config.region}.amazonaws.com`,
-          accessKeyId: accessKeyId,
-          secretAccessKey: secretAccessKey,
-          Bucket: bucket,
-          signatureVersion: signatureVersion,
-          region: region
-        })   
-
-        const params = {
-          Bucket: bucket,
-          Key: file.Key
-        }
-
-        s3.deleteObject(params, function(err, deleteData) {
-          if(err) {
-            Logging.logError("error inside jobArchiver.deleteS3File during s3.deleteObject. error:", err)
-          }
-          else {
-            Logging.info("Inside jobarchiver.deleteS3File during s3.deleteObject. copyData:", deleteData)
-            file.deleteData = deleteData
-          }
-        })
-      }
-      catch(error) {
-        Logging.logError("ERROR inside jobArchiver.deleteS3File. error:", error)
-      }
-  }
-
   async moveS3Files(
     sourceBucket,
     files,
@@ -158,7 +217,8 @@ class JobArchiver {
           let params = {
             Bucket: targetBucket,
             CopySource: `/${sourceBucket}/${file.Key}`,
-            Key: `${year}/${month}/${file.Key}`
+            //Key: `${year}/${month}/${file.Key}`
+            Key: `${JOB_ARCHIVING_CONSTANTS.getDestinationParentDirectory(sourceBucket, year, month)}${file.Key}`
           }
 
           s3.copyObject(params, function(copyErr, copyData) {
@@ -170,7 +230,7 @@ class JobArchiver {
               cb()
               file.copyData = copyData
 
-              this.deleteS3File(sourceBucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
+              deleteS3File(sourceBucket, file, region, accessKeyId, secretAccessKey, signatureVersion)
             }
           })
         })
@@ -189,18 +249,19 @@ class JobArchiver {
     return SUCCESS
   }
 
-  async archiveJob(externalJobNumber, year, month, env){
+  async archiveJob(sourceBucket, externalJobNumber, year, month, env){
     let newJobArchivingStatus = ""
 
     try{
       // GET LIST OF FILES TO BE MOVED
-      let files = await this.getS3FileList(JOB_ARCHIVING_CONSTANTS[env].SOURCE_BUCKET, externalJobNumber)
+      let files = await this.getS3FileList(sourceBucket, externalJobNumber)
 
       //MOVE FILES
       await this.moveS3Files(
-        JOB_ARCHIVING_CONSTANTS[env].SOURCE_BUCKET,
+        sourceBucket,
         files,
-        JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
+        JOB_ARCHIVING_CONSTANTS.sourceToTargetBucketMappings[sourceBucket],
+        //JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
         year,
         month,
         config.region,

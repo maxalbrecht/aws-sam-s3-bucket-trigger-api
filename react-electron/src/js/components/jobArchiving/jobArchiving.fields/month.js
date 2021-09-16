@@ -11,6 +11,7 @@ function Month() {
         value={this.state.month}
         onChange={this.handleChange}
       >
+        <option></option>
         <option>January</option>
         <option>February</option>
         <option>March</option>
