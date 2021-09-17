@@ -20,7 +20,7 @@ function CheckForEmptyFields() {
 
   if(
     (
-      sourceBucket === SOURCE_BUCKETS.vxtprod
+      sourceBucket === SOURCE_BUCKETS.vxtprodOrVxttest003
       && Clean(jobNumber) !== ''
       && Clean(year) !== ''
       && Clean(month) !== ''

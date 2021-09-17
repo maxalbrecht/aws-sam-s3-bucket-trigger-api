@@ -1,34 +1,29 @@
 import STRING_CONSTANTS from './string'
+import ENVS from './environments'
+import getEnv from './../utils/get-env'
 
 const SOURCE_BUCKETS = {
-  vxtprod: "vxtprod",
+  vxtprodOrVxttest003: (getEnv() === ENVS.PROD ? "vxtprod" : "vxttest003"),
   videoin01: "videoin01",
   vxtzoom001: "vxtzoom001"
 }
 const DESTINATION_BUCKETS = {
-  vxtarc: "vxtarc",
+  vxtarcOrVxttest004: (getEnv() === ENVS.PROD ? "vxtarc" : "vxttest004"),
   archive_originals: "archive_originals"
 }
 
 const sourceToTargetBucketMappings = {
-  [SOURCE_BUCKETS.vxtprod]: DESTINATION_BUCKETS.vxtarc,
+  [SOURCE_BUCKETS.vxtprodOrVxttest003]: DESTINATION_BUCKETS.vxtarcOrVxttest004,
   [SOURCE_BUCKETS.videoin01]: DESTINATION_BUCKETS.archive_originals,
   [SOURCE_BUCKETS.vxtzoom001]: DESTINATION_BUCKETS.archive_originals
 }
 
-function getDestinationFields(sourceBucket, yearField, MonthField) {
-  if(sourceBucket === SOURCE_BUCKETS.vxtprod) {
-  }
-  else if(sourceBucket === SOURCE_BUCKETS.videoin01) {
-  }
-  else {
-  }
-}
+
 
 function getDestinationParentDirectory(sourceBucket, year, month) {
   let result = ""
 
-  if(sourceBucket === SOURCE_BUCKETS.vxtprod) {
+  if(sourceBucket === SOURCE_BUCKETS.vxtprodOrVxttest003) {
     result = `${year}/${month}/`
   }
   else if(sourceBucket === SOURCE_BUCKETS.videoin01) {
@@ -46,12 +41,12 @@ function getDestinationParentDirectory(sourceBucket, year, month) {
 const JOB_ARCHIVING_CONSTANTS = {
   CONFIG_FILE: `${STRING_CONSTANTS.USER_DATA_FOLDER}\\private\\MPEG1_CONVERSION_CONFIG.json`,
   SOURCE_BUCKETS,
-  DEFAULT_SOURCE_BUCKET: SOURCE_BUCKETS.vxtprod,
+  DEFAULT_SOURCE_BUCKET: SOURCE_BUCKETS.vxtprodOrVxttest003,
   //SOURCE_BUCKET: "vxtprod",
   //TARGET_BUCKET: "vxtarc",
   sourceToTargetBucketMappings,
-  getDestinationFields,
   getDestinationParentDirectory,
+  /*
   ENVS: {
     TEST_ENV: "TEST_ENV",
     PROD_ENV: "PROD_ENV"
@@ -64,6 +59,7 @@ const JOB_ARCHIVING_CONSTANTS = {
     SOURCE_BUCKET: "vxtprod",
     TARGET_BUCKET: "vxtarc"
   }
+  */
 }
 
 export default JOB_ARCHIVING_CONSTANTS

@@ -14,7 +14,7 @@ function SourceBucket() {
         value={this.state.sourceBucket}
         onChange={this.handleChange}
       >
-        <option>{SOURCE_BUCKETS.vxtprod}</option>
+        <option>{SOURCE_BUCKETS.vxtprodOrVxttest003}</option>
         <option>{SOURCE_BUCKETS.videoin01}</option>
         <option>{SOURCE_BUCKETS.vxtzoom001}</option>
       </Form.Control>

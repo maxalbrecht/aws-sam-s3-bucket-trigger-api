@@ -1,5 +1,6 @@
 import defined from './defined'
 
+
 function isDevFunc() {
   const nodeEnv = process.env.NODE_ENV
   let result = false
@@ -7,7 +8,7 @@ function isDevFunc() {
   console.log("nodeEnv:")
   console.log(nodeEnv)
 
-  if(defined(nodeEnv) && nodeEnv === 'development') {
+  if( !defined(process, "env.NODE_ENV") || (defined(nodeEnv) && nodeEnv === 'development') ) {
     result = true
   }
 

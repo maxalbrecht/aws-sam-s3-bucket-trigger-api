@@ -6,6 +6,7 @@ import Logging from './../../utils/logging'
 import File from './../../utils/file'
 import defined from './../../utils/defined'
 import JOB_ARCHIVING_CONSTANTS from './../../constants/job-archiving'
+import ENVS from './../../constants/environments'
 
 const aws = require('aws-sdk')
 const ASYNC = require('async')
@@ -124,7 +125,8 @@ class JobArchiver {
     contactEmail,
     contactPhone,
     id,
-    env = JOB_ARCHIVING_CONSTANTS.ENVS.TEST_ENV
+    //env = JOB_ARCHIVING_CONSTANTS.ENVS.TEST_ENV
+    env = ENVS.DEV
   }) {
     this.sourceBucket = sourceBucket
     this.externalJobNumber = externalJobNumber
@@ -143,7 +145,7 @@ class JobArchiver {
     this.dateDisplay = DateUtils.GetDateDisplay() 
 
     try{
-      this.archiveJob(this.sourceBucket, this.externalJobNumber, this.year, this.month, this.env)
+      //this.archiveJob(this.sourceBucket, this.externalJobNumber, this.year, this.month, this.env)
     }
     catch(e){
       Logging.logError("ERROR in constructor method of JobArchiver. Error:", e)
