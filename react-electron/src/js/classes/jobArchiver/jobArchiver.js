@@ -145,7 +145,7 @@ class JobArchiver {
     this.dateDisplay = DateUtils.GetDateDisplay() 
 
     try{
-      //this.archiveJob(this.sourceBucket, this.externalJobNumber, this.year, this.month, this.env)
+      this.archiveJob(this.sourceBucket, this.externalJobNumber, this.year, this.month, this.env)
     }
     catch(e){
       Logging.logError("ERROR in constructor method of JobArchiver. Error:", e)
@@ -279,6 +279,7 @@ class JobArchiver {
       newJobArchivingStatus = ERROR
       //^^//console.log(`Error archiving job. Error: ${e}`)
       this.errorMsgList = { error: e }
+      Logging.log("ERROR in jobArchiver.archiveJob():", e)
     }
 
     this.jobArchivingStatus = newJobArchivingStatus
