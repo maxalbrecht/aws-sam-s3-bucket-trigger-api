@@ -4,6 +4,7 @@ import defined from './defined'
 function isDevFunc() {
   const nodeEnv = process.env.NODE_ENV
   let result = false
+  return result
 
   console.log("nodeEnv:")
   console.log(nodeEnv)
