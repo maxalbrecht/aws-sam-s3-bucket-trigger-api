@@ -44,7 +44,7 @@ function DestinationFields() {
       </Form.Group>
     )
   }
-  else if(this.state.sourceBucket === SOURCE_BUCKETS.vxtzoom001) {
+  else if(this.state.sourceBucket === SOURCE_BUCKETS.vxtzoom01) {
     return (
       <Form.Group as={Col} className="textFieldLabel" 
         style={{borderWidth: '1px', borderColor: 'white', borderStyle:'solid', padding:'10px'}}

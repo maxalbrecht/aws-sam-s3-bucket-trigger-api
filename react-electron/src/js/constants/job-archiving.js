@@ -5,7 +5,7 @@ import getEnv from './../utils/get-env'
 const SOURCE_BUCKETS = {
   vxtprodOrVxttest003: (getEnv() === ENVS.PROD ? "vxtprod" : "vxttest003"),
   videoin01: "videoin01",
-  vxtzoom001: "vxtzoom001"
+  vxtzoom01: "vxtzoom01"
 }
 const DESTINATION_BUCKETS = {
   vxtarcOrVxttest004: (getEnv() === ENVS.PROD ? "vxtarc" : "vxttest004"),
@@ -15,7 +15,7 @@ const DESTINATION_BUCKETS = {
 const sourceToTargetBucketMappings = {
   [SOURCE_BUCKETS.vxtprodOrVxttest003]: DESTINATION_BUCKETS.vxtarcOrVxttest004,
   [SOURCE_BUCKETS.videoin01]: DESTINATION_BUCKETS.archive_originals,
-  [SOURCE_BUCKETS.vxtzoom001]: DESTINATION_BUCKETS.archive_originals
+  [SOURCE_BUCKETS.vxtzoom01]: DESTINATION_BUCKETS.archive_originals
 }
 
 
@@ -29,7 +29,7 @@ function getDestinationParentDirectory(sourceBucket, year, month) {
   else if(sourceBucket === SOURCE_BUCKETS.videoin01) {
     result = `From Videographers/`
   }
-  else if(sourceBucket === SOURCE_BUCKETS.vxtzoom001) {
+  else if(sourceBucket === SOURCE_BUCKETS.vxtzoom01) {
     result = `zoom/`
   }
   else {

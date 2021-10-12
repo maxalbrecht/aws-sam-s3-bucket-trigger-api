@@ -26,7 +26,7 @@ function CheckForEmptyFields() {
       && Clean(month) !== ''
     )
     || (
-      firstEqualsOneOfTheOthers(sourceBucket, SOURCE_BUCKETS.videoin01, SOURCE_BUCKETS.vxtzoom001)
+      firstEqualsOneOfTheOthers(sourceBucket, SOURCE_BUCKETS.videoin01, SOURCE_BUCKETS.vxtzoom01)
       && Clean(jobNumber) !== ''
     )
   ) {

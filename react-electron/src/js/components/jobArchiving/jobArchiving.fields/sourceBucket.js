@@ -16,7 +16,7 @@ function SourceBucket() {
       >
         <option>{SOURCE_BUCKETS.vxtprodOrVxttest003}</option>
         <option>{SOURCE_BUCKETS.videoin01}</option>
-        <option>{SOURCE_BUCKETS.vxtzoom001}</option>
+        <option>{SOURCE_BUCKETS.vxtzoom01}</option>
       </Form.Control>
     </Form.Group>
   )
