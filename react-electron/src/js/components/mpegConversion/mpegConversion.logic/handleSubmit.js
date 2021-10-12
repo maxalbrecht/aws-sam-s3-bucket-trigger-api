@@ -31,6 +31,9 @@ function handleSubmit(event) {
           storeState.user.resetLastTimeOfActivity()
           let currentVeriSuiteJobId = uuidv4()
 
+          Logging.log("this.state.sourceFiles:", this.state.sourceFiles)
+
+          
           let mpegConverter = new MpegConverter(
             this.state.jobNumber,
             this.state.sourceFiles,
@@ -41,6 +44,7 @@ function handleSubmit(event) {
             storeState.user.contactPhone,
             currentVeriSuiteJobId 
           )
+          
           
           this.props.addMpegConversionJob({
             id: currentVeriSuiteJobId,
@@ -53,6 +57,7 @@ function handleSubmit(event) {
             ...getConstructorState(),
             errors: state.errors
           }))
+          
         }
         else {
           alert("No source files selected. Please select at least one source file and try again.")

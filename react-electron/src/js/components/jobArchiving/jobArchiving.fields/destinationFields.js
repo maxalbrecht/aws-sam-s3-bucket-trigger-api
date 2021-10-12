@@ -24,6 +24,16 @@ function DestinationFields() {
 
           <Form.Group as={Col} className="textFieldLabel" style={{padding:'0', paddingLeft:'1px', paddingRight:'1px', maxWidth:'8px'}}>
             <Form.Label style={{paddingTop:'35px', color: 'darkgrey'}}>/</Form.Label>
+          </Form.Group>
+
+
+          <Form.Group as={Col} className="textFieldLabel" style={{padding:'0', paddingLeft:'5px', paddingRight:'1px', minWidth:'158px', maxWidth:'158px'}}>
+            <Form.Label style={{paddingTop:'35px', color: 'darkgrey'}}>From Videographers</Form.Label>
+          </Form.Group> 
+
+
+          <Form.Group as={Col} className="textFieldLabel" style={{padding:'0', paddingLeft:'1px', paddingRight:'1px', maxWidth:'8px'}}>
+            <Form.Label style={{paddingTop:'35px', color: 'darkgrey'}}>/</Form.Label>
           </Form.Group> 
 
           <Form.Group as={Col} className="textFieldLabel" style={{minWidth:'55px'}}>

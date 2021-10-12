@@ -47,8 +47,10 @@ class MpegConverter {
       for (let i = 0; i < thisMpegConverter.fileList.length; i++) {
         let currentFileObject = thisMpegConverter.fileList[i];
         let source_url = await thisMpegConverter.GenerateSignedUrlForS3Object(thisMpegConverter.veriSuiteJobNumber, currentFileObject.fileName, thisMpegConverter.subfolders)
+        Logging.log("#################################################################", "#################################################################", "#################################################################", "source_url:", source_url)
         let path_format = `${thisMpegConverter.veriSuiteJobNumber}/${thisMpegConverter.subfolders}${File.removeFileExtension(currentFileObject.fileName)}`
         let formattedAPIPayload = thisMpegConverter.APIPayloadCreator.GetFormattedAPIPayload(source_url, path_format)
+        Logging.log("#################################################################", "formattedAPIPayload:", formattedAPIPayload)
         
         currentFileObject = await thisMpegConverter.AxiosHelper_createTeleStreamJobs.CallAPI(
           MPEG_CONVERSION_CONSTANTS.CREATE_TELESTREAM_JOB_API.URL,
@@ -311,6 +313,8 @@ class MpegConverter {
         Key: `${veriSuiteJobNumber}/${subfolders}${fileName}`,
         Expires: 60 * 60
       }
+
+      Logging.log("###MpegConverter.GenerateSignedUrlForS3Object.params.Key:", params.Key)
 
       return s3.getSignedUrl('getObject', params)
     }
