@@ -9,9 +9,10 @@ class APIPayloadCreator {
     }
   }
 
-  GetFormattedAPIPayload(source_url, path_format) {
-    this.state.source_url = source_url 
+  GetFormattedAPIPayload(source_url, path_format, template_id) {
+    this.state.url = source_url 
     this.state.path_format = path_format
+    this.state.template_id = template_id
 
     return Regex.ReplaceJSONPlaceHolders(api_payload_template, this.state)
   }
