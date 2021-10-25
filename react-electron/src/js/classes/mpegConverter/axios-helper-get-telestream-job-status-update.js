@@ -1,5 +1,5 @@
 import ApiCaller from '../../utils/api-caller'
-import { SUCCESS, ERROR, FAIL, QUEUED, UPLOADING, PROCESSING } from './../../constants/list_item_statuses'
+import { SUCCESS, ERROR, FAIL, QUEUED, UPLOADING, PROCESSING, PREPARING, DOWNLOADING } from './../../constants/list_item_statuses'
 import Logging from './../../utils/logging'
 import API_CALLER_CONSTANTS from './../../constants/api-caller'
 
@@ -30,10 +30,21 @@ class ApiCallerGetTeleStreamJobStatusUpdate extends ApiCaller {
     Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 
-    let data = result.bodyAsJson.encodings[0]
+    //let data = result.bodyAsJson.encodings[0]
+    let data = result.bodyAsJson
 
     if (data.status.toLowerCase() === QUEUED.toLowerCase()) {
       newAPICallStatus = QUEUED
+      this.parentObject.failedAttemptsToGetUpdate = 0
+      errorMsgList = []
+    }
+    else if (data.status.toLowerCase() === DOWNLOADING.toLowerCase()) {
+      newAPICallStatus = DOWNLOADING
+      this.parentObject.failedAttemptsToGetUpdate = 0
+      errorMsgList = []
+    }
+    else if (data.status.toLowerCase() === PREPARING.toLowerCase()) {
+      newAPICallStatus = PREPARING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
