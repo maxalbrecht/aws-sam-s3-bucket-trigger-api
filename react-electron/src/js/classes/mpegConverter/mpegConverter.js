@@ -48,7 +48,7 @@ class MpegConverter {
         let currentFileObject = thisMpegConverter.fileList[i];
         let source_url = await thisMpegConverter.GenerateSignedUrlForS3Object(thisMpegConverter.veriSuiteJobNumber, currentFileObject.fileName, thisMpegConverter.subfolders)
         Logging.log("#################################################################", "#################################################################", "#################################################################", "source_url:", source_url)
-        let path_format = `${thisMpegConverter.veriSuiteJobNumber}/${thisMpegConverter.subfolders}${File.removeFileExtension(currentFileObject.fileName)}`
+        let path_format = `${thisMpegConverter.veriSuiteJobNumber}/${thisMpegConverter.subfolders}${File.removeFileExtension(currentFileObject.fileName)}.mpg`
         let formattedAPIPayload = thisMpegConverter.APIPayloadCreator.GetFormattedAPIPayload(source_url, path_format, MPEG_CONVERSION_CONSTANTS.TEMPLATE_ID)
         Logging.log("#################################################################", "formattedAPIPayload:", formattedAPIPayload)
         
