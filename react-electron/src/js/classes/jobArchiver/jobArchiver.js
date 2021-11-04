@@ -141,6 +141,7 @@ class JobArchiver {
     this.dateDisplay = "<<Date & Time>>";
     this.jobArchivingStatus = ARCHIVING_JOB;
     this.errorMsgList = [];
+    this.continuePolling = true
 
     this.dateDisplay = DateUtils.GetDateDisplay() 
 
@@ -154,6 +155,10 @@ class JobArchiver {
 
   removeNonFiles(originalFiles) {
     return originalFiles.slice().filter( file => !file.Key.endsWith("/") )
+  }
+
+  getFolders(originalFiles) {
+    return originalFiles.slice().filter( file => file.Key.endsWith("/") )
   }
 
   async getS3FileList(
@@ -174,6 +179,8 @@ class JobArchiver {
         region: region
       })
 
+      Logging.log("accessKeyId:", accessKeyId, "secretAccessKey:", secretAccessKey)
+      
       let params = {
         Bucket:bucket,
         Prefix: parentFolder
@@ -184,11 +191,14 @@ class JobArchiver {
       Logging.log("jobArchiver.getS3Files() response:", response)
 
       let files = this.removeNonFiles(response.Contents)
+      let folders = this.getFolders(response.Contents)
 
-      return files
+      return { files, folders }
     }
     catch(error) {
       Logging.logError("ERROR inside JobArchiver.getFileList():", error)
+      Logging.log("Error Printed separately:")
+      Logging.log(error)
     }
   }
 
@@ -246,6 +256,87 @@ class JobArchiver {
     }
   }
 
+  async deleteFolders(
+    sourceBucket,
+    files,
+    targetBucket,
+    //targetParentFolder,
+    folders,
+    year,
+    month,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+    Logging.LogSectionStart("jobArchiver.deleteFolders")
+    Logging.log("jobArchiver.deleteFolders.folders:", folders)
+    Logging.log("jobArchiver.deleteFolders.files:", files)
+    Logging.LogSectionEnd("jobArchiver.deleteFolders")
+
+    try {
+      const s3 = new aws.S3({
+        endpoint: `s3.${config.region}.amazonaws.com`,
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+        Bucket: sourceBucket,
+        signatureVersion: signatureVersion,
+        region: region
+      })
+
+      if(folders.length && folders.length > 0) {
+
+      }
+
+      this.ShouldWeContinuePolling()
+    }
+    catch(error) {
+      Logging.logError("error inside jobArchiver.deleteFolders:", error)
+    }
+  }
+
+  ShouldWeContinuePolling() {
+    if(!this.continuePolling) {
+      clearInterval(this.IdOfTimerToPollForWhetherEmptyFoldersHaveBeenDeleted)
+    }
+  }
+
+  PollForWhetherEmptyFoldersHaveBeenDeleted(
+    sourceBucket,
+    files,
+    targetBucket,
+    //targetParentFolder,
+    folders,
+    year,
+    month,
+    region = config.region,
+    accessKeyId = config.accessKeyId,
+    secretAccessKey = config.secretAccessKey,
+    signatureVersion = 'v4'
+  ) {
+    let timeoutTimeInMilliseconds = 60 * 1000
+
+    this.IdOfTimerToPollForWhetherEmptyFoldersHaveBeenDeleted = setInterval(
+      ( () => { 
+          this.deleteFolders(
+            sourceBucket,
+            files,
+            JOB_ARCHIVING_CONSTANTS.sourceToTargetBucketMappings[sourceBucket],
+            //JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
+            folders,
+            year,
+            month,
+            config.region,
+            config.accessKeyId,
+            config.secretAccessKey,
+            'v4'
+          )
+        }
+      ),
+      timeoutTimeInMilliseconds
+    )
+  }
+
   async setStatus(files) {
 
     return SUCCESS
@@ -256,7 +347,7 @@ class JobArchiver {
 
     try{
       // GET LIST OF FILES TO BE MOVED
-      let files = await this.getS3FileList(sourceBucket, externalJobNumber)
+      let { files, folders } = await this.getS3FileList(sourceBucket, externalJobNumber)
 
       //MOVE FILES
       await this.moveS3Files(
@@ -264,6 +355,20 @@ class JobArchiver {
         files,
         JOB_ARCHIVING_CONSTANTS.sourceToTargetBucketMappings[sourceBucket],
         //JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
+        year,
+        month,
+        config.region,
+        config.accessKeyId,
+        config.secretAccessKey,
+        'v4'
+      )
+
+      this.PollForWhetherEmptyFoldersHaveBeenDeleted(
+        sourceBucket,
+        files,
+        JOB_ARCHIVING_CONSTANTS.sourceToTargetBucketMappings[sourceBucket],
+        //JOB_ARCHIVING_CONSTANTS[env].TARGET_BUCKET,
+        folders,
         year,
         month,
         config.region,
