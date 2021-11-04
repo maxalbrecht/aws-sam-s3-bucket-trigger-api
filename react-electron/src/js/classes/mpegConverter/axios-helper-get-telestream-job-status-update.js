@@ -30,8 +30,8 @@ class ApiCallerGetTeleStreamJobStatusUpdate extends ApiCaller {
     Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 
-    //let data = result.bodyAsJson.encodings[0]
-    let data = result.bodyAsJson
+    let data = result.bodyAsJson.encodings[0]
+    //let data = result.bodyAsJson
 
     if (data.status.toLowerCase() === QUEUED.toLowerCase()) {
       newAPICallStatus = QUEUED

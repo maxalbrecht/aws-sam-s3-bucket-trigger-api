@@ -1,11 +1,6 @@
-{
-  "template_id": "template_id_val",
-  "inputs": {
-		"input-1": {
-			"url": "url_val"
-		}
-	},
-  "outputs": {
-      "output-1": {"path_format": "path_format_val" }
-  }
+{   
+  "profiles": "MPEG-1",
+  "source_url": "source_url_val",
+  "extra_files": "{\"bumpers\":[],\"trailers\":[]}",
+  "path_format": "path_format_val"
 }

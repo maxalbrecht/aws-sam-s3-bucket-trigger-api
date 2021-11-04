@@ -1,0 +1,11 @@
+{
+  "template_id": "template_id_val",
+  "inputs": {
+		"input-1": {
+			"url": "url_val"
+		}
+	},
+  "outputs": {
+      "output-1": {"path_format": "path_format_val" }
+  }
+}
