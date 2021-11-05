@@ -1,6 +1,6 @@
 {
   "name": "VeriSuite",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "description": "Desktop application to send out jobs for further processing.",
   "author": "Max Albrecht",
   "build": {
