@@ -30,35 +30,39 @@ class ApiCallerGetTeleStreamJobStatusUpdate extends ApiCaller {
     Logging.log("AxiosHelperGetStatusUpdate.SuccessDetermineAPICallStatus.result:", result)
     Logging.LogSectionEnd()
 
-    let data = result.bodyAsJson.encodings[0]
+    //let data = result.bodyAsJson.encodings[0]
     //let data = result.bodyAsJson
+    let data = result
 
-    if (data.status.toLowerCase() === QUEUED.toLowerCase()) {
+    if (data.status.toString().toLowerCase() === QUEUED.toLowerCase()) {
       newAPICallStatus = QUEUED
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
-    else if (data.status.toLowerCase() === DOWNLOADING.toLowerCase()) {
+    else if (data.status.toString().toLowerCase() === DOWNLOADING.toLowerCase()) {
       newAPICallStatus = DOWNLOADING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
-    else if (data.status.toLowerCase() === PREPARING.toLowerCase()) {
+    else if (data.status.toString().toLowerCase() === PREPARING.toLowerCase()) {
       newAPICallStatus = PREPARING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
-    else if (data.status.toLowerCase() === PROCESSING.toLowerCase()) {
+    else if (data.status.toString().toLowerCase() === PROCESSING.toLowerCase()) {
       newAPICallStatus = PROCESSING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
-    else if (data.status.toLowerCase() === UPLOADING.toLowerCase()) {
+    else if (data.status.toString().toLowerCase() === UPLOADING.toLowerCase()) {
       newAPICallStatus = UPLOADING
       this.parentObject.failedAttemptsToGetUpdate = 0
       errorMsgList = []
     }
-    else if (data.status.toLowerCase() === SUCCESS.toLowerCase()) {
+    else if (
+      data.status.toString().toLowerCase() === SUCCESS.toLowerCase()
+      || data.status.toString().toLowerCase() === "200".toLowerCase()
+    ) {
       newAPICallStatus = SUCCESS
       this.parentObject.continuePollingForUpdates = false
       errorMsgList = []
