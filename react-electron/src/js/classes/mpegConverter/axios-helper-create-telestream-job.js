@@ -24,16 +24,19 @@ class AxiosHelperCreateTeleStreamJobs extends AxiosHelper {
     let newAPICallStatus = ""
     let errorMsgList = []
     if(result.data.status.toLowerCase() === QUEUED.toLowerCase()) {
-      newAPICallStatus = QUEUED
+      //newAPICallStatus = QUEUED
+      newAPICallStatus =  PROCESSING
     }
     else if(result.data.status.toLowerCase() === PROCESSING.toLowerCase()) {
       newAPICallStatus =  PROCESSING
     }
     else if(result.data.status.toLowerCase() === SUCCESS.toLowerCase()) {
-      newAPICallStatus = SUCCESS
+      //newAPICallStatus = SUCCESS
+      newAPICallStatus =  PROCESSING
     }
     else if(result.data.status.toLowerCase() === UPLOADING.toLowerCase()) {
-      newAPICallStatus = UPLOADING 
+      //newAPICallStatus = UPLOADING 
+      newAPICallStatus =  PROCESSING
     }
     else if (result.data.status.toLowerCase() === FAIL.toLowerCase()) {
       newAPICallStatus = ERROR

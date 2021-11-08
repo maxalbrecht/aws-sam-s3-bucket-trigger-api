@@ -1,5 +1,5 @@
 {   
-  "profiles": "MPEG-1",
+  "profiles": "MPEG1_1024x576.copy.1",
   "source_url": "source_url_val",
   "extra_files": "{\"bumpers\":[],\"trailers\":[]}",
   "path_format": "path_format_val"
