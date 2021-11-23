@@ -476,6 +476,27 @@
       "contactEmail": "dwittman@veritext.com",
       "contactPhone": "2157353948",
       "assignedUserEmail": "dwittman@veritext.com"
+    },
+    {
+      "username": "tbeck",
+      "contactName": "tim",
+      "contactEmail": "tbeck@veritext.com",
+      "contactPhone": "7472345694",
+      "assignedUserEmail": "tbeck@veritext.com"
+    },
+    {
+      "username": "rdiprima",
+      "contactName": "rick",
+      "contactEmail": "rdiprima@veritext.com",
+      "contactPhone": "7472344273",
+      "assignedUserEmail": "rdiprima@veritext.com"
+    },
+    {
+      "username": "tcannizzaro",
+      "contactName": "tristan",
+      "contactEmail": "tcannizzaro@veritext.com",
+      "contactPhone": "7472345695",
+      "assignedUserEmail": "tcannizzaro@veritext.com"
     }
   ]
 }
