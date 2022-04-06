@@ -497,6 +497,20 @@
       "contactEmail": "tcannizzaro@veritext.com",
       "contactPhone": "7472345695",
       "assignedUserEmail": "tcannizzaro@veritext.com"
+    },
+    {
+      "username": "rbaker",
+      "contactName": "ryan",
+      "contactEmail": "rbaker@veritext.com",
+      "contactPhone": "7472344106",
+      "assignedUserEmail": "rbaker@veritext.com"
+    },
+    {
+      "username": "mjackson",
+      "contactName": "mike",
+      "contactEmail": "mike.jackson@veritext.com",
+      "contactPhone": "9735068231",
+      "assignedUserEmail": "mike.jackson@veritext.com"
     }
   ]
 }
