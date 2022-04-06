@@ -20,9 +20,7 @@ async function handleSubmit(event) {
         cognitoUser,
         newPassword,
         {
-          given_name: 'john',
-          email: 'placeholder@email.com',
-          phone_number: '+15551112222'
+          given_name: 'john'
         }
       )
 
